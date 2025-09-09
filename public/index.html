@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Household Finance Vault</title>
+  <style>
+    html,body { height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; background:#f6f8fa; color:#111; }
+    .center { display:flex; align-items:center; justify-content:center; height:100%; }
+    .card { background:#fff; padding:28px; border-radius:12px; box-shadow:0 6px 18px rgba(20,30,45,0.06); width:420px; max-width:92%; text-align:center; }
+    h1 { margin:0 0 8px 0; font-size:20px; }
+    p.lead { margin:0 0 20px 0; color:#555; font-size:14px; }
+    .btn { display:inline-block; padding:10px 16px; border-radius:8px; text-decoration:none; color:#fff; background:#4285F4; font-weight:600; box-shadow:0 2px 6px rgba(66,133,244,0.25); }
+    .muted { margin-top:14px; font-size:12px; color:#777; }
+    .links { margin-top:16px; display:flex; gap:8px; justify-content:center; }
+    .links a { font-size:12px; color:#2a6cff; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="card" role="main">
+      <h1>Household Finance Vault</h1>
+      <p class="lead">A simple, secure vault for couples to store shared household financial details.</p>
+
+      <!-- OAuth entrypoint (backend route) -->
+      <a class="btn" href="/auth/google" aria-label="Sign in with Google">Sign in with Google</a>
+
+      <div class="muted">This is a minimal placeholder frontend. Use the button above to begin an OAuth flow served by the backend.</div>
+
+      <div class="links">
+        <a href="/dashboard">Dashboard (API endpoint)</a>
+        <a href="/health">Health</a>
+        <a href="/README.md">README</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

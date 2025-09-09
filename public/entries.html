@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Household Finance Vault — Entries</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;margin:0;background:#f6f8fa;color:#111}
+    header{background:#fff;padding:14px 20px;border-bottom:1px solid #eee}
+    .container{max-width:960px;margin:28px auto;padding:0 16px}
+    h1{margin:0 0 8px 0;font-size:20px}
+    .actions{margin:12px 0}
+    .card{background:#fff;padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(20,30,45,0.04);margin-bottom:12px}
+    label{display:block;font-size:13px;color:#444;margin-bottom:6px}
+    input,select,textarea{width:100%;padding:10px;border:1px solid #e6e9ef;border-radius:8px;margin-bottom:10px}
+    button{background:#2a6cff;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+    .muted{color:#666;font-size:13px}
+    .empty{color:#666;padding:20px;text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="max-width:960px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <strong>Household Finance Vault</strong>
+      </div>
+      <nav>
+        <a href="/">Home</a> · <a href="/entries.html">Entries</a> · <a href="/auth/google">Sign in</a> · <a href="/logout">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Your entries</h1>
+    <div class="muted">Create and view household finance entries (accounts, utilities, policies).</div>
+
+    <div class="actions card" id="createForm">
+      <h2 style="font-size:16px;margin-top:0">Add entry</h2>
+      <label>Title</label>
+      <input id="title" placeholder="e.g. NatWest - Joint Current Account" />
+      <label>Type</label>
+      <select id="type">
+        <option value="account">Account</option>
+        <option value="utility">Utility</option>
+        <option value="policy">Policy</option>
+        <option value="provider">Provider</option>
+        <option value="note">Note</option>
+        <option value="other">Other</option>
+      </select>
+      <label>Provider</label>
+      <input id="provider" placeholder="Provider name (optional)" />
+      <label>Notes</label>
+      <textarea id="notes" rows="3" placeholder="Optional notes"></textarea>
+      <div style="display:flex;gap:8px">
+        <button id="createBtn">Create entry</button>
+        <button id="refreshBtn" style="background:#6c757d">Refresh</button>
+      </div>
+      <div id="createMsg" class="muted" style="margin-top:8px"></div>
+    </div>
+
+    <div id="list"></div>
+    <div id="empty" class="empty">Loading entries…</div>
+  </div>
+
+  <script>
+    async function api(path, opts = {}) {
+      opts.headers = opts.headers || {};
+      if (opts.body && !(opts.body instanceof FormData)) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(opts.body);
+      }
+      const res = await fetch(path, { credentials: 'include', ...opts });
+      if (res.status === 401) {
+        // Not authenticated — redirect to Google OAuth
+        window.location.href = '/auth/google';
+        throw new Error('unauthenticated');
+      }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error('API error ' + res.status + ': ' + text);
+      }
+      return res.json();
+    }
+
+    function renderEntry(e) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const title = document.createElement('div');
+      title.innerHTML = '<strong>' + (e.title || 'Untitled') + '</strong> <span style="color:#777;font-size:12px"> — ' + (e.type || '') + '</span>';
+      const provider = document.createElement('div');
+      provider.className = 'muted';
+      provider.textContent = e.provider || '';
+      const notes = document.createElement('div');
+      notes.textContent = e.notes || '';
+      card.appendChild(title);
+      card.appendChild(provider);
+      card.appendChild(notes);
+      return card;
+    }
+
+    async function loadEntries() {
+      try {
+        document.getElementById('empty').textContent = 'Loading entries…';
+        const data = await api('/api/entries');
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        if (Array.isArray(data.entries) && data.entries.length) {
+          data.entries.forEach(e => list.appendChild(renderEntry(e)));
+          document.getElementById('empty').style.display = 'none';
+        } else {
+          document.getElementById('empty').textContent = 'No entries yet.';
+          document.getElementById('empty').style.display = 'block';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('empty').textContent = 'Error loading entries — check console.';
+      }
+    }
+
+    document.getElementById('createBtn').addEventListener('click', async () => {
+      const title = document.getElementById('title').value.trim();
+      if (!title) {
+        document.getElementById('createMsg').textContent = 'Title is required';
+        return;
+      }
+      const payload = {
+        title,
+        type: document.getElementById('type').value,
+        provider: document.getElementById('provider').value.trim() || undefined,
+        notes: document.getElementById('notes').value.trim() || undefined,
+      };
+      try {
+        document.getElementById('createMsg').textContent = 'Creating…';
+        await api('/api/entries', { method: 'POST', body: payload });
+        document.getElementById('createMsg').textContent = 'Created';
+        document.getElementById('title').value = '';
+        document.getElementById('provider').value = '';
+        document.getElementById('notes').value = '';
+        await loadEntries();
+      } catch (err) {
+        document.getElementById('createMsg').textContent = 'Error: ' + (err.message || 'unknown');
+      }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', loadEntries);
+
+    // Initial load
+    loadEntries();
+  </script>
+</body>
+</html>
