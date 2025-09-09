@@ -42,3 +42,13 @@ coverage/
 
 # Misc
 *.tgz
+
+# Local development folders (keep locally, don't commit)
+Testing/
+design/
+
+# Additional security
+*.pem
+*.key
+.env.production
+.env.staging
