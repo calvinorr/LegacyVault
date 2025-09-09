@@ -1,0 +1,16 @@
+My Details
+
+ClientID
+86155620173-o11vkq8o72hnl2hcomodb55nev5cd9i5.apps.googleusercontent.com
+Client secret
+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
+
+
+secret key - zbkJYg9SiDFf2OuZ6OmLS5RH09PC9TraDygQUk5QY5pWuqBqgNhw6E+QNCn9kV5E
+
+MOngo
+calvinorr_db_user
+ZCLTe5LwuFJackMU
+
+Connection String 
+mongodb+srv://calvinorr_db_user:ZCLTe5LwuFJackMU@cluster0.yihimzs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
