@@ -14,7 +14,7 @@ const RecurringPaymentSuggestionSchema = new Schema({
   payee: { type: String, required: true },
   category: { 
     type: String, 
-    enum: ['utilities', 'council_tax', 'insurance', 'subscription', 'rent', 'mortgage', 'other'],
+    enum: ['utilities', 'bills', 'council_tax', 'insurance', 'subscription', 'rent', 'mortgage', 'other'],
     default: 'other'
   },
   subcategory: { type: String }, // e.g., 'electricity', 'gas', 'internet'
@@ -29,7 +29,7 @@ const RecurringPaymentSuggestionSchema = new Schema({
   suggested_entry: {
     title: { type: String },
     provider: { type: String },
-    type: { type: String, enum: ['utility', 'account', 'policy', 'other'], default: 'utility' },
+    type: { type: String, enum: ['utility', 'bill', 'account', 'policy', 'other'], default: 'bill' },
     accountDetails: { type: Schema.Types.Mixed }
   },
   status: { 

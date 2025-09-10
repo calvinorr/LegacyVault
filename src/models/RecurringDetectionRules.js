@@ -6,7 +6,7 @@ const PatternRuleSchema = new Schema({
   patterns: [{ type: String, required: true }], // Regex patterns to match
   category: { 
     type: String, 
-    enum: ['utilities', 'council_tax', 'insurance', 'subscription', 'rent', 'mortgage', 'telecoms', 'other'],
+    enum: ['utilities', 'bills', 'council_tax', 'insurance', 'subscription', 'rent', 'mortgage', 'telecoms', 'other'],
     required: true
   },
   subcategory: { type: String }, // e.g., 'electricity', 'gas', 'internet'
@@ -28,7 +28,8 @@ const RecurringDetectionRulesSchema = new Schema({
   version: { type: String, default: '1.0' },
   
   // Rule categories
-  utility_rules: [PatternRuleSchema],
+  utility_rules: [PatternRuleSchema], // Legacy - keeping for backward compatibility
+  bill_rules: [PatternRuleSchema],
   council_tax_rules: [PatternRuleSchema],
   insurance_rules: [PatternRuleSchema],
   subscription_rules: [PatternRuleSchema],

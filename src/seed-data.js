@@ -42,14 +42,14 @@ const sampleEntries = [
   },
   {
     title: 'Electric Company',
-    type: 'utility',
+    type: 'bill',
     provider: 'PG&E',
     notes: 'Monthly electric service',
     accountDetails: { accountNumber: '987654321', averageBill: '$120' }
   },
   {
     title: 'Comcast Internet',
-    type: 'utility',
+    type: 'bill',
     provider: 'Comcast',
     notes: 'High-speed internet service',
     accountDetails: { accountNumber: '555-123-456', plan: 'Gigabit' }

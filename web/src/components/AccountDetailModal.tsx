@@ -114,7 +114,8 @@ export default function AccountDetailModal({
       case "property":
         return "Property";
       case "utility":
-        return "Utility Account";
+      case "bill":
+        return "Bill Account";
       default:
         return "Account";
     }

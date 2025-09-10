@@ -12,6 +12,7 @@ const usersRouter = require('./routes/users');
 const entriesRouter = require('./routes/entries');
 const importRouter = require('./routes/import');
 const detectionRulesRouter = require('./routes/detectionRules');
+const categoriesRouter = require('./routes/categories');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -95,6 +96,9 @@ app.use('/api/import', importRouter);
 
 // Detection Rules API  
 app.use('/api/detection-rules', detectionRulesRouter);
+
+// Categories API
+app.use('/api/categories', categoriesRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

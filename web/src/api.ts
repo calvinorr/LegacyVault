@@ -1,6 +1,15 @@
 // web/src/api.ts
 // Small API client for the backend endpoints. Uses fetch with credentials included.
 
+import type {
+  Category,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+  CategoryTreeResponse,
+  CategoryResponse,
+  CategoryStatsResponse,
+} from "./types/category";
+
 export type User = {
   _id: string;
   googleId?: string;
@@ -107,5 +116,65 @@ export async function approveUser(id: string): Promise<{ user: User }> {
     method: "POST",
     credentials: "include",
   });
+  return handleResponse(res);
+}
+
+// Category management functions
+export async function getCategories(): Promise<CategoryTreeResponse> {
+  const res = await fetch("/api/categories", { credentials: "include" });
+  return handleResponse(res);
+}
+
+export async function createCategory(
+  payload: CreateCategoryRequest
+): Promise<CategoryResponse> {
+  const res = await fetch("/api/categories", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse(res);
+}
+
+export async function getCategory(id: string): Promise<CategoryResponse> {
+  const res = await fetch(`/api/categories/${id}`, { credentials: "include" });
+  return handleResponse(res);
+}
+
+export async function updateCategory(
+  id: string,
+  payload: UpdateCategoryRequest
+): Promise<CategoryResponse> {
+  const res = await fetch(`/api/categories/${id}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteCategory(
+  id: string,
+  deleteChildren: boolean = false
+): Promise<{
+  message: string;
+  deletedCategory: { id: string; name: string };
+  deletedChildrenCount: number;
+}> {
+  const url = deleteChildren
+    ? `/api/categories/${id}?deleteChildren=true`
+    : `/api/categories/${id}`;
+
+  const res = await fetch(url, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  return handleResponse(res);
+}
+
+export async function getCategoryStats(): Promise<CategoryStatsResponse> {
+  const res = await fetch("/api/categories/stats", { credentials: "include" });
   return handleResponse(res);
 }

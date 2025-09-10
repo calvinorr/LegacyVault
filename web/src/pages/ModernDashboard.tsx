@@ -19,7 +19,7 @@ const generateAuditTrail = (entries: Entry[], currentUser: User | null) => {
 
       const getCategoryName = (type: string, title: string) => {
         if (type === "account") return "Bank Accounts";
-        if (type === "utility") return "Utilities";
+        if (type === "utility" || type === "bill") return "Bills";
         if (type === "policy") return "Insurance";
         if (
           title.toLowerCase().includes("investment") ||
@@ -117,7 +117,7 @@ export default function ModernDashboard() {
         e.title.toLowerCase().includes("real estate") ||
         e.accountDetails?.category === "property"
     ).length,
-    utilities: entries.filter((e) => e.type === "utility").length,
+    utilities: entries.filter((e) => e.type === "utility" || e.type === "bill").length,
     pensions: entries.filter((e) => e.type === "pension").length,
   };
 
@@ -385,7 +385,7 @@ export default function ModernDashboard() {
                   margin: "0 0 8px 0",
                 }}
               >
-                Utilities
+                Bills
               </p>
               <p
                 style={{

@@ -196,7 +196,8 @@ function analyzeTransactionFrequency(transactions) {
  */
 function findMatchingRule(description, rules) {
   const allRules = [
-    ...(rules.utility_rules || []),
+    ...(rules.utility_rules || []), // Legacy support
+    ...(rules.bill_rules || []),
     ...(rules.council_tax_rules || []),
     ...(rules.telecoms_rules || []),
     ...(rules.subscription_rules || []),
@@ -424,10 +425,11 @@ function generateEntryTitle(ruleMatch, transaction) {
  */
 function mapCategoryToType(category) {
   const mapping = {
-    'utilities': 'utility',
-    'council_tax': 'utility',
-    'telecoms': 'utility',
-    'subscription': 'utility',
+    'utilities': 'bill', // Updated terminology
+    'bills': 'bill',
+    'council_tax': 'bill',
+    'telecoms': 'bill',
+    'subscription': 'bill',
     'insurance': 'policy',
     'other': 'other'
   };

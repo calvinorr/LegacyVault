@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createEntry } from "../api";
+import { useCategories } from "../hooks/useCategories";
 
 interface AddUtilityModalProps {
   isOpen: boolean;
@@ -61,6 +62,7 @@ export default function AddUtilityModal({
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { getRootCategories, loading: categoriesLoading, isUsingFallback, error: categoriesError } = useCategories();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,16 +164,10 @@ export default function AddUtilityModal({
     "As Required",
   ];
 
-  const getCategoryOptions = () => [
-    "Banking",
-    "Insurance",
-    "Utilities",
-    "Subscriptions",
-    "Investments",
-    "Property",
-    "Pensions",
-    "Other",
-  ];
+  const getCategoryOptions = () => {
+    const rootCategories = getRootCategories();
+    return rootCategories.map(category => category.name);
+  };
 
   const getSubCategoryOptions = (category: string) => {
     switch (category) {
@@ -387,6 +383,7 @@ export default function AddUtilityModal({
 
             <div style={{ marginBottom: "16px" }}>
               <label
+                htmlFor="service-name"
                 style={{
                   display: "block",
                   fontSize: "14px",
@@ -398,6 +395,7 @@ export default function AddUtilityModal({
                 Service Name *
               </label>
               <input
+                id="service-name"
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
@@ -417,6 +415,7 @@ export default function AddUtilityModal({
             >
               <div>
                 <label
+                  htmlFor="provider"
                   style={{
                     display: "block",
                     fontSize: "14px",
@@ -428,6 +427,7 @@ export default function AddUtilityModal({
                   Provider/Supplier *
                 </label>
                 <input
+                  id="provider"
                   type="text"
                   value={formData.provider}
                   onChange={(e) =>
@@ -441,6 +441,7 @@ export default function AddUtilityModal({
 
               <div>
                 <label
+                  htmlFor="utility-type"
                   style={{
                     display: "block",
                     fontSize: "14px",
@@ -452,6 +453,7 @@ export default function AddUtilityModal({
                   Utility Type *
                 </label>
                 <select
+                  id="utility-type"
                   value={formData.accountDetails.utilityType}
                   onChange={(e) =>
                     handleAccountDetailChange("utilityType", e.target.value)
@@ -470,6 +472,7 @@ export default function AddUtilityModal({
 
               <div>
                 <label
+                  htmlFor="category-select"
                   style={{
                     display: "block",
                     fontSize: "14px",
@@ -479,20 +482,45 @@ export default function AddUtilityModal({
                   }}
                 >
                   Category
+                  {categoriesLoading && (
+                    <span style={{ color: "#6b7280", fontWeight: "normal" }}> (loading...)</span>
+                  )}
                 </label>
                 <select
+                  id="category-select"
                   value={formData.category}
                   onChange={(e) =>
                     handleInputChange("category", e.target.value)
                   }
-                  style={selectStyle}
+                  style={{
+                    ...selectStyle,
+                    opacity: categoriesLoading ? 0.6 : 1,
+                  }}
+                  disabled={categoriesLoading}
                 >
-                  {getCategoryOptions().map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
+                  {categoriesLoading ? (
+                    <option value="">Loading categories...</option>
+                  ) : categoriesError && !isUsingFallback ? (
+                    <option value="">Failed to load categories</option>
+                  ) : (
+                    getCategoryOptions().map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))
+                  )}
                 </select>
+                {isUsingFallback && (
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#f59e0b",
+                      marginTop: "4px",
+                    }}
+                  >
+                    Using offline categories
+                  </p>
+                )}
               </div>
             </div>
 

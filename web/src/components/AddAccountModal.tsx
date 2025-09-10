@@ -106,7 +106,8 @@ export default function AddAccountModal({
       case "property":
         return "Add Property";
       case "utility":
-        return "Add Utility Account";
+      case "bill":
+        return "Add Bill Account";
       default:
         return "Add Account";
     }
@@ -141,6 +142,7 @@ export default function AddAccountModal({
           "Land",
         ];
       case "utility":
+      case "bill":
         return [
           "Electricity",
           "Gas",

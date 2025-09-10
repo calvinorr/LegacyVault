@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getMe, getAllUsers, approveUser, User } from "../api";
 import BankImport from "./BankImport";
+import CategoryManagement from "../components/CategoryManagement";
 
 type SettingsSection =
   | "profile"
@@ -9,6 +10,7 @@ type SettingsSection =
   | "notifications"
   | "data"
   | "audit"
+  | "categories"
   | "bankimport";
 
 export default function Settings() {
@@ -702,6 +704,7 @@ export default function Settings() {
         <p>Audit logs coming soon...</p>
       </div>
     ),
+    categories: () => <CategoryManagement />,
     bankimport: () => <BankImport />,
   };
 
@@ -709,10 +712,13 @@ export default function Settings() {
     { id: "profile", label: "Profile", icon: "person" },
     { id: "security", label: "Security", icon: "security" },
     { id: "sharing", label: "Family & Sharing", icon: "group" },
+    { id: "categories", label: "Categories", icon: "folder" },
     { id: "notifications", label: "Notifications", icon: "notifications" },
     { id: "data", label: "Data & Privacy", icon: "storage" },
     { id: "audit", label: "Audit Logs", icon: "history" },
-    ...(user?.role === "admin" ? [{ id: "bankimport", label: "Bank Import", icon: "upload_file" }] : []),
+    ...(user?.role === "admin"
+      ? [{ id: "bankimport", label: "Bank Import", icon: "upload_file" }]
+      : []),
   ];
 
   return (

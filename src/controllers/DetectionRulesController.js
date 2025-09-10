@@ -36,7 +36,7 @@ class DetectionRulesController {
   static async createCustomRule(req, res) {
     try {
       const user = req.user;
-      const { name, description, utility_rules, council_tax_rules, telecoms_rules, subscription_rules, insurance_rules, general_rules, settings } = req.body;
+      const { name, description, utility_rules, bill_rules, council_tax_rules, telecoms_rules, subscription_rules, insurance_rules, general_rules, settings } = req.body;
 
       if (!name) {
         return res.status(400).json({ error: 'Rule name is required' });
@@ -46,7 +46,8 @@ class DetectionRulesController {
         name,
         description,
         custom_user: user._id,
-        utility_rules: utility_rules || [],
+        utility_rules: utility_rules || [], // Legacy support
+        bill_rules: bill_rules || [],
         council_tax_rules: council_tax_rules || [],
         telecoms_rules: telecoms_rules || [],
         subscription_rules: subscription_rules || [],
@@ -94,7 +95,7 @@ class DetectionRulesController {
 
       // Update allowed fields
       const allowedFields = [
-        'name', 'description', 'utility_rules', 'council_tax_rules', 
+        'name', 'description', 'utility_rules', 'bill_rules', 'council_tax_rules', 
         'telecoms_rules', 'subscription_rules', 'insurance_rules', 
         'general_rules', 'settings'
       ];
@@ -180,7 +181,7 @@ class DetectionRulesController {
       const newPatternRule = {
         name: `Custom ${provider || pattern}`,
         patterns: [pattern],
-        category: category === 'utility' ? 'utilities' : category,
+        category: category === 'utility' ? 'bills' : category,
         subcategory,
         provider: provider || pattern,
         confidence_boost: confidence_boost || 0.1,
