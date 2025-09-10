@@ -144,6 +144,7 @@ export default function EditAccountModal({
           "Land",
         ];
       case "utility":
+      case "bill":
         return [
           "Electricity",
           "Gas",

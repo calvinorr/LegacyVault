@@ -108,7 +108,7 @@ async function seedUKDetectionRules() {
   
   const defaultRules = new RecurringDetectionRules({
     name: 'UK Banking Detection Rules v1.0',
-    description: 'Default detection rules for UK bank statements covering major utilities, council tax, and services',
+    description: 'Default detection rules for UK bank statements covering major bills, council tax, and services',
     version: '1.0',
     is_default: true,
     
@@ -117,7 +117,7 @@ async function seedUKDetectionRules() {
       {
         name: 'British Gas Energy',
         patterns: ['BRITISH GAS', 'BG ENERGY', 'BRITISHGAS'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'gas',
         provider: 'British Gas',
         confidence_boost: 0.2
@@ -125,7 +125,7 @@ async function seedUKDetectionRules() {
       {
         name: 'EDF Energy',
         patterns: ['EDF ENERGY', 'EDF', 'EDFENERGY'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'electricity',
         provider: 'EDF Energy',
         confidence_boost: 0.2
@@ -133,7 +133,7 @@ async function seedUKDetectionRules() {
       {
         name: 'E.ON Energy',
         patterns: ['E.ON', 'EON ENERGY', 'E ON'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'dual_fuel',
         provider: 'E.ON',
         confidence_boost: 0.2
@@ -141,7 +141,7 @@ async function seedUKDetectionRules() {
       {
         name: 'Octopus Energy',
         patterns: ['OCTOPUS ENERGY', 'OCTOPUS'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'dual_fuel',
         provider: 'Octopus Energy',
         confidence_boost: 0.2
@@ -149,7 +149,7 @@ async function seedUKDetectionRules() {
       {
         name: 'SSE Energy',
         patterns: ['SSE', 'SSE ENERGY', 'SCOTTISH & SOUTHERN'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'dual_fuel',
         provider: 'SSE',
         confidence_boost: 0.2
@@ -157,7 +157,7 @@ async function seedUKDetectionRules() {
       {
         name: 'Thames Water',
         patterns: ['THAMES WATER', 'THAMES WTR'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'water',
         provider: 'Thames Water',
         confidence_boost: 0.2
@@ -165,7 +165,7 @@ async function seedUKDetectionRules() {
       {
         name: 'Anglian Water',
         patterns: ['ANGLIAN WATER', 'ANGLIAN WTR'],
-        category: 'utilities',
+        category: 'bills',
         subcategory: 'water',
         provider: 'Anglian Water',
         confidence_boost: 0.2

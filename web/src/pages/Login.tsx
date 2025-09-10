@@ -186,10 +186,10 @@ export default function Login(): JSX.Element {
                   </span>
                   <div>
                     <p className="text-sm font-medium text-card-foreground">
-                      Utilities
+                      Bills
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Store utility account details
+                      Store bill and service details
                     </p>
                   </div>
                 </div>

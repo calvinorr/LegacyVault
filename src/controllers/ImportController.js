@@ -287,9 +287,9 @@ class ImportController {
     
     // Map category to Entry category enum
     const categoryMapping = {
-      'utilities': 'Utilities',
-      'council_tax': 'Utilities',
-      'telecoms': 'Utilities',
+      'utilities': 'Bills',
+      'council_tax': 'Bills',
+      'telecoms': 'Bills',
       'subscription': 'Subscriptions',
       'insurance': 'Insurance',
       'other': 'Other'
@@ -297,7 +297,7 @@ class ImportController {
 
     const entry = new Entry({
       title: suggested_entry.title || `${suggestion.payee} - ${suggestion.category}`,
-      type: suggested_entry.type || 'utility',
+      type: suggested_entry.type || 'bill',
       provider: suggested_entry.provider || suggestion.payee,
       category: categoryMapping[suggestion.category] || 'Other',
       subCategory: suggestion.subcategory,

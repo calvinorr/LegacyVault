@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Entry = require('../../src/models/entry');
 const User = require('../../src/models/user');
 const ImportSession = require('../../src/models/ImportSession');
+const Category = require('../../src/models/category');
 
 describe('Extended Entry Model (Import Features)', () => {
   let testUser, testImportSession;
@@ -320,6 +321,95 @@ describe('Extended Entry Model (Import Features)', () => {
 
       expect(highConfidenceEntries).toHaveLength(1);
       expect(highConfidenceEntries[0].title).toBe('High Confidence');
+    });
+  });
+
+  describe('Category Integration', () => {
+    let testCategory;
+
+    beforeEach(async () => {
+      testCategory = new Category({
+        name: 'Test Banking Category',
+        description: 'Test category for banking entries',
+        userId: testUser._id
+      });
+      await testCategory.save();
+    });
+
+    test('should support categoryId reference to Category model', async () => {
+      const entryData = {
+        title: 'NatWest Account with Category',
+        type: 'account',
+        provider: 'NatWest',
+        owner: testUser._id,
+        categoryId: testCategory._id
+      };
+
+      const entry = new Entry(entryData);
+      const savedEntry = await entry.save();
+
+      expect(savedEntry.categoryId).toEqual(testCategory._id);
+    });
+
+    test('should populate category reference', async () => {
+      const entry = new Entry({
+        title: 'Account with Category',
+        owner: testUser._id,
+        categoryId: testCategory._id
+      });
+
+      const savedEntry = await entry.save();
+      
+      const populatedEntry = await Entry.findById(savedEntry._id)
+        .populate('categoryId')
+        .exec();
+
+      expect(populatedEntry.categoryId.name).toBe('Test Banking Category');
+      expect(populatedEntry.categoryId.description).toBe('Test category for banking entries');
+    });
+
+    test('should default categoryId to null', async () => {
+      const entry = new Entry({
+        title: 'Account without Category',
+        owner: testUser._id
+      });
+
+      const savedEntry = await entry.save();
+      expect(savedEntry.categoryId).toBeNull();
+    });
+
+    test('should allow removing category reference', async () => {
+      const entry = new Entry({
+        title: 'Account with Category',
+        owner: testUser._id,
+        categoryId: testCategory._id
+      });
+
+      const savedEntry = await entry.save();
+      
+      // Remove category reference
+      savedEntry.categoryId = null;
+      const updatedEntry = await savedEntry.save();
+
+      expect(updatedEntry.categoryId).toBeNull();
+    });
+
+    test('should support both old category system and new categoryId', async () => {
+      const entry = new Entry({
+        title: 'Hybrid Category Entry',
+        type: 'account',
+        owner: testUser._id,
+        category: 'Banking', // Old string-based category
+        subCategory: 'Current Accounts', // Old sub-category
+        categoryId: testCategory._id // New category reference
+      });
+
+      const savedEntry = await entry.save();
+
+      // Both systems should work together
+      expect(savedEntry.category).toBe('Banking');
+      expect(savedEntry.subCategory).toBe('Current Accounts');
+      expect(savedEntry.categoryId).toEqual(testCategory._id);
     });
   });
 

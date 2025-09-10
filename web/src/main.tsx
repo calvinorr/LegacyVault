@@ -4,13 +4,16 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 import { AuthProvider } from "./hooks/useAuth";
+import { CategoriesProvider } from "./hooks/useCategories";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <CategoriesProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CategoriesProvider>
     </AuthProvider>
   </React.StrictMode>
 );

@@ -13,18 +13,26 @@ const AttachmentSchema = new Schema({
 
 const EntrySchema = new Schema({
   title: { type: String, required: true },
-  type: { type: String, enum: ['account', 'utility', 'pension', 'policy', 'provider', 'note', 'other'], default: 'other' },
+  type: { type: String, enum: ['account', 'utility', 'bill', 'pension', 'policy', 'provider', 'note', 'other'], default: 'other' },
   provider: { type: String }, // e.g., 'NatWest', 'British Gas', insurer name
   accountDetails: { type: Schema.Types.Mixed }, // store provider-specific structured data
   notes: { type: String },
   attachments: { type: [AttachmentSchema], default: [] },
-  // Categorization system
+  // Categorization system (legacy string-based categories for backward compatibility)
   category: { 
     type: String, 
-    enum: ['Banking', 'Insurance', 'Utilities', 'Subscriptions', 'Investments', 'Property', 'Pensions', 'Other'], 
+    enum: ['Banking', 'Insurance', 'Utilities', 'Bills', 'Subscriptions', 'Investments', 'Property', 'Pensions', 'Other'], 
     default: 'Other' 
   },
   subCategory: { type: String }, // e.g., 'Home Insurance', 'Car Insurance' under 'Insurance'
+  
+  // New hierarchical category system (optional reference to Category model)
+  categoryId: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Category',
+    default: null
+  },
+  
   tags: { type: [String], default: [] }, // e.g., ['Sky', 'Monthly', 'Direct Debit']
   supplier: { type: String }, // Normalized supplier name for grouping (e.g., 'Sky', 'British Gas')
   

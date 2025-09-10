@@ -129,7 +129,7 @@ export default function Dashboard() {
                   className="w-full border rounded-lg px-3 py-2"
                 >
                   <option value="account">Account</option>
-                  <option value="utility">Utility</option>
+                  <option value="bill">Bill</option>
                   <option value="policy">Policy</option>
                   <option value="provider">Provider</option>
                   <option value="note">Note</option>

@@ -4,8 +4,8 @@ import { getEntries, Entry, deleteEntry } from "../api";
 import AddAccountModal from "../components/AddAccountModal";
 import EditAccountModal from "../components/EditAccountModal";
 import AccountDetailModal from "../components/AccountDetailModal";
-import AddUtilityModal from "../components/AddUtilityModal";
-import EditUtilityModal from "../components/EditUtilityModal";
+import AddBillModal from "../components/AddBillModal";
+import EditBillModal from "../components/EditBillModal";
 import AddPensionModal from "../components/AddPensionModal";
 import EditPensionModal from "../components/EditPensionModal";
 
@@ -66,7 +66,7 @@ export default function Accounts() {
           );
           break;
         case "utility":
-          filtered = entries.filter((entry) => entry.type === "utility");
+          filtered = entries.filter((entry) => entry.type === "utility" || entry.type === "bill");
           break;
         case "pension":
           filtered = entries.filter((entry) => entry.type === "pension");
@@ -87,7 +87,7 @@ export default function Accounts() {
       case "property":
         return "Properties";
       case "utility":
-        return "Utilities";
+        return "Bills";
       case "pension":
         return "Pensions";
       default:
@@ -682,7 +682,7 @@ export default function Accounts() {
         </button>
 
         {typeFilter === "utility" ? (
-          <AddUtilityModal
+          <AddBillModal
             isOpen={showAddModal}
             onClose={() => setShowAddModal(false)}
             onSuccess={refreshEntries}
@@ -703,14 +703,14 @@ export default function Accounts() {
         )}
 
         {typeFilter === "utility" ? (
-          <EditUtilityModal
+          <EditBillModal
             isOpen={showEditModal}
             onClose={() => {
               setShowEditModal(false);
               setSelectedAccount(null);
             }}
             onSuccess={refreshEntries}
-            utility={selectedAccount}
+            bill={selectedAccount}
           />
         ) : typeFilter === "pension" ? (
           <EditPensionModal

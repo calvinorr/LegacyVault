@@ -147,7 +147,7 @@ export default function AddPensionModal({
   const getCategoryOptions = () => [
     "Banking",
     "Insurance",
-    "Utilities",
+    "Bills",
     "Subscriptions",
     "Investments",
     "Property",
