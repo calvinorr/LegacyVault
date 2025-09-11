@@ -13,6 +13,7 @@ const entriesRouter = require('./routes/entries');
 const importRouter = require('./routes/import');
 const detectionRulesRouter = require('./routes/detectionRules');
 const categoriesRouter = require('./routes/categories');
+const categorySuggestionsRouter = require('./routes/categorySuggestions');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -99,6 +100,10 @@ app.use('/api/detection-rules', detectionRulesRouter);
 
 // Categories API
 app.use('/api/categories', categoriesRouter);
+
+// Category Suggestions API (includes recurring rules)
+app.use('/api/categories', categorySuggestionsRouter);
+app.use('/api/recurring-rules', categorySuggestionsRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import CreateEntryFromTransactionModal from "../components/CreateEntryFromTransactionModal";
 
 interface ImportSession {
   _id: string;
@@ -30,6 +31,7 @@ interface TransactionData {
     amount: number;
     balance?: number;
     originalText: string;
+    status?: "pending" | "processed" | "skipped";
   }[];
 }
 
@@ -59,6 +61,16 @@ export default function BankImport() {
   const [transactionData, setTransactionData] = useState<{
     [sessionId: string]: TransactionData;
   }>({});
+  const [selectedTransactions, setSelectedTransactions] = useState<{
+    [sessionId: string]: Set<number>;
+  }>({});
+  const [createEntryModal, setCreateEntryModal] = useState<{
+    isOpen: boolean;
+    transaction: any | null;
+  }>({
+    isOpen: false,
+    transaction: null,
+  });
 
   // Debug auth state
   console.log("BankImport - user:", user);
@@ -269,6 +281,73 @@ export default function BankImport() {
     } catch (err: any) {
       setError(err.message || "Failed to delete session");
     }
+  };
+
+  // Transaction selection helpers
+  const toggleTransactionSelection = (sessionId: string, transactionIndex: number) => {
+    setSelectedTransactions(prev => {
+      const sessionSelections = prev[sessionId] || new Set();
+      const newSelections = new Set(sessionSelections);
+      
+      if (newSelections.has(transactionIndex)) {
+        newSelections.delete(transactionIndex);
+      } else {
+        newSelections.add(transactionIndex);
+      }
+      
+      return {
+        ...prev,
+        [sessionId]: newSelections
+      };
+    });
+  };
+
+  const toggleSelectAll = (sessionId: string) => {
+    const sessionData = transactionData[sessionId];
+    if (!sessionData) return;
+
+    setSelectedTransactions(prev => {
+      const sessionSelections = prev[sessionId] || new Set();
+      const allSelected = sessionSelections.size === sessionData.transactions.length;
+      
+      if (allSelected) {
+        // Deselect all
+        return {
+          ...prev,
+          [sessionId]: new Set()
+        };
+      } else {
+        // Select all
+        const allIndices = new Set(sessionData.transactions.map((_, index) => index));
+        return {
+          ...prev,
+          [sessionId]: allIndices
+        };
+      }
+    });
+  };
+
+  const handleCreateEntry = (sessionId: string, transactionIndex: number) => {
+    const sessionData = transactionData[sessionId];
+    if (!sessionData) return;
+    
+    const transaction = sessionData.transactions[transactionIndex];
+    console.log('Creating entry for transaction:', transaction);
+    
+    setCreateEntryModal({
+      isOpen: true,
+      transaction: transaction,
+    });
+  };
+
+  const handleBulkCreateEntries = (sessionId: string) => {
+    const sessionData = transactionData[sessionId];
+    const selections = selectedTransactions[sessionId];
+    if (!sessionData || !selections || selections.size === 0) return;
+
+    const selectedTransactionData = Array.from(selections).map(index => sessionData.transactions[index]);
+    console.log('Creating bulk entries for transactions:', selectedTransactionData);
+    // TODO: Open bulk creation interface
   };
 
   const headerStyle = {
@@ -774,17 +853,31 @@ export default function BankImport() {
                   {/* All Parsed Transactions Table */}
                   {transactionData[session._id] && (
                     <div style={{ marginBottom: "20px" }}>
-                      <h5
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#1a1a1a",
-                          marginBottom: "12px",
-                        }}
-                      >
-                        All Parsed Transactions (
-                        {transactionData[session._id].transaction_count} total)
-                      </h5>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                        <h5
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#1a1a1a",
+                            margin: 0,
+                          }}
+                        >
+                          All Parsed Transactions (
+                          {transactionData[session._id].transaction_count} total)
+                        </h5>
+                        {selectedTransactions[session._id] && selectedTransactions[session._id].size > 0 && (
+                          <button
+                            style={{
+                              ...primaryButtonStyle,
+                              fontSize: "12px",
+                              padding: "6px 12px",
+                            }}
+                            onClick={() => handleBulkCreateEntries(session._id)}
+                          >
+                            Create Entries ({selectedTransactions[session._id].size})
+                          </button>
+                        )}
+                      </div>
                       <div
                         style={{
                           border: "1px solid #e5e7eb",
@@ -808,6 +901,26 @@ export default function BankImport() {
                                 borderBottom: "1px solid #e5e7eb",
                               }}
                             >
+                              <th
+                                style={{
+                                  padding: "8px 12px",
+                                  textAlign: "center",
+                                  fontWeight: "600",
+                                  color: "#374151",
+                                  width: "40px",
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    selectedTransactions[session._id]?.size === 
+                                    transactionData[session._id].transactions.length &&
+                                    transactionData[session._id].transactions.length > 0
+                                  }
+                                  onChange={() => toggleSelectAll(session._id)}
+                                  style={{ cursor: "pointer" }}
+                                />
+                              </th>
                               <th
                                 style={{
                                   padding: "8px 12px",
@@ -849,6 +962,17 @@ export default function BankImport() {
                               >
                                 Original Text
                               </th>
+                              <th
+                                style={{
+                                  padding: "8px 12px",
+                                  textAlign: "center",
+                                  fontWeight: "600",
+                                  color: "#374151",
+                                  width: "120px",
+                                }}
+                              >
+                                Actions
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
@@ -858,65 +982,120 @@ export default function BankImport() {
                                   new Date(a.date).getTime() -
                                   new Date(b.date).getTime()
                               )
-                              .map((transaction, txIndex) => (
-                                <tr
-                                  key={txIndex}
-                                  style={{ borderBottom: "1px solid #f3f4f6" }}
-                                >
-                                  <td
-                                    style={{
-                                      padding: "6px 12px",
-                                      color: "#374151",
+                              .map((transaction, txIndex) => {
+                                const isSelected = selectedTransactions[session._id]?.has(txIndex) || false;
+                                const isProcessed = transaction.status === "processed";
+                                
+                                return (
+                                  <tr
+                                    key={txIndex}
+                                    style={{ 
+                                      borderBottom: "1px solid #f3f4f6",
+                                      backgroundColor: isSelected ? "#f0f9ff" : isProcessed ? "#f8fafc" : "transparent"
                                     }}
                                   >
-                                    {new Date(
-                                      transaction.date
-                                    ).toLocaleDateString("en-GB")}
-                                  </td>
-                                  <td
-                                    style={{
-                                      padding: "6px 12px",
-                                      color: "#374151",
-                                      maxWidth: "200px",
-                                    }}
-                                  >
-                                    <div
+                                    <td
                                       style={{
-                                        fontSize: "11px",
-                                        color: "#6b7280",
-                                        wordWrap: "break-word",
+                                        padding: "6px 12px",
+                                        textAlign: "center",
                                       }}
                                     >
-                                      {transaction.description}
-                                    </div>
-                                  </td>
-                                  <td
-                                    style={{
-                                      padding: "6px 12px",
-                                      textAlign: "right",
-                                      fontWeight: "500",
-                                      color:
-                                        transaction.amount < 0
-                                          ? "#dc2626"
-                                          : "#059669",
-                                    }}
-                                  >
-                                    {formatCurrency(transaction.amount)}
-                                  </td>
-                                  <td
-                                    style={{
-                                      padding: "6px 12px",
-                                      fontSize: "10px",
-                                      color: "#6b7280",
-                                      maxWidth: "150px",
-                                      wordWrap: "break-word",
-                                      fontFamily: "monospace",
-                                    }}
-                                  >
-                                    {transaction.originalText}
-                                  </td>
-                                </tr>
-                              ))}
+                                      <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => toggleTransactionSelection(session._id, txIndex)}
+                                        disabled={isProcessed}
+                                        style={{ cursor: isProcessed ? "not-allowed" : "pointer" }}
+                                      />
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "6px 12px",
+                                        color: "#374151",
+                                      }}
+                                    >
+                                      {new Date(
+                                        transaction.date
+                                      ).toLocaleDateString("en-GB")}
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "6px 12px",
+                                        color: "#374151",
+                                        maxWidth: "200px",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          fontSize: "11px",
+                                          color: "#6b7280",
+                                          wordWrap: "break-word",
+                                        }}
+                                      >
+                                        {transaction.description}
+                                      </div>
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "6px 12px",
+                                        textAlign: "right",
+                                        fontWeight: "500",
+                                        color:
+                                          transaction.amount < 0
+                                            ? "#dc2626"
+                                            : "#059669",
+                                      }}
+                                    >
+                                      {formatCurrency(transaction.amount)}
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "6px 12px",
+                                        fontSize: "10px",
+                                        color: "#6b7280",
+                                        maxWidth: "150px",
+                                        wordWrap: "break-word",
+                                        fontFamily: "monospace",
+                                      }}
+                                    >
+                                      {transaction.originalText}
+                                    </td>
+                                    <td
+                                      style={{
+                                        padding: "6px 12px",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {isProcessed ? (
+                                        <span
+                                          style={{
+                                            padding: "2px 6px",
+                                            borderRadius: "4px",
+                                            fontSize: "10px",
+                                            fontWeight: "500",
+                                            backgroundColor: "#10b98120",
+                                            color: "#10b981",
+                                          }}
+                                        >
+                                          Entry Created
+                                        </span>
+                                      ) : (
+                                        <button
+                                          style={{
+                                            ...primaryButtonStyle,
+                                            fontSize: "10px",
+                                            padding: "4px 8px",
+                                            marginRight: 0,
+                                          }}
+                                          onClick={() => handleCreateEntry(session._id, txIndex)}
+                                        >
+                                          Create Entry
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1045,6 +1224,17 @@ export default function BankImport() {
           )}
         </div>
       </div>
+
+      <CreateEntryFromTransactionModal
+        isOpen={createEntryModal.isOpen}
+        onClose={() => setCreateEntryModal({ isOpen: false, transaction: null })}
+        onSuccess={() => {
+          setCreateEntryModal({ isOpen: false, transaction: null });
+          // Refresh the page data to reflect the new entry
+          loadSessions();
+        }}
+        transaction={createEntryModal.transaction}
+      />
     </>
   );
 }
