@@ -21,85 +21,115 @@ function requireApproved(req, res, next) {
 
 // Allow owner or admin
 async function requireOwnerOrAdmin(req, res, next) {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'Invalid id' });
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
+    const entry = await Entry.findById(id).lean();
+    if (!entry) return res.status(404).json({ error: 'Not found' });
+    if (entry.owner.toString() === req.user._id.toString()) return next();
+    if (req.user.role === 'admin') return next();
+    return res.status(403).json({ error: 'Forbidden' });
+  } catch (error) {
+    console.error('Error in requireOwnerOrAdmin middleware:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-  const entry = await Entry.findById(id).lean();
-  if (!entry) return res.status(404).json({ error: 'Not found' });
-  if (entry.owner.toString() === req.user._id.toString()) return next();
-  if (req.user.role === 'admin') return next();
-  return res.status(403).json({ error: 'Forbidden' });
 }
 
 // List entries (simple pagination)
 router.get('/', requireAuth, requireApproved, async (req, res) => {
-  const { limit = 25, cursor } = req.query;
-  const query = {
-    $or: [
-      { owner: req.user._id },
-      { sharedWith: req.user._id },
-    ],
-  };
-  if (cursor) {
-    query._id = { $lt: mongoose.Types.ObjectId(cursor) };
+  try {
+    const { limit = 25, cursor } = req.query;
+    const query = {
+      $or: [
+        { owner: req.user._id },
+        { sharedWith: req.user._id },
+      ],
+    };
+    if (cursor) {
+      query._id = { $lt: mongoose.Types.ObjectId(cursor) };
+    }
+    const items = await Entry.find(query).sort({ _id: -1 }).limit(Number(limit)).lean();
+    res.json({ entries: items });
+  } catch (error) {
+    console.error('Error fetching entries:', error);
+    res.status(500).json({ error: 'Failed to fetch entries' });
   }
-  const items = await Entry.find(query).sort({ _id: -1 }).limit(Number(limit)).lean();
-  res.json({ entries: items });
 });
 
 // Create entry
 router.post('/', requireAuth, requireApproved, async (req, res) => {
-  const { title, type, provider, accountDetails, notes, attachments, confidential } = req.body;
-  if (!title) return res.status(400).json({ error: 'title is required' });
-  const entry = await Entry.create({
-    title,
-    type,
-    provider,
-    accountDetails,
-    notes,
-    attachments,
-    confidential: confidential !== undefined ? confidential : true,
-    owner: req.user._id,
-    lastUpdatedBy: req.user._id,
-  });
-  res.status(201).json({ entry });
+  try {
+    const { title, type, provider, accountDetails, notes, attachments, confidential } = req.body;
+    if (!title) return res.status(400).json({ error: 'title is required' });
+    const entry = await Entry.create({
+      title,
+      type,
+      provider,
+      accountDetails,
+      notes,
+      attachments,
+      confidential: confidential !== undefined ? confidential : true,
+      owner: req.user._id,
+      lastUpdatedBy: req.user._id,
+    });
+    res.status(201).json({ entry });
+  } catch (error) {
+    console.error('Error creating entry:', error);
+    res.status(500).json({ error: 'Failed to create entry' });
+  }
 });
 
 // Get single entry
 router.get('/:id', requireAuth, requireApproved, async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'Invalid id' });
-  }
-  const entry = await Entry.findById(id).lean();
-  if (!entry) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid id' });
+    }
+    const entry = await Entry.findById(id).lean();
+    if (!entry) return res.status(404).json({ error: 'Not found' });
 
-  // Authorization: owner, sharedWith, or admin
-  const isOwner = entry.owner && entry.owner.toString() === req.user._id.toString();
-  const isShared = Array.isArray(entry.sharedWith) && entry.sharedWith.map(String).includes(req.user._id.toString());
-  if (!isOwner && !isShared && req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
+    // Authorization: owner, sharedWith, or admin
+    const isOwner = entry.owner && entry.owner.toString() === req.user._id.toString();
+    const isShared = Array.isArray(entry.sharedWith) && entry.sharedWith.map(String).includes(req.user._id.toString());
+    if (!isOwner && !isShared && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
 
-  res.json({ entry });
+    res.json({ entry });
+  } catch (error) {
+    console.error('Error fetching entry:', error);
+    res.status(500).json({ error: 'Failed to fetch entry' });
+  }
 });
 
 // Update entry
 router.put('/:id', requireAuth, requireApproved, requireOwnerOrAdmin, async (req, res) => {
-  const { id } = req.params;
-  const update = { ...req.body, lastUpdatedBy: req.user._id };
-  const entry = await Entry.findByIdAndUpdate(id, update, { new: true }).lean();
-  if (!entry) return res.status(404).json({ error: 'Not found' });
-  res.json({ entry });
+  try {
+    const { id } = req.params;
+    const update = { ...req.body, lastUpdatedBy: req.user._id };
+    const entry = await Entry.findByIdAndUpdate(id, update, { new: true }).lean();
+    if (!entry) return res.status(404).json({ error: 'Not found' });
+    res.json({ entry });
+  } catch (error) {
+    console.error('Error updating entry:', error);
+    res.status(500).json({ error: 'Failed to update entry' });
+  }
 });
 
 // Delete entry
 router.delete('/:id', requireAuth, requireApproved, requireOwnerOrAdmin, async (req, res) => {
-  const { id } = req.params;
-  const entry = await Entry.findByIdAndDelete(id).lean();
-  if (!entry) return res.status(404).json({ error: 'Not found' });
-  res.json({ deleted: true });
+  try {
+    const { id } = req.params;
+    const entry = await Entry.findByIdAndDelete(id).lean();
+    if (!entry) return res.status(404).json({ error: 'Not found' });
+    res.json({ deleted: true });
+  } catch (error) {
+    console.error('Error deleting entry:', error);
+    res.status(500).json({ error: 'Failed to delete entry' });
+  }
 });
 
 module.exports = router;
