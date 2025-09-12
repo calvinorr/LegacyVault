@@ -34,9 +34,9 @@ export default function EditAccountModal({
     accountDetails: {
       accountType: "",
       accountNumber: "",
-      routingNumber: "",
+      sortCode: "",
       branch: "",
-      category: "account",
+      category: "",
     },
     notes: "",
     confidential: true,
@@ -57,11 +57,27 @@ export default function EditAccountModal({
             account.accountDetails?.routingNumber ||
             "",
           branch: account.accountDetails?.branch || "",
-          category: account.accountDetails?.category || "account",
+          category: account.accountDetails?.category || "",
         },
         notes: account.notes || "",
         confidential:
           account.confidential !== undefined ? account.confidential : true,
+      });
+      setError(null);
+    } else if (!account || !isOpen) {
+      // Reset form when modal is closed or no account is selected
+      setFormData({
+        title: "",
+        provider: "",
+        accountDetails: {
+          accountType: "",
+          accountNumber: "",
+          sortCode: "",
+          branch: "",
+          category: "",
+        },
+        notes: "",
+        confidential: true,
       });
       setError(null);
     }
