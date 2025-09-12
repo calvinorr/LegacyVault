@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ChevronRight, Folder, Plus, Edit, Trash2 } from 'lucide-react';
 import type { Category } from "../types/category";
 
 interface CategoryTreeProps {
@@ -35,56 +36,68 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
   const treeItemStyle = (isSelected: boolean, hasChildren: boolean) => ({
     display: "flex",
     alignItems: "center",
-    padding: "8px 12px",
-    marginLeft: `${level * 20}px`,
+    padding: "12px 16px",
+    marginLeft: `${level * 24}px`,
     backgroundColor: isSelected ? "#f0f9ff" : "transparent",
-    borderRadius: "6px",
-    border: isSelected ? "1px solid #3b82f6" : "1px solid transparent",
-    marginBottom: "4px",
+    borderRadius: "12px",
+    border: isSelected ? "1px solid #0ea5e9" : "1px solid transparent",
+    marginBottom: "6px",
     cursor: hasChildren ? "pointer" : "default",
-    transition: "all 0.2s",
-    hover: {
-      backgroundColor: "#f9fafb",
-    },
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   });
 
   const categoryInfoStyle = {
     flex: 1,
-    marginLeft: "8px",
+    marginLeft: "12px",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const categoryNameStyle = {
-    fontSize: "14px",
+    fontSize: "15px",
     fontWeight: "500" as const,
-    color: "#1a1a1a",
-    margin: "0 0 2px 0",
+    color: "#0f172a",
+    margin: "0 0 4px 0",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    lineHeight: '1.2'
   };
 
   const categoryDescStyle = {
-    fontSize: "12px",
-    color: "#6b7280",
+    fontSize: "13px",
+    color: "#64748b",
     margin: 0,
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    lineHeight: '1.3'
   };
 
   const actionButtonStyle = {
-    padding: "4px 8px",
-    fontSize: "12px",
-    border: "1px solid #e5e7eb",
-    backgroundColor: "white",
-    color: "#374151",
-    borderRadius: "4px",
+    padding: "8px",
+    fontSize: "14px",
+    border: "1px solid #e2e8f0",
+    backgroundColor: "#ffffff",
+    color: "#64748b",
+    borderRadius: "8px",
     cursor: "pointer",
-    marginLeft: "4px",
-    transition: "all 0.2s",
+    marginLeft: "6px",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const systemBadgeStyle = {
-    fontSize: "10px",
-    padding: "2px 6px",
-    backgroundColor: "#6b728020",
-    color: "#6b7280",
-    borderRadius: "10px",
-    marginLeft: "8px",
+    fontSize: "11px",
+    padding: "4px 8px",
+    backgroundColor: "#f8fafc",
+    color: "#64748b",
+    borderRadius: "12px",
+    marginLeft: "12px",
+    fontWeight: '500' as const,
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    border: '1px solid #f1f5f9'
   };
 
   if (!categories || categories.length === 0) {
@@ -95,7 +108,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     <div>
       {categories.map((category) => {
         const isSelected = category._id === selectedCategoryId;
-        const hasChildren = category.children && category.children.length > 0;
+        const hasChildren = Boolean(category.children && category.children.length > 0);
         const isExpanded = expandedCategories.has(category._id);
 
         return (
@@ -103,34 +116,39 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
             <div
               style={treeItemStyle(isSelected, hasChildren)}
               onClick={() => hasChildren && toggleExpanded(category._id)}
+              onMouseEnter={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
+              }}
             >
               {/* Expand/Collapse Icon */}
               {hasChildren ? (
-                <span
-                  className="material-symbols-outlined"
+                <ChevronRight
+                  size={16}
+                  color="#64748b"
+                  strokeWidth={1.5}
                   style={{
-                    fontSize: "16px",
-                    color: "#6b7280",
-                    transition: "transform 0.2s",
+                    transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                     transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
                   }}
-                >
-                  chevron_right
-                </span>
+                />
               ) : (
                 <span style={{ width: "16px", display: "inline-block" }} />
               )}
 
               {/* Category Icon */}
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "18px",
-                  color: category.isSystemCategory ? "#6b7280" : "#3b82f6",
-                }}
-              >
-                folder
-              </span>
+              <Folder
+                size={18}
+                color={category.isSystemCategory ? "#64748b" : "#0ea5e9"}
+                strokeWidth={1.5}
+                style={{ marginLeft: '6px' }}
+              />
 
               {/* Category Info */}
               <div style={categoryInfoStyle}>
@@ -150,12 +168,15 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                 category.entriesCount > 0 && (
                   <span
                     style={{
-                      fontSize: "11px",
-                      padding: "2px 6px",
-                      backgroundColor: "#10b98120",
-                      color: "#10b981",
-                      borderRadius: "10px",
-                      marginRight: "8px",
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      backgroundColor: "#f0fdf4",
+                      color: "#16a34a",
+                      borderRadius: "12px",
+                      marginRight: "12px",
+                      fontWeight: '500' as const,
+                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                      border: '1px solid #dcfce7'
                     }}
                   >
                     {category.entriesCount}
@@ -171,13 +192,16 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                     onAddChild(category);
                   }}
                   title="Add child category"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f1f5f9';
+                    e.currentTarget.style.borderColor = '#cbd5e1';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ffffff';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
                 >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: "14px" }}
-                  >
-                    add
-                  </span>
+                  <Plus size={14} strokeWidth={1.5} />
                 </button>
 
                 <button
@@ -187,34 +211,41 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                     onEdit(category);
                   }}
                   title="Edit category"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f1f5f9';
+                    e.currentTarget.style.borderColor = '#cbd5e1';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#ffffff';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                  }}
                 >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: "14px" }}
-                  >
-                    edit
-                  </span>
+                  <Edit size={14} strokeWidth={1.5} />
                 </button>
 
                 {!category.isSystemCategory && (
                   <button
                     style={{
                       ...actionButtonStyle,
-                      borderColor: "#ef4444",
-                      color: "#ef4444",
+                      borderColor: "#fecaca",
+                      color: "#dc2626",
+                      backgroundColor: '#fef2f2'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(category);
                     }}
                     title="Delete category"
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fee2e2';
+                      e.currentTarget.style.borderColor = '#fca5a5';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fef2f2';
+                      e.currentTarget.style.borderColor = '#fecaca';
+                    }}
                   >
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: "14px" }}
-                    >
-                      delete
-                    </span>
+                    <Trash2 size={14} strokeWidth={1.5} />
                   </button>
                 )}
               </div>

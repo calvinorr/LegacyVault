@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Plus, Edit2, ChevronDown } from 'lucide-react';
 import type {
   Category,
   CreateCategoryRequest,
@@ -96,90 +97,120 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const flatCategories = flattenCategories(allCategories);
 
   const formStyle = {
-    backgroundColor: "white",
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
-    padding: "24px",
-    maxWidth: "500px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #f1f5f9",
+    borderRadius: "16px",
+    padding: "32px",
+    maxWidth: "600px",
+    boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const inputStyle = {
     width: "100%",
-    padding: "8px 12px",
-    borderRadius: "6px",
-    border: "1px solid #e5e7eb",
-    fontSize: "14px",
-    marginBottom: "16px",
+    padding: "12px 16px",
+    borderRadius: "12px",
+    border: "1px solid #e2e8f0",
+    fontSize: "15px",
+    marginBottom: "20px",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    color: '#0f172a',
+    backgroundColor: '#ffffff'
   };
 
   const selectStyle = {
     ...inputStyle,
     appearance: "none" as const,
-    backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
-    backgroundPosition: "right 8px center",
+    backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+    backgroundPosition: "right 16px center",
     backgroundRepeat: "no-repeat",
     backgroundSize: "16px",
+    paddingRight: '48px'
   };
 
   const labelStyle = {
     display: "block",
     fontSize: "14px",
     fontWeight: "500" as const,
-    color: "#374151",
-    marginBottom: "6px",
+    color: "#0f172a",
+    marginBottom: "8px",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const buttonStyle = {
-    padding: "8px 16px",
-    borderRadius: "6px",
+    padding: "12px 20px",
+    borderRadius: "12px",
     fontSize: "14px",
     fontWeight: "500" as const,
     cursor: "pointer",
-    transition: "all 0.2s",
-    marginRight: "8px",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    marginRight: "12px",
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: loading ? "#9ca3af" : "#3b82f6",
-    color: "white",
+    backgroundColor: loading ? "#94a3b8" : "#0f172a",
+    color: "#ffffff",
     border: "1px solid transparent",
   };
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "white",
-    color: "#374151",
-    border: "1px solid #e5e7eb",
+    backgroundColor: "#ffffff",
+    color: "#64748b",
+    border: "1px solid #e2e8f0",
   };
 
   const titleStyle = {
-    fontSize: "18px",
+    fontSize: "20px",
     fontWeight: "600" as const,
-    color: "#1a1a1a",
-    marginBottom: "20px",
+    color: "#0f172a",
+    marginBottom: "24px",
     display: "flex",
     alignItems: "center",
-    gap: "8px",
+    gap: "12px",
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
       <h3 style={titleStyle}>
-        <span
-          className="material-symbols-outlined"
-          style={{ fontSize: "24px", color: "#3b82f6" }}
-        >
-          {category ? "edit" : "add"}
-        </span>
-        {category ? "Edit Category" : "Add Category"}
-        {parentCategory && (
-          <span
-            style={{ fontSize: "14px", color: "#6b7280", fontWeight: "normal" }}
-          >
-            under "{parentCategory.name}"
-          </span>
-        )}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '32px',
+          height: '32px',
+          backgroundColor: category ? '#f0f9ff' : '#f0fdf4',
+          borderRadius: '8px'
+        }}>
+          {category ? (
+            <Edit2 size={18} color="#0ea5e9" strokeWidth={1.5} />
+          ) : (
+            <Plus size={18} color="#16a34a" strokeWidth={1.5} />
+          )}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <span>{category ? "Edit Category" : "Add Category"}</span>
+          {parentCategory && (
+            <span
+              style={{ 
+                fontSize: "14px", 
+                color: "#64748b", 
+                fontWeight: "400",
+                marginTop: '2px',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}
+            >
+              under "{parentCategory.name}"
+            </span>
+          )}
+        </div>
       </h3>
 
       <div>
@@ -195,6 +226,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           style={inputStyle}
           disabled={loading}
           required
+          onFocus={(e) => {
+            e.target.style.borderColor = '#0ea5e9';
+            e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.boxShadow = 'none';
+          }}
         />
       </div>
 
@@ -210,6 +249,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           rows={3}
           style={{ ...inputStyle, resize: "vertical" as const }}
           disabled={loading}
+          onFocus={(e) => {
+            e.target.style.borderColor = '#0ea5e9';
+            e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.boxShadow = 'none';
+          }}
         />
       </div>
 
@@ -223,6 +270,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           onChange={(e) => setSelectedParentId(e.target.value || null)}
           style={selectStyle}
           disabled={loading}
+          onFocus={(e) => {
+            e.target.style.borderColor = '#0ea5e9';
+            e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.boxShadow = 'none';
+          }}
         >
           <option value="">None (Root Level)</option>
           {flatCategories.map((cat) => (
@@ -238,7 +293,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          marginTop: "24px",
+          marginTop: "32px",
+          gap: '12px'
         }}
       >
         <button
@@ -246,6 +302,14 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           onClick={onCancel}
           style={secondaryButtonStyle}
           disabled={loading}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f8fafc';
+            e.currentTarget.style.borderColor = '#cbd5e1';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#ffffff';
+            e.currentTarget.style.borderColor = '#e2e8f0';
+          }}
         >
           Cancel
         </button>
@@ -253,6 +317,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           type="submit"
           style={primaryButtonStyle}
           disabled={loading || !name.trim()}
+          onMouseEnter={(e) => {
+            if (!loading && name.trim()) {
+              e.currentTarget.style.backgroundColor = '#1e293b';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!loading && name.trim()) {
+              e.currentTarget.style.backgroundColor = '#0f172a';
+            }
+          }}
         >
           {loading ? "Saving..." : category ? "Update" : "Create"}
         </button>
