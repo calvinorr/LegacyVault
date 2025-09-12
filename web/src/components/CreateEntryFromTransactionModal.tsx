@@ -281,87 +281,101 @@ export default function CreateEntryFromTransactionModal({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(15, 23, 42, 0.4)",
+    backdropFilter: "blur(8px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1000,
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const modalStyle = {
-    backgroundColor: "white",
-    borderRadius: "12px",
+    backgroundColor: "#ffffff",
+    borderRadius: "20px",
     width: "90%",
-    maxWidth: "600px",
+    maxWidth: "640px",
     maxHeight: "90vh",
     overflow: "auto",
-    boxShadow:
-      "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.05)",
+    border: "1px solid #f1f5f9",
   };
 
   const headerStyle = {
-    padding: "24px 24px 0 24px",
-    borderBottom: "1px solid #e5e7eb",
-    marginBottom: "24px",
+    padding: "32px 32px 0 32px",
+    borderBottom: "1px solid #f1f5f9",
+    marginBottom: "32px",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const contentStyle = {
-    padding: "0 24px 24px 24px",
+    padding: "0 32px 32px 32px",
   };
 
   const inputStyle = {
     width: "100%",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
+    padding: "14px 16px",
+    borderRadius: "12px",
+    border: "1px solid #e2e8f0",
     fontSize: "16px",
-    marginBottom: "16px",
+    marginBottom: "20px",
     boxSizing: "border-box" as const,
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+    backgroundColor: "#fefefe",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    outline: "none",
+    color: "#0f172a",
   };
 
   const selectStyle = {
     ...inputStyle,
     appearance: "none" as const,
     backgroundImage:
-      "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e\")",
+      "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e\")",
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 12px center",
+    backgroundPosition: "right 16px center",
     backgroundSize: "16px",
-    paddingRight: "40px",
+    paddingRight: "48px",
+    cursor: "pointer",
   };
 
   const suggestionStyle = {
-    padding: "12px",
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
-    marginBottom: "8px",
+    padding: "16px",
+    border: "1px solid #f1f5f9",
+    borderRadius: "12px",
+    marginBottom: "12px",
     cursor: "pointer",
-    backgroundColor: "#f9fafb",
-    transition: "all 0.2s",
+    backgroundColor: "#f8fafc",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const buttonStyle = {
     padding: "12px 24px",
-    borderRadius: "8px",
-    fontSize: "16px",
-    fontWeight: "600",
+    borderRadius: "12px",
+    fontSize: "15px",
+    fontWeight: "500",
     cursor: "pointer",
-    transition: "all 0.2s",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     border: "none",
-    marginRight: "8px",
+    marginRight: "12px",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#3b82f6",
-    color: "white",
+    backgroundColor: "#0f172a",
+    color: "#ffffff",
+    fontWeight: "600",
+    boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.1)",
   };
 
   const secondaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "white",
-    color: "#6b7280",
-    border: "1px solid #e5e7eb",
+    backgroundColor: "#ffffff",
+    color: "#64748b",
+    border: "1px solid #e2e8f0",
+    fontWeight: "500",
   };
 
   return (
@@ -380,8 +394,10 @@ export default function CreateEntryFromTransactionModal({
               style={{
                 fontSize: "24px",
                 fontWeight: "600",
-                color: "#1a1a1a",
+                color: "#0f172a",
                 margin: 0,
+                fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+                letterSpacing: "-0.025em",
               }}
             >
               Create Entry from Transaction
@@ -393,8 +409,13 @@ export default function CreateEntryFromTransactionModal({
                 border: "none",
                 fontSize: "24px",
                 cursor: "pointer",
-                color: "#6b7280",
-                padding: "4px",
+                color: "#64748b",
+                padding: "8px",
+                borderRadius: "8px",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               ×
@@ -408,7 +429,7 @@ export default function CreateEntryFromTransactionModal({
             borderRadius: "8px",
             marginBottom: "16px",
           }}>
-            <div style={{ fontSize: "14px", color: "#6b7280", marginBottom: "4px" }}>
+            <div style={{ fontSize: "14px", color: "#64748b", marginBottom: "4px" }}>
               Transaction:
             </div>
             <div style={{ fontWeight: "500" }}>
@@ -445,7 +466,7 @@ export default function CreateEntryFromTransactionModal({
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#374151",
+                  color: "#334155",
                   marginBottom: "8px",
                 }}>
                   Suggested Categories {loadingSuggestions && "(Loading...)"}
@@ -478,7 +499,7 @@ export default function CreateEntryFromTransactionModal({
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#334155",
                 marginBottom: "4px",
               }}>
                 Entry Title *
@@ -498,7 +519,7 @@ export default function CreateEntryFromTransactionModal({
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#334155",
                 marginBottom: "4px",
               }}>
                 Provider *
@@ -524,7 +545,7 @@ export default function CreateEntryFromTransactionModal({
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#374151",
+                  color: "#334155",
                   marginBottom: "4px",
                 }}>
                   Category
@@ -549,7 +570,7 @@ export default function CreateEntryFromTransactionModal({
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#374151",
+                  color: "#334155",
                   marginBottom: "4px",
                 }}>
                   Sub-Category
@@ -581,7 +602,7 @@ export default function CreateEntryFromTransactionModal({
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#374151",
+                  color: "#334155",
                   marginBottom: "4px",
                 }}>
                   Monthly Amount
@@ -600,7 +621,7 @@ export default function CreateEntryFromTransactionModal({
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#374151",
+                  color: "#334155",
                   marginBottom: "4px",
                 }}>
                   Payment Date (day of month)
@@ -630,7 +651,7 @@ export default function CreateEntryFromTransactionModal({
               />
               <label htmlFor="directDebit" style={{
                 fontSize: "14px",
-                color: "#374151",
+                color: "#334155",
                 cursor: "pointer",
               }}>
                 Direct Debit Payment
@@ -642,7 +663,7 @@ export default function CreateEntryFromTransactionModal({
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#334155",
                 marginBottom: "4px",
               }}>
                 Notes
@@ -675,7 +696,7 @@ export default function CreateEntryFromTransactionModal({
               />
               <label htmlFor="confidential" style={{
                 fontSize: "14px",
-                color: "#374151",
+                color: "#334155",
                 cursor: "pointer",
               }}>
                 Mark as confidential

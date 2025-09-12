@@ -1,5 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { 
+  Shield, 
+  LayoutDashboard, 
+  Wallet, 
+  Users, 
+  FileText, 
+  Settings,
+  User
+} from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,10 +28,12 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "16px 32px",
-    backgroundColor: "white",
-    borderBottom: "1px solid #e5e7eb",
-    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
+    padding: "20px 40px",
+    backgroundColor: "#ffffff",
+    borderBottom: "1px solid #f1f5f9",
+    boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+    backdropFilter: "blur(8px)",
   };
 
   const leftSideStyle = {
@@ -53,42 +64,46 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     display: "flex",
     alignItems: "center",
     gap: "12px",
-    padding: "6px 12px",
-    borderRadius: "6px",
-    backgroundColor: "#f9fafb",
+    padding: "8px 16px",
+    borderRadius: "12px",
+    backgroundColor: "#f8fafc",
+    border: "1px solid #f1f5f9",
   };
 
   const userNameStyle = {
     fontSize: "14px",
     fontWeight: "500",
-    color: "#374151",
+    color: "#334155",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const signOutButtonStyle = {
-    padding: "6px 12px",
+    padding: "8px 16px",
     fontSize: "13px",
     fontWeight: "500",
-    border: "1px solid #d1d5db",
-    borderRadius: "6px",
-    backgroundColor: "white",
-    color: "#6b7280",
+    border: "1px solid #e2e8f0",
+    borderRadius: "12px",
+    backgroundColor: "#ffffff",
+    color: "#64748b",
     cursor: "pointer",
-    transition: "all 0.2s",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const navLinkStyle = (isActive: boolean) => ({
     display: "flex",
     alignItems: "center",
-    gap: "6px",
-    padding: "10px 16px",
-    borderRadius: "8px",
+    gap: "8px",
+    padding: "12px 20px",
+    borderRadius: "12px",
     textDecoration: "none",
     fontSize: "14px",
     fontWeight: "500",
-    transition: "all 0.2s ease-in-out",
-    backgroundColor: isActive ? "rgba(59, 130, 246, 0.1)" : "transparent",
-    color: isActive ? "#3b82f6" : "#6b7280",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    backgroundColor: isActive ? "#f1f5f9" : "transparent",
+    color: isActive ? "#0f172a" : "#64748b",
     border: "1px solid transparent",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   });
 
   return (
@@ -96,18 +111,25 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
       <div style={leftSideStyle}>
         {/* Logo */}
         <div style={logoStyle}>
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: "28px", color: "#3b82f6" }}
-          >
-            shield_lock
-          </span>
+          <div style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center",
+            width: "32px",
+            height: "32px",
+            backgroundColor: "#0f172a",
+            borderRadius: "8px"
+          }}>
+            <Shield size={18} color="#ffffff" strokeWidth={2} />
+          </div>
           <h1
             style={{
               fontSize: "20px",
-              fontWeight: "bold",
-              color: "#1a1a1a",
+              fontWeight: "600",
+              color: "#0f172a",
               margin: 0,
+              fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+              letterSpacing: "-0.025em",
             }}
           >
             LegacyLock
@@ -117,60 +139,35 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
         {/* Navigation Links */}
         <div style={navLinksStyle}>
           <Link to="/" style={navLinkStyle(location.pathname === "/")}>
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "18px" }}
-            >
-              dashboard
-            </span>
+            <LayoutDashboard size={18} strokeWidth={1.5} />
             Dashboard
           </Link>
           <Link
             to="/accounts"
             style={navLinkStyle(location.pathname === "/accounts")}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "18px" }}
-            >
-              account_balance_wallet
-            </span>
+            <Wallet size={18} strokeWidth={1.5} />
             Accounts
           </Link>
           <Link
             to="/contacts"
             style={navLinkStyle(location.pathname === "/contacts")}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "18px" }}
-            >
-              group
-            </span>
+            <Users size={18} strokeWidth={1.5} />
             Contacts
           </Link>
           <Link
             to="/documents"
             style={navLinkStyle(location.pathname === "/documents")}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "18px" }}
-            >
-              description
-            </span>
+            <FileText size={18} strokeWidth={1.5} />
             Documents
           </Link>
           <Link
             to="/settings"
             style={navLinkStyle(location.pathname === "/settings")}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "18px" }}
-            >
-              settings
-            </span>
+            <Settings size={18} strokeWidth={1.5} />
             Settings
           </Link>
         </div>
@@ -181,12 +178,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
         {user ? (
           <>
             <div style={userInfoStyle}>
-              <span
-                className="material-symbols-outlined"
-                style={{ fontSize: "16px", color: "#6b7280" }}
-              >
-                account_circle
-              </span>
+              <User size={16} color="#64748b" strokeWidth={1.5} />
               <span style={userNameStyle}>{user.displayName}</span>
             </div>
             <button onClick={onSignOut} style={signOutButtonStyle}>
@@ -208,13 +200,13 @@ export default function Layout({ children, user, onSignOut }: LayoutProps) {
     <div
       className="min-h-screen"
       style={{
-        fontFamily: 'Inter, "Noto Sans", sans-serif',
-        background: "white",
-        color: "#1a1a1a",
+        fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+        background: "#fefefe",
+        color: "#0f172a",
       }}
     >
       <TopNavigation user={user} onSignOut={onSignOut} />
-      <main style={{ background: "white", minHeight: "calc(100vh - 80px)" }}>
+      <main style={{ background: "#fefefe", minHeight: "calc(100vh - 84px)" }}>
         {children}
       </main>
     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Upload, Building2, TrendingUp, AlertTriangle, CheckCircle, Clock, Calendar, FileText, Trash2 } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth";
 import CreateEntryFromTransactionModal from "../components/CreateEntryFromTransactionModal";
 
@@ -72,20 +73,48 @@ export default function BankImport() {
     transaction: null,
   });
 
-  // Debug auth state
-  console.log("BankImport - user:", user);
-  console.log("BankImport - user role:", user?.role);
-
   // Redirect non-admin users
   if (user && user.role !== "admin") {
     return (
-      <div style={{ padding: "32px", textAlign: "center" }}>
-        <h1 style={{ color: "#ef4444", marginBottom: "16px" }}>
-          Access Denied
-        </h1>
-        <p style={{ color: "#6b7280" }}>
-          This feature is only available to administrators.
-        </p>
+      <div style={{ 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#fefefe',
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+      }}>
+        <div style={{ textAlign: 'center', maxWidth: '400px', padding: '32px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '64px',
+            height: '64px',
+            backgroundColor: '#fef2f2',
+            borderRadius: '16px',
+            margin: '0 auto 24px'
+          }}>
+            <AlertTriangle size={28} color="#dc2626" strokeWidth={1.5} />
+          </div>
+          <h1 style={{ 
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#0f172a', 
+            marginBottom: '8px',
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+          }}>
+            Access Denied
+          </h1>
+          <p style={{ 
+            fontSize: '16px',
+            color: '#64748b',
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            lineHeight: '1.5'
+          }}>
+            This feature is only available to administrators.
+          </p>
+        </div>
       </div>
     );
   }
@@ -350,63 +379,80 @@ export default function BankImport() {
     // TODO: Open bulk creation interface
   };
 
-  const headerStyle = {
-    borderBottom: "1px solid #e5e7eb",
-    padding: "20px 32px",
-    background: "white",
+  const pageStyle = {
+    minHeight: '100vh',
+    background: '#fefefe',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    color: '#0f172a'
   };
 
-  const contentStyle = {
-    padding: "20px 32px 32px 32px",
-    background: "white",
-    minHeight: "calc(100vh - 160px)",
+  const containerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '40px 24px'
   };
 
   const cardStyle = {
-    backgroundColor: "white",
-    border: "1px solid #e5e7eb",
-    borderRadius: "8px",
-    padding: "20px",
-    marginBottom: "16px",
+    backgroundColor: '#ffffff',
+    border: '1px solid #f1f5f9',
+    borderRadius: '16px',
+    padding: '32px',
+    marginBottom: '24px',
+    boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const buttonStyle = {
-    padding: "8px 16px",
-    borderRadius: "6px",
-    border: "1px solid #e5e7eb",
-    backgroundColor: "white",
-    color: "#374151",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "500",
-    transition: "all 0.2s",
-    marginRight: "8px",
+    padding: '12px 20px',
+    borderRadius: '12px',
+    border: '1px solid #e2e8f0',
+    backgroundColor: '#ffffff',
+    color: '#64748b',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    marginRight: '8px',
+    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#3b82f6",
-    color: "white",
-    border: "1px solid #3b82f6",
+    backgroundColor: '#0f172a',
+    color: '#ffffff',
+    border: '1px solid #0f172a'
   };
 
   const dangerButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#ef4444",
-    color: "white",
-    border: "1px solid #ef4444",
+    backgroundColor: '#dc2626',
+    color: '#ffffff',
+    border: '1px solid #dc2626'
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "#10b981";
+        return "#059669";
       case "processing":
-        return "#f59e0b";
+        return "#d97706";
       case "failed":
-        return "#ef4444";
+        return "#dc2626";
       default:
-        return "#6b7280";
+        return "#64748b";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle size={14} strokeWidth={2} />;
+      case "processing":
+        return <Clock size={14} strokeWidth={2} />;
+      case "failed":
+        return <AlertTriangle size={14} strokeWidth={2} />;
+      default:
+        return <FileText size={14} strokeWidth={2} />;
     }
   };
 
@@ -419,458 +465,555 @@ export default function BankImport() {
 
   if (loading) {
     return (
-      <>
-        <div style={headerStyle}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              upload_file
-            </span>
-            <div>
-              <h1
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
-                  margin: "0 0 4px 0",
-                }}
-              >
-                Bank Import
+      <div style={pageStyle}>
+        <div style={containerStyle}>
+          {/* Header */}
+          <div style={{ marginBottom: '40px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px',
+                backgroundColor: '#0f172a',
+                borderRadius: '8px'
+              }}>
+                <Building2 size={18} color="#ffffff" strokeWidth={2} />
+              </div>
+              <h1 style={{
+                fontSize: '28px',
+                fontWeight: '600',
+                color: '#0f172a',
+                margin: '0',
+                letterSpacing: '-0.025em'
+              }}>
+                Bank Statement Import
               </h1>
-              <p style={{ color: "#6b7280", margin: 0, fontSize: "16px" }}>
-                Loading import sessions...
-              </p>
             </div>
+            <p style={{
+              fontSize: '16px',
+              color: '#64748b',
+              fontWeight: '400',
+              margin: '0',
+              lineHeight: '1.5'
+            }}>
+              Loading import sessions...
+            </p>
           </div>
-        </div>
-        <div style={contentStyle}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "200px",
-            }}
-          >
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontSize: "18px",
-                  color: "#6b7280",
-                  marginBottom: "8px",
-                }}
-              >
+          
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '300px'
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '16px',
+                margin: '0 auto 24px'
+              }}>
+                <Clock size={28} color="#64748b" strokeWidth={1.5} />
+              </div>
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '500',
+                color: '#0f172a',
+                marginBottom: '8px'
+              }}>
                 Loading...
               </div>
-              <div style={{ fontSize: "14px", color: "#9ca3af" }}>
+              <div style={{
+                fontSize: '14px',
+                color: '#64748b'
+              }}>
                 Fetching import sessions
               </div>
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <div style={headerStyle}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: "32px", color: "#3b82f6" }}
-          >
-            upload_file
-          </span>
-          <div>
-            <h1
-              style={{
-                fontSize: "30px",
-                fontWeight: "bold",
-                color: "#1a1a1a",
-                margin: "0 0 4px 0",
-              }}
-            >
-              Bank Import
+    <div style={pageStyle}>
+      <div style={containerStyle}>
+        {/* Header */}
+        <div style={{ marginBottom: '40px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              backgroundColor: '#0f172a',
+              borderRadius: '8px'
+            }}>
+              <Building2 size={18} color="#ffffff" strokeWidth={2} />
+            </div>
+            <h1 style={{
+              fontSize: '28px',
+              fontWeight: '600',
+              color: '#0f172a',
+              margin: '0',
+              letterSpacing: '-0.025em'
+            }}>
+              Bank Statement Import
             </h1>
-            <p style={{ color: "#6b7280", margin: 0, fontSize: "16px" }}>
-              Import bank statements and detect recurring payments
-            </p>
           </div>
+          <p style={{
+            fontSize: '16px',
+            color: '#64748b',
+            fontWeight: '400',
+            margin: '0',
+            lineHeight: '1.5'
+          }}>
+            Import bank statements and detect recurring payments
+          </p>
         </div>
-      </div>
-
-      <div style={contentStyle}>
         {error && (
-          <div
-            style={{
-              backgroundColor: "#fef2f2",
-              border: "1px solid #fecaca",
-              borderRadius: "8px",
-              padding: "16px",
-              marginBottom: "20px",
-              color: "#dc2626",
-            }}
-          >
-            <strong>Error:</strong> {error}
+          <div style={{
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <AlertTriangle size={20} color="#dc2626" strokeWidth={1.5} />
+            <div>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#dc2626',
+                marginBottom: '4px',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                Error
+              </div>
+              <div style={{
+                fontSize: '14px',
+                color: '#dc2626',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                {error}
+              </div>
+            </div>
           </div>
         )}
 
         {/* Upload Section */}
         <div style={cardStyle}>
-          <h3
-            style={{
-              fontSize: "18px",
-              fontWeight: "600",
-              color: "#1a1a1a",
-              marginBottom: "16px",
-            }}
-          >
-            Upload Bank Statement
-          </h3>
-          <p
-            style={{ fontSize: "14px", color: "#6b7280", marginBottom: "16px" }}
-          >
-            Upload a PDF bank statement to automatically detect recurring
-            payments like utilities, subscriptions, and council tax.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+            <Upload size={20} color="#0f172a" strokeWidth={1.5} />
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: '600',
+              color: '#0f172a',
+              margin: '0'
+            }}>
+              Upload Bank Statement
+            </h3>
+          </div>
+          <p style={{
+            fontSize: '16px',
+            color: '#64748b',
+            marginBottom: '24px',
+            lineHeight: '1.5'
+          }}>
+            Upload a PDF bank statement to automatically detect recurring payments like utilities, subscriptions, and council tax.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "16px",
-              marginBottom: "16px",
-            }}
-          >
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            marginBottom: '20px'
+          }}>
             <input
               type="file"
               accept=".pdf"
               onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
               style={{
-                padding: "8px 12px",
-                borderRadius: "6px",
-                border: "1px solid #e5e7eb",
-                fontSize: "14px",
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1px solid #e2e8f0',
+                fontSize: '14px',
                 flex: 1,
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                backgroundColor: '#ffffff'
               }}
             />
             <button
               style={
                 selectedFile
                   ? primaryButtonStyle
-                  : { ...buttonStyle, cursor: "not-allowed", opacity: 0.5 }
+                  : { ...buttonStyle, cursor: 'not-allowed', opacity: 0.5 }
               }
               onClick={handleFileUpload}
               disabled={!selectedFile || uploading}
             >
-              {uploading ? "Uploading..." : "Upload Statement"}
+              {uploading ? 'Uploading...' : 'Upload Statement'}
             </button>
           </div>
 
-          {/* Demo notice */}
-          <div
-            style={{
-              backgroundColor: "#f0f9ff",
-              border: "1px solid #bfdbfe",
-              borderRadius: "6px",
-              padding: "12px",
-              fontSize: "14px",
-              color: "#1e40af",
-            }}
-          >
-            <strong>Demo Mode:</strong> Upload a PDF bank statement to
-            automatically detect recurring payments like British Gas, Council
-            Tax, Netflix, and more. The system supports major UK banks including
-            NatWest, Barclays, and HSBC.
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            border: '1px solid #bae6fd',
+            borderRadius: '12px',
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px'
+          }}>
+            <TrendingUp size={20} color="#0ea5e9" strokeWidth={1.5} />
+            <div>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#0ea5e9',
+                marginBottom: '4px',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                Auto-Detection
+              </div>
+              <div style={{
+                fontSize: '14px',
+                color: '#0ea5e9',
+                lineHeight: '1.4',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                System supports major UK banks including NatWest, Barclays, and HSBC. Automatically detects British Gas, Council Tax, Netflix, and more.
+              </div>
+            </div>
           </div>
 
           {selectedFile && (
-            <div style={{ fontSize: "12px", color: "#6b7280" }}>
-              Selected: {selectedFile.name} (
-              {Math.round(selectedFile.size / 1024)} KB)
+            <div style={{
+              fontSize: '12px',
+              color: '#64748b',
+              marginTop: '12px',
+              padding: '8px 12px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+            }}>
+              Selected: {selectedFile.name} ({Math.round(selectedFile.size / 1024)} KB)
             </div>
           )}
         </div>
 
         {/* Import Sessions */}
         <div style={cardStyle}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#1a1a1a",
-                margin: 0,
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '24px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <FileText size={20} color="#0f172a" strokeWidth={1.5} />
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '600',
+                color: '#0f172a',
+                margin: '0'
+              }}>
+                Import Sessions
+              </h3>
+            </div>
+            <button 
+              style={buttonStyle} 
+              onClick={loadSessions}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f8fafc';
+                e.currentTarget.style.borderColor = '#cbd5e1';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ffffff';
+                e.currentTarget.style.borderColor = '#e2e8f0';
               }}
             >
-              Import Sessions
-            </h3>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button style={buttonStyle} onClick={loadSessions}>
-                Refresh
-              </button>
-              <button
-                style={buttonStyle}
-                onClick={async () => {
-                  try {
-                    const response = await fetch("/api/import/sessions", {
-                      credentials: "include",
-                    });
-                    const data = await response.json();
-                    alert(
-                      `API Test: ${
-                        response.ok ? "Success" : "Failed"
-                      }\n${JSON.stringify(data, null, 2)}`
-                    );
-                  } catch (err: any) {
-                    alert(`API Test Failed: ${err.message}`);
-                  }
-                }}
-              >
-                Test API
-              </button>
-            </div>
+              Refresh
+            </button>
           </div>
 
           {sessions.length === 0 ? (
-            <p
-              style={{ color: "#6b7280", textAlign: "center", padding: "40px" }}
-            >
-              No import sessions found. Upload a bank statement to get started.
-            </p>
+            <div style={{
+              textAlign: 'center',
+              padding: '80px 40px',
+              color: '#64748b'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '16px',
+                margin: '0 auto 24px'
+              }}>
+                <FileText size={28} color="#64748b" strokeWidth={1.5} />
+              </div>
+              <p style={{
+                fontSize: '16px',
+                fontWeight: '500',
+                margin: '0',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                No import sessions found. Upload a bank statement to get started.
+              </p>
+            </div>
           ) : (
-            <div style={{ display: "grid", gap: "16px" }}>
+            <div style={{ display: 'grid', gap: '20px' }}>
               {sessions.map((session) => (
                 <div
                   key={session._id}
                   style={{
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                    padding: "16px",
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '16px',
+                    padding: '24px',
+                    backgroundColor: '#ffffff',
+                    boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.05)'
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "12px",
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                      marginBottom: '16px'
                     }}
                   >
                     <div>
-                      <h4
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: "500",
-                          color: "#1a1a1a",
-                          margin: "0 0 4px 0",
-                        }}
-                      >
-                        {session.filename}
-                      </h4>
-                      <p
-                        style={{
-                          fontSize: "12px",
-                          color: "#6b7280",
-                          margin: 0,
-                        }}
-                      >
-                        Uploaded:{" "}
-                        {new Date(session.createdAt).toLocaleDateString(
-                          "en-GB"
+                      <div>
+                        <h4 style={{
+                          fontSize: '18px',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          margin: '0 0 8px 0',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
+                          {session.filename}
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '4px'
+                        }}>
+                          <Calendar size={14} color="#64748b" strokeWidth={1.5} />
+                          <span style={{
+                            fontSize: '14px',
+                            color: '#64748b',
+                            fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                          }}>
+                            {new Date(session.createdAt).toLocaleDateString('en-GB')}
+                          </span>
+                        </div>
+                        {session.bank_name && (
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                          }}>
+                            <Building2 size={14} color="#64748b" strokeWidth={1.5} />
+                            <span style={{
+                              fontSize: '14px',
+                              color: '#64748b',
+                              fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                            }}>
+                              {session.bank_name}
+                            </span>
+                          </div>
                         )}
-                        {session.bank_name && ` • ${session.bank_name}`}
-                      </p>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <span
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        backgroundColor: `${getStatusColor(session.status)}15`,
+                        color: getStatusColor(session.status),
+                        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                      }}>
+                        {getStatusIcon(session.status)}
+                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                      </div>
+                      <button
                         style={{
-                          padding: "4px 8px",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          backgroundColor: `${getStatusColor(
-                            session.status
-                          )}20`,
-                          color: getStatusColor(session.status),
+                          ...dangerButtonStyle,
+                          padding: '8px 12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                        onClick={() => deleteSession(session._id)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#b91c1c';
+                          e.currentTarget.style.borderColor = '#b91c1c';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#dc2626';
+                          e.currentTarget.style.borderColor = '#dc2626';
                         }}
                       >
-                        {session.status.charAt(0).toUpperCase() +
-                          session.status.slice(1)}
-                      </span>
-                      <button
-                        style={dangerButtonStyle}
-                        onClick={() => deleteSession(session._id)}
-                      >
+                        <Trash2 size={14} strokeWidth={1.5} />
                         Delete
                       </button>
                     </div>
                   </div>
 
                   {session.statistics && (
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(120px, 1fr))",
-                        gap: "12px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "8px",
-                          backgroundColor: "#f8fafc",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "600",
-                            color: "#1a1a1a",
-                          }}
-                        >
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                      gap: '16px',
+                      marginBottom: '20px'
+                    }}>
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '12px',
+                        border: '1px solid #f1f5f9'
+                      }}>
+                        <div style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          marginBottom: '4px',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           {session.statistics.total_transactions}
                         </div>
-                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#64748b',
+                          fontWeight: '500',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           Transactions
                         </div>
                       </div>
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "8px",
-                          backgroundColor: "#f8fafc",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "600",
-                            color: "#10b981",
-                          }}
-                        >
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '16px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '12px',
+                        border: '1px solid #dcfce7'
+                      }}>
+                        <div style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: '#059669',
+                          marginBottom: '4px',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           {session.statistics.recurring_detected}
                         </div>
-                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#16a34a',
+                          fontWeight: '500',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           Recurring
                         </div>
                       </div>
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "8px",
-                          backgroundColor: "#f8fafc",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "600",
-                            color: "#ef4444",
-                          }}
-                        >
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '16px',
+                        backgroundColor: '#fef2f2',
+                        borderRadius: '12px',
+                        border: '1px solid #fecaca'
+                      }}>
+                        <div style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: '#dc2626',
+                          marginBottom: '4px',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           {formatCurrency(session.statistics.total_debits)}
                         </div>
-                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#dc2626',
+                          fontWeight: '500',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           Debits
                         </div>
                       </div>
-                      <div
-                        style={{
-                          textAlign: "center",
-                          padding: "8px",
-                          backgroundColor: "#f8fafc",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "600",
-                            color: "#10b981",
-                          }}
-                        >
+                      <div style={{
+                        textAlign: 'center',
+                        padding: '16px',
+                        backgroundColor: '#f0fdf4',
+                        borderRadius: '12px',
+                        border: '1px solid #dcfce7'
+                      }}>
+                        <div style={{
+                          fontSize: '20px',
+                          fontWeight: '600',
+                          color: '#059669',
+                          marginBottom: '4px',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           {formatCurrency(session.statistics.total_credits)}
                         </div>
-                        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#16a34a',
+                          fontWeight: '500',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           Credits
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Debug Raw Session Data */}
-                  <div style={{ marginBottom: "16px" }}>
-                    <h5
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#1a1a1a",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Debug: Raw Session Data
-                    </h5>
-                    <div
-                      style={{
-                        backgroundColor: "#f8fafc",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "4px",
-                        padding: "12px",
-                        fontSize: "11px",
-                        fontFamily: "monospace",
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                      }}
-                    >
-                      <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-                        {JSON.stringify(session, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
 
                   {/* All Parsed Transactions Table */}
                   {transactionData[session._id] && (
                     <div style={{ marginBottom: "20px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                        <h5
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#1a1a1a",
-                            margin: 0,
-                          }}
-                        >
-                          All Parsed Transactions (
-                          {transactionData[session._id].transaction_count} total)
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                        <h5 style={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          margin: '0',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
+                          All Parsed Transactions ({transactionData[session._id].transaction_count} total)
                         </h5>
                         {selectedTransactions[session._id] && selectedTransactions[session._id].size > 0 && (
                           <button
                             style={{
                               ...primaryButtonStyle,
-                              fontSize: "12px",
-                              padding: "6px 12px",
+                              fontSize: '13px',
+                              padding: '8px 16px'
                             }}
                             onClick={() => handleBulkCreateEntries(session._id)}
                           >
@@ -878,38 +1021,33 @@ export default function BankImport() {
                           </button>
                         )}
                       </div>
-                      <div
-                        style={{
-                          border: "1px solid #e5e7eb",
-                          borderRadius: "6px",
-                          overflow: "hidden",
-                          maxHeight: "400px",
-                          overflowY: "auto",
-                        }}
-                      >
-                        <table
-                          style={{
-                            width: "100%",
-                            fontSize: "12px",
-                            borderCollapse: "collapse",
-                          }}
-                        >
+                      <div style={{
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        maxHeight: '500px',
+                        overflowY: 'auto',
+                        backgroundColor: '#ffffff'
+                      }}>
+                        <table style={{
+                          width: '100%',
+                          fontSize: '13px',
+                          borderCollapse: 'collapse',
+                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                        }}>
                           <thead>
-                            <tr
-                              style={{
-                                backgroundColor: "#f8fafc",
-                                borderBottom: "1px solid #e5e7eb",
-                              }}
-                            >
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "center",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                  width: "40px",
-                                }}
-                              >
+                            <tr style={{
+                              backgroundColor: '#f8fafc',
+                              borderBottom: '1px solid #e2e8f0'
+                            }}>
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'center',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                width: '48px',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 <input
                                   type="checkbox"
                                   checked={
@@ -918,59 +1056,54 @@ export default function BankImport() {
                                     transactionData[session._id].transactions.length > 0
                                   }
                                   onChange={() => toggleSelectAll(session._id)}
-                                  style={{ cursor: "pointer" }}
+                                  style={{ cursor: 'pointer' }}
                                 />
                               </th>
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "left",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                }}
-                              >
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 Date
                               </th>
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "left",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                }}
-                              >
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 Description
                               </th>
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "right",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                }}
-                              >
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'right',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 Amount
                               </th>
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "left",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                  fontSize: "11px",
-                                }}
-                              >
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'left',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                fontSize: '12px',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 Original Text
                               </th>
-                              <th
-                                style={{
-                                  padding: "8px 12px",
-                                  textAlign: "center",
-                                  fontWeight: "600",
-                                  color: "#374151",
-                                  width: "120px",
-                                }}
-                              >
+                              <th style={{
+                                padding: '12px 16px',
+                                textAlign: 'center',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                width: '140px',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
                                 Actions
                               </th>
                             </tr>
@@ -990,104 +1123,96 @@ export default function BankImport() {
                                   <tr
                                     key={txIndex}
                                     style={{ 
-                                      borderBottom: "1px solid #f3f4f6",
-                                      backgroundColor: isSelected ? "#f0f9ff" : isProcessed ? "#f8fafc" : "transparent"
+                                      borderBottom: '1px solid #f1f5f9',
+                                      backgroundColor: isSelected ? '#f0f9ff' : isProcessed ? '#f8fafc' : 'transparent',
+                                      transition: 'background-color 0.2s ease'
                                     }}
                                   >
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        textAlign: "center",
-                                      }}
-                                    >
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      textAlign: 'center'
+                                    }}>
                                       <input
                                         type="checkbox"
                                         checked={isSelected}
                                         onChange={() => toggleTransactionSelection(session._id, txIndex)}
                                         disabled={isProcessed}
-                                        style={{ cursor: isProcessed ? "not-allowed" : "pointer" }}
+                                        style={{ cursor: isProcessed ? 'not-allowed' : 'pointer' }}
                                       />
                                     </td>
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        color: "#374151",
-                                      }}
-                                    >
-                                      {new Date(
-                                        transaction.date
-                                      ).toLocaleDateString("en-GB")}
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      color: '#334155',
+                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                    }}>
+                                      {new Date(transaction.date).toLocaleDateString('en-GB')}
                                     </td>
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        color: "#374151",
-                                        maxWidth: "200px",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          fontSize: "11px",
-                                          color: "#6b7280",
-                                          wordWrap: "break-word",
-                                        }}
-                                      >
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      color: '#334155',
+                                      maxWidth: '240px'
+                                    }}>
+                                      <div style={{
+                                        fontSize: '13px',
+                                        color: '#64748b',
+                                        wordWrap: 'break-word',
+                                        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                      }}>
                                         {transaction.description}
                                       </div>
                                     </td>
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        textAlign: "right",
-                                        fontWeight: "500",
-                                        color:
-                                          transaction.amount < 0
-                                            ? "#dc2626"
-                                            : "#059669",
-                                      }}
-                                    >
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      textAlign: 'right',
+                                      fontWeight: '600',
+                                      color: transaction.amount < 0 ? '#dc2626' : '#059669',
+                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                    }}>
                                       {formatCurrency(transaction.amount)}
                                     </td>
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        fontSize: "10px",
-                                        color: "#6b7280",
-                                        maxWidth: "150px",
-                                        wordWrap: "break-word",
-                                        fontFamily: "monospace",
-                                      }}
-                                    >
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      fontSize: '11px',
+                                      color: '#64748b',
+                                      maxWidth: '180px',
+                                      wordWrap: 'break-word',
+                                      fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
+                                    }}>
                                       {transaction.originalText}
                                     </td>
-                                    <td
-                                      style={{
-                                        padding: "6px 12px",
-                                        textAlign: "center",
-                                      }}
-                                    >
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      textAlign: 'center'
+                                    }}>
                                       {isProcessed ? (
-                                        <span
-                                          style={{
-                                            padding: "2px 6px",
-                                            borderRadius: "4px",
-                                            fontSize: "10px",
-                                            fontWeight: "500",
-                                            backgroundColor: "#10b98120",
-                                            color: "#10b981",
-                                          }}
-                                        >
+                                        <span style={{
+                                          padding: '4px 8px',
+                                          borderRadius: '6px',
+                                          fontSize: '11px',
+                                          fontWeight: '500',
+                                          backgroundColor: '#dcfce7',
+                                          color: '#16a34a',
+                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                        }}>
                                           Entry Created
                                         </span>
                                       ) : (
                                         <button
                                           style={{
                                             ...primaryButtonStyle,
-                                            fontSize: "10px",
-                                            padding: "4px 8px",
-                                            marginRight: 0,
+                                            fontSize: '11px',
+                                            padding: '6px 12px',
+                                            marginRight: 0
                                           }}
                                           onClick={() => handleCreateEntry(session._id, txIndex)}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#1e293b';
+                                            e.currentTarget.style.borderColor = '#1e293b';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#0f172a';
+                                            e.currentTarget.style.borderColor = '#0f172a';
+                                          }}
                                         >
                                           Create Entry
                                         </button>
@@ -1102,71 +1227,70 @@ export default function BankImport() {
                     </div>
                   )}
 
-                  {session.recurring_payments &&
-                    session.recurring_payments.length > 0 && (
-                      <div>
-                        <h5
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#1a1a1a",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          Recurring Payment Suggestions
-                        </h5>
-                        <div style={{ display: "grid", gap: "8px" }}>
+                  {session.recurring_payments && session.recurring_payments.length > 0 && (
+                      <div style={{ marginTop: '24px' }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          marginBottom: '16px'
+                        }}>
+                          <TrendingUp size={18} color="#0f172a" strokeWidth={1.5} />
+                          <h5 style={{
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: '#0f172a',
+                            margin: '0',
+                            fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                          }}>
+                            Recurring Payment Suggestions
+                          </h5>
+                        </div>
+                        <div style={{ display: 'grid', gap: '12px' }}>
                           {session.recurring_payments.map(
                             (suggestion, index) => (
                               <div
                                 key={index}
                                 style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                  padding: "8px 12px",
-                                  backgroundColor: "#f8fafc",
-                                  borderRadius: "4px",
-                                  border: "1px solid #e5e7eb",
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  padding: '16px 20px',
+                                  backgroundColor: '#f8fafc',
+                                  borderRadius: '12px',
+                                  border: '1px solid #e2e8f0'
                                 }}
                               >
                                 <div style={{ flex: 1 }}>
-                                  <div
-                                    style={{
-                                      fontWeight: "500",
-                                      fontSize: "14px",
-                                      color: "#1a1a1a",
-                                    }}
-                                  >
+                                  <div style={{
+                                    fontWeight: '600',
+                                    fontSize: '16px',
+                                    color: '#0f172a',
+                                    marginBottom: '4px',
+                                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                  }}>
                                     {suggestion.payee}
                                   </div>
-                                  <div
-                                    style={{
-                                      fontSize: "12px",
-                                      color: "#6b7280",
-                                    }}
-                                  >
-                                    {suggestion.category} •{" "}
-                                    {suggestion.frequency} •{" "}
-                                    {formatCurrency(suggestion.amount)} •{" "}
-                                    {Math.round(suggestion.confidence * 100)}%
-                                    confident •{" "}
-                                    {suggestion.transactions?.length || 0}{" "}
-                                    transactions
+                                  <div style={{
+                                    fontSize: '13px',
+                                    color: '#64748b',
+                                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                  }}>
+                                    {suggestion.category} • {suggestion.frequency} • {formatCurrency(suggestion.amount)} • {Math.round(suggestion.confidence * 100)}% confident • {suggestion.transactions?.length || 0} transactions
                                   </div>
                                 </div>
-                                <div style={{ display: "flex", gap: "4px" }}>
+                                <div style={{ display: 'flex', gap: '8px' }}>
                                   {suggestion.status === "pending" && (
                                     <>
                                       <button
                                         style={{
                                           ...primaryButtonStyle,
-                                          fontSize: "12px",
-                                          padding: "4px 8px",
+                                          fontSize: '12px',
+                                          padding: '8px 16px'
                                         }}
                                         onClick={() =>
                                           confirmSuggestions(session._id, [
-                                            { index, action: "accept" },
+                                            { index, action: 'accept' }
                                           ])
                                         }
                                       >
@@ -1175,12 +1299,12 @@ export default function BankImport() {
                                       <button
                                         style={{
                                           ...buttonStyle,
-                                          fontSize: "12px",
-                                          padding: "4px 8px",
+                                          fontSize: '12px',
+                                          padding: '8px 16px'
                                         }}
                                         onClick={() =>
                                           confirmSuggestions(session._id, [
-                                            { index, action: "reject" },
+                                            { index, action: 'reject' }
                                           ])
                                         }
                                       >
@@ -1189,26 +1313,16 @@ export default function BankImport() {
                                     </>
                                   )}
                                   {suggestion.status !== "pending" && (
-                                    <span
-                                      style={{
-                                        padding: "4px 8px",
-                                        borderRadius: "4px",
-                                        fontSize: "10px",
-                                        fontWeight: "500",
-                                        backgroundColor:
-                                          suggestion.status === "accepted"
-                                            ? "#10b98120"
-                                            : "#f59e0b20",
-                                        color:
-                                          suggestion.status === "accepted"
-                                            ? "#10b981"
-                                            : "#f59e0b",
-                                      }}
-                                    >
-                                      {suggestion.status
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                        suggestion.status.slice(1)}
+                                    <span style={{
+                                      padding: '6px 12px',
+                                      borderRadius: '8px',
+                                      fontSize: '12px',
+                                      fontWeight: '500',
+                                      backgroundColor: suggestion.status === 'accepted' ? '#dcfce7' : '#fef3c7',
+                                      color: suggestion.status === 'accepted' ? '#16a34a' : '#d97706',
+                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                    }}>
+                                      {suggestion.status.charAt(0).toUpperCase() + suggestion.status.slice(1)}
                                     </span>
                                   )}
                                 </div>
@@ -1235,6 +1349,6 @@ export default function BankImport() {
         }}
         transaction={createEntryModal.transaction}
       />
-    </>
+    </div>
   );
 }
