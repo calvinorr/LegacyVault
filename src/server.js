@@ -10,6 +10,8 @@ const db = require('./db');
 const { configurePassport, router: authRouter } = require('./auth/google');
 const usersRouter = require('./routes/users');
 const entriesRouter = require('./routes/entries');
+const documentsRouter = require('./routes/documents');
+const contactsRouter = require('./routes/contacts');
 const importRouter = require('./routes/import');
 const detectionRulesRouter = require('./routes/detectionRules');
 const categoriesRouter = require('./routes/categories');
@@ -91,6 +93,12 @@ app.use('/api/users', usersRouter);
 
 // Entry CRUD API
 app.use('/api/entries', entriesRouter);
+
+// Documents API
+app.use('/api/documents', documentsRouter);
+
+// Contacts API
+app.use('/api/contacts', contactsRouter);
 
 // Bank Import API
 app.use('/api/import', importRouter);
