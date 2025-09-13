@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FolderOpen, Plus, Trash2, AlertTriangle, BarChart3, Folder, FolderTree, Tags } from 'lucide-react';
 import CategoryTree from "./CategoryTree";
 import CategoryForm from "./CategoryForm";
+import { useCategories } from "../hooks/useCategories";
 import {
   getCategories,
   createCategory,
@@ -19,7 +20,7 @@ import type {
 type ViewMode = "list" | "add" | "edit" | "delete";
 
 const CategoryManagement: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, loading: categoriesLoading, clearCache } = useCategories();
   const [stats, setStats] = useState<CategoryStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -38,12 +39,7 @@ const CategoryManagement: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [categoriesData, statsData] = await Promise.all([
-        getCategories(),
-        getCategoryStats(),
-      ]);
-
-      setCategories(categoriesData.categories);
+      const statsData = await getCategoryStats();
       setStats(statsData);
       setError(null);
     } catch (err: any) {
@@ -57,7 +53,7 @@ const CategoryManagement: React.FC = () => {
     try {
       setActionLoading(true);
       await createCategory(data);
-      await loadData();
+      await Promise.all([clearCache(), loadData()]);
       setViewMode("list");
       setParentForNewCategory(null);
     } catch (err: any) {
@@ -73,7 +69,7 @@ const CategoryManagement: React.FC = () => {
     try {
       setActionLoading(true);
       await updateCategory(selectedCategory._id, data);
-      await loadData();
+      await Promise.all([clearCache(), loadData()]);
       setViewMode("list");
       setSelectedCategory(null);
     } catch (err: any) {
@@ -89,7 +85,7 @@ const CategoryManagement: React.FC = () => {
     try {
       setActionLoading(true);
       await deleteCategory(selectedCategory._id, deleteChildren);
-      await loadData();
+      await Promise.all([clearCache(), loadData()]);
       setViewMode("list");
       setSelectedCategory(null);
     } catch (err: any) {
@@ -218,7 +214,7 @@ const CategoryManagement: React.FC = () => {
     color: '#64748b'
   };
 
-  if (loading) {
+  if (loading || categoriesLoading) {
     return (
       <div style={sectionStyle}>
         <div style={loadingStyle}>

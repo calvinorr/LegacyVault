@@ -6,6 +6,8 @@ import EntryDetail from "./pages/EntryDetail";
 import AuthRedirect from "./pages/AuthRedirect";
 import Login from "./pages/Login";
 import Accounts from "./pages/Accounts";
+import Bills from "./pages/Bills";
+import Categories from "./pages/Categories";
 import Contacts from "./pages/Contacts";
 import Documents from "./pages/Documents";
 import Settings from "./pages/Settings";
@@ -44,6 +46,22 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <Accounts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bills"
+          element={
+            <ProtectedRoute>
+              <Bills />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <ProtectedRoute>
+              <Categories />
             </ProtectedRoute>
           }
         />

@@ -1,4 +1,11 @@
 // Authentication middleware
+function authenticateToken(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ error: 'Unauthorized' });
+}
+
 function requireAuth(req, res, next) {
   if (req.user && req.user.approved) {
     return next();
@@ -20,6 +27,7 @@ function requireAdmin(req, res, next) {
 }
 
 module.exports = {
+  authenticateToken,
   requireAuth,
   requireAdmin
 };

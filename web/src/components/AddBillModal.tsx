@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createEntry } from "../api";
-import { useCategories } from "../hooks/useCategories";
+import CategorySelector from "./CategorySelector";
 
 interface AddBillModalProps {
   isOpen: boolean;
@@ -25,10 +25,28 @@ interface FormData {
   notes: string;
   confidential: boolean;
   // Categorization fields
-  category: string;
-  subCategory: string;
+  categoryId: string;
   supplier: string;
   tags: string[];
+  // Enhanced renewal tracking fields
+  renewalInfo: {
+    startDate: string;
+    endDate: string;
+    reviewDate: string;
+    noticeDate: string;
+    productType: string;
+    productCategory: string;
+    endDateType: string;
+    renewalCycle: string;
+    isAutoRenewal: boolean;
+    requiresAction: boolean;
+    noticePeriod: string;
+    reminderDays: string;
+    urgencyLevel: string;
+    regulatoryType: string;
+    complianceNotes: string;
+    isActive: boolean;
+  };
 }
 
 const initialFormData: FormData = {
@@ -48,10 +66,28 @@ const initialFormData: FormData = {
   notes: "",
   confidential: true,
   // Categorization fields
-  category: "Bills",
-  subCategory: "",
+  categoryId: "",
   supplier: "",
   tags: [],
+  // Enhanced renewal tracking fields
+  renewalInfo: {
+    startDate: "",
+    endDate: "",
+    reviewDate: "",
+    noticeDate: "",
+    productType: "",
+    productCategory: "",
+    endDateType: "hard_end",
+    renewalCycle: "annual",
+    isAutoRenewal: false,
+    requiresAction: true,
+    noticePeriod: "",
+    reminderDays: "30,7",
+    urgencyLevel: "important",
+    regulatoryType: "",
+    complianceNotes: "",
+    isActive: false,
+  },
 };
 
 export default function AddBillModal({
@@ -62,7 +98,6 @@ export default function AddBillModal({
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { getRootCategories, loading: categoriesLoading, isUsingFallback, error: categoriesError } = useCategories();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,10 +113,19 @@ export default function AddBillModal({
         notes: formData.notes,
         confidential: formData.confidential,
         // Categorization fields
-        category: formData.category,
-        subCategory: formData.subCategory,
+        categoryId: formData.categoryId,
         supplier: formData.supplier,
         tags: formData.tags,
+        // Enhanced renewal tracking
+        renewalInfo: formData.renewalInfo.isActive ? {
+          ...formData.renewalInfo,
+          startDate: formData.renewalInfo.startDate ? new Date(formData.renewalInfo.startDate) : undefined,
+          endDate: formData.renewalInfo.endDate ? new Date(formData.renewalInfo.endDate) : undefined,
+          reviewDate: formData.renewalInfo.reviewDate ? new Date(formData.renewalInfo.reviewDate) : undefined,
+          noticeDate: formData.renewalInfo.noticeDate ? new Date(formData.renewalInfo.noticeDate) : undefined,
+          noticePeriod: formData.renewalInfo.noticePeriod ? parseInt(formData.renewalInfo.noticePeriod) : undefined,
+          reminderDays: formData.renewalInfo.reminderDays.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d)),
+        } : undefined,
       };
 
       await createEntry(payload);
@@ -112,6 +156,19 @@ export default function AddBillModal({
       ...prev,
       accountDetails: {
         ...prev.accountDetails,
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleRenewalInfoChange = (
+    field: keyof FormData["renewalInfo"],
+    value: any
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      renewalInfo: {
+        ...prev.renewalInfo,
         [field]: value,
       },
     }));
@@ -164,41 +221,6 @@ export default function AddBillModal({
     "As Required",
   ];
 
-  const getCategoryOptions = () => {
-    const rootCategories = getRootCategories();
-    return rootCategories.map(category => category.name);
-  };
-
-  const getSubCategoryOptions = (category: string) => {
-    switch (category) {
-      case "Insurance":
-        return [
-          "Home Insurance",
-          "Car Insurance",
-          "Life Insurance",
-          "Travel Insurance",
-          "Health Insurance",
-        ];
-      case "Bills":
-        return [
-          "Energy",
-          "Water",
-          "Council Services",
-          "Communications",
-          "Entertainment",
-        ];
-      case "Subscriptions":
-        return [
-          "Streaming",
-          "Software",
-          "Fitness",
-          "News & Media",
-          "Cloud Storage",
-        ];
-      default:
-        return [];
-    }
-  };
 
   const getCommonSuppliers = () => [
     "Sky",
@@ -482,45 +504,17 @@ export default function AddBillModal({
                   }}
                 >
                   Category
-                  {categoriesLoading && (
-                    <span style={{ color: "#6b7280", fontWeight: "normal" }}> (loading...)</span>
-                  )}
                 </label>
-                <select
-                  id="category-select"
-                  value={formData.category}
-                  onChange={(e) =>
-                    handleInputChange("category", e.target.value)
-                  }
+                <CategorySelector
+                  value={formData.categoryId}
+                  onChange={(categoryId) => handleInputChange("categoryId", categoryId)}
+                  placeholder="Select category"
                   style={{
-                    ...selectStyle,
-                    opacity: categoriesLoading ? 0.6 : 1,
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                    fontSize: '15px',
+                    marginBottom: '16px'
                   }}
-                  disabled={categoriesLoading}
-                >
-                  {categoriesLoading ? (
-                    <option value="">Loading categories...</option>
-                  ) : categoriesError && !isUsingFallback ? (
-                    <option value="">Failed to load categories</option>
-                  ) : (
-                    getCategoryOptions().map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))
-                  )}
-                </select>
-                {isUsingFallback && (
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      color: "#f59e0b",
-                      marginTop: "4px",
-                    }}
-                  >
-                    Using offline categories
-                  </p>
-                )}
+                />
               </div>
             </div>
 
@@ -678,24 +672,32 @@ export default function AddBillModal({
                     marginBottom: "4px",
                   }}
                 >
-                  Sub-Category
+                  Supplier Group
                 </label>
                 <select
-                  value={formData.subCategory}
+                  value={formData.supplier}
                   onChange={(e) =>
-                    handleInputChange("subCategory", e.target.value)
+                    handleInputChange("supplier", e.target.value)
                   }
                   style={selectStyle}
                 >
-                  <option value="">Select sub-category</option>
-                  {getSubCategoryOptions(formData.category).map(
-                    (subCategory) => (
-                      <option key={subCategory} value={subCategory}>
-                        {subCategory}
-                      </option>
-                    )
-                  )}
+                  <option value="">Select supplier group (optional)</option>
+                  {getCommonSuppliers().map((supplier) => (
+                    <option key={supplier} value={supplier}>
+                      {supplier}
+                    </option>
+                  ))}
                 </select>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#6b7280",
+                    marginTop: "4px",
+                  }}
+                >
+                  Group services by the same company (e.g., Sky for both TV and
+                  Mobile)
+                </p>
               </div>
             </div>
 
@@ -757,62 +759,275 @@ export default function AddBillModal({
               </div>
             </div>
 
-            {/* Additional Information Section */}
-            <div
-              style={{
-                borderTop: "1px solid #e5e7eb",
-                paddingTop: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              <h3
-                style={{
+            {/* Enhanced Renewal Tracking Section */}
+            <div style={{
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "8px",
+              padding: "20px",
+              marginBottom: "20px"
+            }}>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "16px"
+              }}>
+                <input
+                  type="checkbox"
+                  id="renewal-tracking"
+                  checked={formData.renewalInfo.isActive}
+                  onChange={(e) => handleRenewalInfoChange("isActive", e.target.checked)}
+                  style={{ width: "16px", height: "16px", marginRight: "8px" }}
+                />
+                <label htmlFor="renewal-tracking" style={{
                   fontSize: "16px",
                   fontWeight: "600",
-                  color: "#1a1a1a",
-                  margin: "0 0 16px 0",
-                }}
-              >
-                Additional Information
-              </h3>
-
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                    marginBottom: "4px",
-                  }}
-                >
-                  Supplier Group
+                  color: "#1a202c",
+                  cursor: "pointer"
+                }}>
+                  Enable Renewal Tracking
                 </label>
-                <select
-                  value={formData.supplier}
-                  onChange={(e) =>
-                    handleInputChange("supplier", e.target.value)
-                  }
-                  style={selectStyle}
-                >
-                  <option value="">Select supplier group (optional)</option>
-                  {getCommonSuppliers().map((supplier) => (
-                    <option key={supplier} value={supplier}>
-                      {supplier}
-                    </option>
-                  ))}
-                </select>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#6b7280",
-                    marginTop: "4px",
-                  }}
-                >
-                  Group services by the same company (e.g., Sky for both TV and
-                  Mobile)
-                </p>
               </div>
+
+              {formData.renewalInfo.isActive && (
+                <>
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "16px",
+                    marginBottom: "16px"
+                  }}>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.renewalInfo.startDate}
+                        onChange={(e) => handleRenewalInfoChange("startDate", e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        End/Renewal Date *
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.renewalInfo.endDate}
+                        onChange={(e) => handleRenewalInfoChange("endDate", e.target.value)}
+                        required={formData.renewalInfo.isActive}
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Review Date
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.renewalInfo.reviewDate}
+                        onChange={(e) => handleRenewalInfoChange("reviewDate", e.target.value)}
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "16px",
+                    marginBottom: "16px"
+                  }}>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        End Date Type
+                      </label>
+                      <select
+                        value={formData.renewalInfo.endDateType}
+                        onChange={(e) => handleRenewalInfoChange("endDateType", e.target.value)}
+                        style={selectStyle}
+                      >
+                        <option value="hard_end">Contract End</option>
+                        <option value="auto_renewal">Auto-Renewal</option>
+                        <option value="review_date">Review Date</option>
+                        <option value="expiry_date">Expiry Date</option>
+                        <option value="notice_deadline">Notice Deadline</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Renewal Cycle
+                      </label>
+                      <select
+                        value={formData.renewalInfo.renewalCycle}
+                        onChange={(e) => handleRenewalInfoChange("renewalCycle", e.target.value)}
+                        style={selectStyle}
+                      >
+                        <option value="annual">Annual</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="one_time">One Time</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Urgency Level
+                      </label>
+                      <select
+                        value={formData.renewalInfo.urgencyLevel}
+                        onChange={(e) => handleRenewalInfoChange("urgencyLevel", e.target.value)}
+                        style={selectStyle}
+                      >
+                        <option value="critical">Critical</option>
+                        <option value="important">Important</option>
+                        <option value="strategic">Strategic</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "16px",
+                    marginBottom: "16px"
+                  }}>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Notice Period (days)
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.renewalInfo.noticePeriod}
+                        onChange={(e) => handleRenewalInfoChange("noticePeriod", e.target.value)}
+                        placeholder="e.g., 30"
+                        style={inputStyle}
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        display: "block",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                        marginBottom: "4px"
+                      }}>
+                        Reminder Days (comma-separated)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.renewalInfo.reminderDays}
+                        onChange={(e) => handleRenewalInfoChange("reminderDays", e.target.value)}
+                        placeholder="e.g., 60,30,14,7"
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{
+                    display: "flex",
+                    gap: "24px",
+                    marginBottom: "16px"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <input
+                        type="checkbox"
+                        id="auto-renewal"
+                        checked={formData.renewalInfo.isAutoRenewal}
+                        onChange={(e) => handleRenewalInfoChange("isAutoRenewal", e.target.checked)}
+                        style={{ width: "16px", height: "16px" }}
+                      />
+                      <label htmlFor="auto-renewal" style={{
+                        fontSize: "14px",
+                        color: "#374151",
+                        cursor: "pointer"
+                      }}>
+                        Auto-Renewal
+                      </label>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <input
+                        type="checkbox"
+                        id="requires-action"
+                        checked={formData.renewalInfo.requiresAction}
+                        onChange={(e) => handleRenewalInfoChange("requiresAction", e.target.checked)}
+                        style={{ width: "16px", height: "16px" }}
+                      />
+                      <label htmlFor="requires-action" style={{
+                        fontSize: "14px",
+                        color: "#374151",
+                        cursor: "pointer"
+                      }}>
+                        Requires Action
+                      </label>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "16px" }}>
+                    <label style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      marginBottom: "4px"
+                    }}>
+                      Compliance Notes
+                    </label>
+                    <textarea
+                      value={formData.renewalInfo.complianceNotes}
+                      onChange={(e) => handleRenewalInfoChange("complianceNotes", e.target.value)}
+                      placeholder="Special compliance requirements, legal obligations, etc."
+                      style={{
+                        ...textareaStyle,
+                        minHeight: "60px"
+                      }}
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             <div style={{ marginBottom: "16px" }}>

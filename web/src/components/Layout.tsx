@@ -4,6 +4,8 @@ import {
   Shield, 
   LayoutDashboard, 
   Wallet, 
+  Receipt,
+  FolderTree,
   Users, 
   FileText, 
   Settings,
@@ -148,6 +150,20 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           >
             <Wallet size={18} strokeWidth={1.5} />
             Accounts
+          </Link>
+          <Link
+            to="/bills"
+            style={navLinkStyle(location.pathname === "/bills")}
+          >
+            <Receipt size={18} strokeWidth={1.5} />
+            Bills
+          </Link>
+          <Link
+            to="/categories"
+            style={navLinkStyle(location.pathname === "/categories")}
+          >
+            <FolderTree size={18} strokeWidth={1.5} />
+            Categories
           </Link>
           <Link
             to="/contacts"

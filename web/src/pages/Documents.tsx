@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FileText, Upload, Grid3X3, List, Search, Filter, Download, Trash2, Eye, Plus, FolderOpen, AlertTriangle } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth";
+import DocumentUploadModal from "../components/DocumentUploadModal";
 
 type Document = {
   _id: string;
@@ -30,6 +31,8 @@ export default function Documents() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   // Redirect non-admin users (if needed)
   if (user && user.role !== "admin" && user.role !== "user") {
@@ -91,8 +94,22 @@ export default function Documents() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to load documents: ${response.statusText}`);
+        // Check if the response is JSON before trying to parse it
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `Failed to load documents: ${response.statusText}`);
+          } catch (jsonError) {
+            throw new Error(`Failed to load documents: ${response.statusText}`);
+          }
+        } else {
+          // If response is not JSON (likely HTML redirect), handle appropriately
+          if (response.status === 401) {
+            throw new Error("Please sign in to access documents");
+          }
+          throw new Error(`Failed to load documents: ${response.statusText}`);
+        }
       }
 
       const data = await response.json();
@@ -108,31 +125,49 @@ export default function Documents() {
 
   const handleFileUpload = async (files: FileList) => {
     if (files.length === 0) return;
+    
+    // Open modal with selected files
+    setSelectedFiles(Array.from(files));
+    setUploadModalOpen(true);
+  };
 
+  const handleModalUpload = async (files: File[], metadata: any) => {
     try {
       setUploading(true);
       setError(null);
+      
+      // Upload files one at a time with metadata
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // Add metadata to form data
+        if (metadata.title) formData.append('title', metadata.title);
+        if (metadata.description) formData.append('description', metadata.description);
+        if (metadata.category) formData.append('category', metadata.category);
+        if (metadata.tags && metadata.tags.length > 0) formData.append('tags', JSON.stringify(metadata.tags));
+        if (metadata.linkedEntryId) formData.append('linkedEntryId', metadata.linkedEntryId);
+        formData.append('confidential', metadata.confidential.toString());
 
-      const formData = new FormData();
-      Array.from(files).forEach((file) => {
-        formData.append('documents', file);
-      });
+        const response = await fetch("/api/documents", {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        });
 
-      const response = await fetch("/api/documents", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Upload failed: ${response.statusText}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Upload failed: ${response.statusText}`);
+        }
       }
 
-      // Refresh documents list
+      // Refresh documents list after all uploads complete
       await loadDocuments();
+      setSelectedFiles([]);
     } catch (err: any) {
-      setError(err.message || "Failed to upload documents");
+      console.error("Error uploading documents:", err);
+      throw err; // Let modal handle the error display
     } finally {
       setUploading(false);
     }
@@ -884,6 +919,14 @@ export default function Documents() {
           )}
         </div>
       </div>
+
+      {/* Document Upload Modal */}
+      <DocumentUploadModal
+        isOpen={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onUpload={handleModalUpload}
+        selectedFiles={selectedFiles}
+      />
     </div>
   );
 }

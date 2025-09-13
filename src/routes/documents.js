@@ -180,18 +180,15 @@ router.get('/', requireAuth, requireApproved, async (req, res) => {
 // Upload and create document
 router.post('/', requireAuth, requireApproved, upload.single('file'), async (req, res) => {
   try {
-    const { title, description, category, tags, confidential, accessLevel } = req.body;
+    const { title, description, category, tags, confidential, accessLevel, linkedEntryId } = req.body;
     
     // Check if file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
     
-    if (!title) {
-      // Clean up uploaded file if validation fails
-      await fs.unlink(req.file.path).catch(console.error);
-      return res.status(400).json({ error: 'Title is required' });
-    }
+    // Auto-generate title from filename if not provided
+    const documentTitle = title?.trim() || req.file.originalname;
     
     // Parse tags if provided as string
     let parsedTags = [];
@@ -204,7 +201,7 @@ router.post('/', requireAuth, requireApproved, upload.single('file'), async (req
     }
     
     const document = await Document.create({
-      title: title.trim(),
+      title: documentTitle,
       description: description ? description.trim() : '',
       category: category || 'Other',
       tags: parsedTags,
@@ -219,7 +216,8 @@ router.post('/', requireAuth, requireApproved, upload.single('file'), async (req
       lastUpdatedBy: req.user._id,
       metadata: {
         uploadedFrom: req.get('User-Agent'),
-        uploadIP: req.ip
+        uploadIP: req.ip,
+        ...(linkedEntryId && { relatedEntryId: linkedEntryId })
       }
     });
     

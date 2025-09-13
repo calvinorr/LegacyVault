@@ -132,4 +132,58 @@ router.delete('/:id', requireAuth, requireApproved, requireOwnerOrAdmin, async (
   }
 });
 
+// Get linkable entries for document association
+router.get('/linkable', requireAuth, requireApproved, async (req, res) => {
+  try {
+    const { category } = req.query;
+    
+    // Build query - user can only link to their own entries or shared ones
+    const query = {
+      $or: [
+        { owner: req.user._id },
+        { sharedWith: req.user._id }
+      ]
+    };
+    
+    // Filter by category if provided
+    if (category && category !== 'all') {
+      // Map document categories to entry types
+      const categoryMap = {
+        'Financial': ['account', 'investment'],
+        'Property': ['property'],
+        'Insurance': ['bill'], // Insurance is often tracked as bills
+        'Tax': ['account', 'investment'],
+        'Legal': ['property', 'account'],
+        'Personal': ['bill'],
+        'Medical': ['bill']
+      };
+      
+      if (categoryMap[category]) {
+        query.type = { $in: categoryMap[category] };
+      }
+    }
+    
+    const entries = await Entry.find(query)
+      .select('_id title provider type accountDetails.category createdAt')
+      .sort({ title: 1 })
+      .limit(100) // Reasonable limit for dropdown
+      .lean();
+    
+    // Format entries for frontend consumption
+    const formattedEntries = entries.map(entry => ({
+      _id: entry._id,
+      title: entry.title,
+      provider: entry.provider,
+      type: entry.type,
+      category: entry.accountDetails?.category,
+      displayName: `${entry.title} (${entry.provider || 'No Provider'})`
+    }));
+    
+    res.json({ entries: formattedEntries });
+  } catch (error) {
+    console.error('Error fetching linkable entries:', error);
+    res.status(500).json({ error: 'Failed to fetch linkable entries' });
+  }
+});
+
 module.exports = router;
