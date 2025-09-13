@@ -167,6 +167,7 @@ type CategoriesContextValue = {
   error: string | null;
   isUsingFallback: boolean;
   refresh: () => Promise<void>;
+  clearCache: () => Promise<void>;
   getCategoryById: (id: string) => Category | undefined;
   getCategoriesByParent: (parentId: string | null) => Category[];
   getRootCategories: () => Category[];
@@ -209,6 +210,14 @@ function setCachedData(data: CategoryTreeResponse): void {
       timestamp: Date.now()
     };
     sessionStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+  } catch {
+    // Ignore cache errors
+  }
+}
+
+function clearCachedData(): void {
+  try {
+    sessionStorage.removeItem(CACHE_KEY);
   } catch {
     // Ignore cache errors
   }
@@ -285,12 +294,18 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
     return categories.filter(cat => !cat.parentId);
   }, [categories]);
 
+  const clearCache = useCallback(async () => {
+    clearCachedData();
+    await fetchCategories();
+  }, [fetchCategories]);
+
   const value: CategoriesContextValue = {
     categories,
     loading,
     error,
     isUsingFallback,
     refresh: fetchCategories,
+    clearCache,
     getCategoryById,
     getCategoriesByParent,
     getRootCategories

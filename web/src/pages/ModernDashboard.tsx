@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getEntries, getMe, Entry, User } from "../api";
+import { 
+  Landmark, 
+  TrendingUp, 
+  Building2, 
+  Receipt, 
+  PiggyBank
+} from "lucide-react";
 
 // Generate audit trail from recent database entries
 const generateAuditTrail = (entries: Entry[], currentUser: User | null) => {
@@ -131,34 +138,35 @@ export default function ModernDashboard() {
   };
 
   const headerStyle = {
-    borderBottom: "1px solid #e5e7eb",
-    padding: "20px 32px",
-    background: "white",
+    borderBottom: "1px solid #f1f5f9",
+    padding: "32px",
+    background: "#ffffff",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const cardStyle = {
     display: "flex",
     alignItems: "center",
-    gap: "16px",
-    padding: "24px",
-    backgroundColor: "white",
-    border: "1px solid #e5e7eb",
-    borderRadius: "10px",
-    boxShadow:
-      "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-    transition: "all 0.2s ease-in-out",
+    gap: "20px",
+    padding: "28px 32px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #f1f5f9",
+    borderRadius: "16px",
+    boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     cursor: "pointer",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const tableContainerStyle = {
     width: "100%",
-    border: "1px solid #e5e7eb",
-    borderRadius: "10px",
+    border: "1px solid #f1f5f9",
+    borderRadius: "16px",
     overflow: "hidden",
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
     maxHeight: "400px", // Limits to about 5-6 rows plus header
-    boxShadow:
-      "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+    boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   };
 
   const tableBodyStyle = {
@@ -169,7 +177,7 @@ export default function ModernDashboard() {
 
   const tableHeaderStyle = {
     display: "block",
-    backgroundColor: "#f9fafb",
+    backgroundColor: "#f8fafc",
     position: "sticky" as const,
     top: 0,
     zIndex: 1,
@@ -194,30 +202,31 @@ export default function ModernDashboard() {
       <div style={headerStyle}>
         <h1
           style={{
-            fontSize: "30px",
-            fontWeight: "bold",
-            color: "#1a1a1a",
-            margin: "0 0 8px 0",
+            fontSize: "32px",
+            fontWeight: "600",
+            color: "#0f172a",
+            margin: "0",
+            fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+            letterSpacing: "-0.025em",
           }}
         >
           Dashboard
         </h1>
-        <p style={{ color: "#6b7280", margin: 0 }}>
-          Welcome back. Here's a summary of your financial information.
-        </p>
       </div>
 
-      <div style={{ padding: "20px 32px 32px 32px", background: "white" }}>
+      <div style={{ padding: "40px", background: "#fefefe", minHeight: "calc(100vh - 104px)" }}>
         {/* Account Categories */}
         <h2
           style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#1a1a1a",
-            margin: "0 0 16px 0",
+            fontSize: "20px",
+            fontWeight: "600",
+            color: "#334155",
+            margin: "0 0 24px 0",
+            fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+            letterSpacing: "-0.025em",
           }}
         >
-          Account Categories
+          Vault Items
         </h2>
         <div
           style={{
@@ -232,38 +241,47 @@ export default function ModernDashboard() {
             onClick={() => navigate("/accounts?type=account")}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-              e.currentTarget.style.transform = "translateY(-2px)";
+                "0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.borderColor = "#e2e8f0";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)";
+                "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
               e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = "#f1f5f9";
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              savings
-            </span>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "12px"
+            }}>
+              <Landmark size={24} color="#475569" strokeWidth={1.5} />
+            </div>
             <div>
               <p
                 style={{
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#6b7280",
+                  color: "#64748b",
                   margin: "0 0 8px 0",
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 Bank Accounts
               </p>
               <p
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#0f172a",
                   margin: 0,
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 {displayCounts.accounts} accounts
@@ -275,38 +293,47 @@ export default function ModernDashboard() {
             onClick={() => navigate("/accounts?type=investment")}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-              e.currentTarget.style.transform = "translateY(-2px)";
+                "0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.borderColor = "#e2e8f0";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)";
+                "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
               e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = "#f1f5f9";
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              trending_up
-            </span>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "12px"
+            }}>
+              <TrendingUp size={24} color="#475569" strokeWidth={1.5} />
+            </div>
             <div>
               <p
                 style={{
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#6b7280",
+                  color: "#64748b",
                   margin: "0 0 8px 0",
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 Investments
               </p>
               <p
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#0f172a",
                   margin: 0,
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 {displayCounts.investments} accounts
@@ -318,38 +345,47 @@ export default function ModernDashboard() {
             onClick={() => navigate("/accounts?type=property")}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-              e.currentTarget.style.transform = "translateY(-2px)";
+                "0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.borderColor = "#e2e8f0";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)";
+                "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
               e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = "#f1f5f9";
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              villa
-            </span>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "12px"
+            }}>
+              <Building2 size={24} color="#475569" strokeWidth={1.5} />
+            </div>
             <div>
               <p
                 style={{
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#6b7280",
+                  color: "#64748b",
                   margin: "0 0 8px 0",
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 Property
               </p>
               <p
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#0f172a",
                   margin: 0,
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 {displayCounts.properties} properties
@@ -361,38 +397,47 @@ export default function ModernDashboard() {
             onClick={() => navigate("/accounts?type=utility")}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-              e.currentTarget.style.transform = "translateY(-2px)";
+                "0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.borderColor = "#e2e8f0";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)";
+                "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
               e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = "#f1f5f9";
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              receipt_long
-            </span>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "12px"
+            }}>
+              <Receipt size={24} color="#475569" strokeWidth={1.5} />
+            </div>
             <div>
               <p
                 style={{
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#6b7280",
+                  color: "#64748b",
                   margin: "0 0 8px 0",
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 Bills
               </p>
               <p
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#0f172a",
                   margin: 0,
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 {displayCounts.utilities} accounts
@@ -404,38 +449,47 @@ export default function ModernDashboard() {
             onClick={() => navigate("/accounts?type=pension")}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)";
-              e.currentTarget.style.transform = "translateY(-2px)";
+                "0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.borderColor = "#e2e8f0";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)";
+                "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
               e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = "#f1f5f9";
             }}
           >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: "32px", color: "#3b82f6" }}
-            >
-              savings
-            </span>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "48px",
+              height: "48px",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "12px"
+            }}>
+              <PiggyBank size={24} color="#475569" strokeWidth={1.5} />
+            </div>
             <div>
               <p
                 style={{
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#6b7280",
+                  color: "#64748b",
                   margin: "0 0 8px 0",
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 Pensions
               </p>
               <p
                 style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  color: "#1a1a1a",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#0f172a",
                   margin: 0,
+                  fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}
               >
                 {displayCounts.pensions} pensions
@@ -447,10 +501,12 @@ export default function ModernDashboard() {
         {/* Audit Trail */}
         <h2
           style={{
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#1a1a1a",
-            margin: "0 0 16px 0",
+            fontSize: "20px",
+            fontWeight: "600",
+            color: "#334155",
+            margin: "0 0 24px 0",
+            fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+            letterSpacing: "-0.025em",
           }}
         >
           Audit Trail
@@ -545,38 +601,6 @@ export default function ModernDashboard() {
           </div>
         </div>
 
-        {/* Debug information in development */}
-        {process.env.NODE_ENV === "development" && (
-          <div
-            style={{
-              ...cardStyle,
-              marginTop: "24px",
-              backgroundColor: "#f0f9ff",
-            }}
-          >
-            <div>
-              <h4 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>
-                Debug Info
-              </h4>
-              <p
-                style={{ fontSize: "14px", color: "#1e40af", margin: "4px 0" }}
-              >
-                Total entries loaded: {entries.length}
-              </p>
-              <p
-                style={{ fontSize: "14px", color: "#1e40af", margin: "4px 0" }}
-              >
-                Entry types:{" "}
-                {entries.map((e) => e.type || "untyped").join(", ") || "none"}
-              </p>
-              <p
-                style={{ fontSize: "14px", color: "#1e40af", margin: "4px 0" }}
-              >
-                Loading: {loading.toString()}, Error: {error || "none"}
-              </p>
-            </div>
-          </div>
-        )}
 
         {/* Error or Loading states */}
         {loading && (

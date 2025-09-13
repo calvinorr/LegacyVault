@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { updateEntry, Entry } from "../api";
+import CategorySelector, { getCategoryDisplayName } from "./CategorySelector";
 import { useCategories } from "../hooks/useCategories";
 
 interface EditBillModalProps {
@@ -26,10 +27,28 @@ interface FormData {
   notes: string;
   confidential: boolean;
   // Categorization fields
-  category: string;
-  subCategory: string;
+  categoryId: string;
   supplier: string;
   tags: string[];
+  // Enhanced renewal tracking fields
+  renewalInfo: {
+    startDate: string;
+    endDate: string;
+    reviewDate: string;
+    noticeDate: string;
+    productType: string;
+    productCategory: string;
+    endDateType: string;
+    renewalCycle: string;
+    isAutoRenewal: boolean;
+    requiresAction: boolean;
+    noticePeriod: string;
+    reminderDays: string;
+    urgencyLevel: string;
+    regulatoryType: string;
+    complianceNotes: string;
+    isActive: boolean;
+  };
 }
 
 export default function EditBillModal({
@@ -55,14 +74,13 @@ export default function EditBillModal({
     notes: "",
     confidential: true,
     // Categorization fields
-    category: "Bills",
-    subCategory: "",
+    categoryId: "",
     supplier: "",
     tags: [],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { getRootCategories, loading: categoriesLoading, isUsingFallback, error: categoriesError } = useCategories();
+  const { categories } = useCategories();
 
   useEffect(() => {
     if (bill && isOpen) {
@@ -85,8 +103,7 @@ export default function EditBillModal({
         confidential:
           bill.confidential !== undefined ? bill.confidential : true,
         // Categorization fields
-        category: (bill as any).category || "Bills",
-        subCategory: (bill as any).subCategory || "",
+        categoryId: (bill as any).categoryId || "",
         supplier: (bill as any).supplier || "",
         tags: (bill as any).tags || [],
       });
@@ -109,8 +126,7 @@ export default function EditBillModal({
         notes: formData.notes,
         confidential: formData.confidential,
         // Categorization fields
-        category: formData.category,
-        subCategory: formData.subCategory,
+        categoryId: formData.categoryId,
         supplier: formData.supplier,
         tags: formData.tags,
       };
@@ -193,41 +209,6 @@ export default function EditBillModal({
     "As Required",
   ];
 
-  const getCategoryOptions = () => {
-    const rootCategories = getRootCategories();
-    return rootCategories.map(category => category.name);
-  };
-
-  const getSubCategoryOptions = (category: string) => {
-    switch (category) {
-      case "Insurance":
-        return [
-          "Home Insurance",
-          "Car Insurance",
-          "Life Insurance",
-          "Travel Insurance",
-          "Health Insurance",
-        ];
-      case "Bills":
-        return [
-          "Energy",
-          "Water",
-          "Council Services",
-          "Communications",
-          "Entertainment",
-        ];
-      case "Subscriptions":
-        return [
-          "Streaming",
-          "Software",
-          "Fitness",
-          "News & Media",
-          "Cloud Storage",
-        ];
-      default:
-        return [];
-    }
-  };
 
   const getCommonSuppliers = () => [
     "Sky",
@@ -504,44 +485,17 @@ export default function EditBillModal({
                   }}
                 >
                   Category
-                  {categoriesLoading && (
-                    <span style={{ color: "#6b7280", fontWeight: "normal" }}> (loading...)</span>
-                  )}
                 </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) =>
-                    handleInputChange("category", e.target.value)
-                  }
+                <CategorySelector
+                  value={formData.categoryId}
+                  onChange={(categoryId) => handleInputChange("categoryId", categoryId)}
+                  placeholder="Select category"
                   style={{
-                    ...selectStyle,
-                    opacity: categoriesLoading ? 0.6 : 1,
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                    fontSize: '15px',
+                    marginBottom: '16px'
                   }}
-                  disabled={categoriesLoading}
-                >
-                  {categoriesLoading ? (
-                    <option value="">Loading categories...</option>
-                  ) : categoriesError && !isUsingFallback ? (
-                    <option value="">Failed to load categories</option>
-                  ) : (
-                    getCategoryOptions().map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))
-                  )}
-                </select>
-                {isUsingFallback && (
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      color: "#f59e0b",
-                      marginTop: "4px",
-                    }}
-                  >
-                    Using offline categories
-                  </p>
-                )}
+                />
               </div>
             </div>
 
@@ -699,24 +653,31 @@ export default function EditBillModal({
                     marginBottom: "4px",
                   }}
                 >
-                  Sub-Category
+                  Supplier Group
                 </label>
                 <select
-                  value={formData.subCategory}
+                  value={formData.supplier}
                   onChange={(e) =>
-                    handleInputChange("subCategory", e.target.value)
+                    handleInputChange("supplier", e.target.value)
                   }
                   style={selectStyle}
                 >
-                  <option value="">Select sub-category</option>
-                  {getSubCategoryOptions(formData.category).map(
-                    (subCategory) => (
-                      <option key={subCategory} value={subCategory}>
-                        {subCategory}
-                      </option>
-                    )
-                  )}
+                  <option value="">Select supplier group (optional)</option>
+                  {getCommonSuppliers().map((supplier) => (
+                    <option key={supplier} value={supplier}>
+                      {supplier}
+                    </option>
+                  ))}
                 </select>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#6b7280",
+                    marginTop: "4px",
+                  }}
+                >
+                  Group services by the same company
+                </p>
               </div>
             </div>
 

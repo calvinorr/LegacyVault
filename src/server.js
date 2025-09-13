@@ -10,9 +10,14 @@ const db = require('./db');
 const { configurePassport, router: authRouter } = require('./auth/google');
 const usersRouter = require('./routes/users');
 const entriesRouter = require('./routes/entries');
+const documentsRouter = require('./routes/documents');
+const contactsRouter = require('./routes/contacts');
 const importRouter = require('./routes/import');
 const detectionRulesRouter = require('./routes/detectionRules');
 const categoriesRouter = require('./routes/categories');
+const categorySuggestionsRouter = require('./routes/categorySuggestions');
+const productDetectionRouter = require('./routes/productDetection');
+const renewalRemindersRouter = require('./routes/renewalReminders');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -91,6 +96,12 @@ app.use('/api/users', usersRouter);
 // Entry CRUD API
 app.use('/api/entries', entriesRouter);
 
+// Documents API
+app.use('/api/documents', documentsRouter);
+
+// Contacts API
+app.use('/api/contacts', contactsRouter);
+
 // Bank Import API
 app.use('/api/import', importRouter);
 
@@ -99,6 +110,16 @@ app.use('/api/detection-rules', detectionRulesRouter);
 
 // Categories API
 app.use('/api/categories', categoriesRouter);
+
+// Category Suggestions API (includes recurring rules)
+app.use('/api/categories', categorySuggestionsRouter);
+app.use('/api/recurring-rules', categorySuggestionsRouter);
+
+// Product Detection API  
+app.use('/api/product-detection', productDetectionRouter);
+
+// Renewal Reminders API
+app.use('/api/renewal-reminders', renewalRemindersRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

@@ -9,8 +9,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:renewal": "node scripts/test-renewal-models.js",
     "migrate": "node src/scripts/runMigrations.js up",
     "migrate:down": "node src/scripts/runMigrations.js down",
+    "migrate:renewal": "node -e \"require('./src/utils/renewalMigration').runFullMigration({dryRun: false})\"",
+    "migrate:renewal:dry": "node -e \"require('./src/utils/renewalMigration').runFullMigration({dryRun: true})\"",
     "lint": "echo \"Add linting scripts\" && exit 0"
   },
   "engines": {
