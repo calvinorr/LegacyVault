@@ -7,6 +7,7 @@ const passport = require('passport');
 const cookieSession = require('cookie-session');
 const path = require('path');
 const db = require('./db');
+const { initGridFS } = require('./db/gridfs');
 const { configurePassport, router: authRouter } = require('./auth/google');
 const usersRouter = require('./routes/users');
 const entriesRouter = require('./routes/entries');
@@ -18,6 +19,8 @@ const categoriesRouter = require('./routes/categories');
 const categorySuggestionsRouter = require('./routes/categorySuggestions');
 const productDetectionRouter = require('./routes/productDetection');
 const renewalRemindersRouter = require('./routes/renewalReminders');
+const domainsRouter = require('./routes/domains');
+const domainDocumentsRouter = require('./routes/domain-documents');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -70,7 +73,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connect to MongoDB using helper
-db.connect().catch((err) => {
+db.connect().then(() => {
+  console.log('MongoDB connected');
+  initGridFS();
+}).catch((err) => {
   console.error('MongoDB connection error:', err.message);
 });
 
@@ -120,6 +126,13 @@ app.use('/api/product-detection', productDetectionRouter);
 
 // Renewal Reminders API
 app.use('/api/renewal-reminders', renewalRemindersRouter);
+
+// Domain Records API (Story 1.1 - Foundation)
+app.use('/api/domains', domainsRouter);
+
+// Domain Documents API (Story 1.2 - GridFS Storage)
+app.use('/api/domains', domainDocumentsRouter); // For upload/list endpoints
+app.use('/api/domain-documents', domainDocumentsRouter); // For download/delete endpoints
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder
