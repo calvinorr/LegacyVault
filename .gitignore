@@ -52,3 +52,6 @@ design/
 *.key
 .env.production
 .env.staging
+# BMAD (local only)
+.bmad-core/
+.bmad-*/
