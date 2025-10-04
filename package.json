@@ -14,7 +14,10 @@
     "migrate:down": "node src/scripts/runMigrations.js down",
     "migrate:renewal": "node -e \"require('./src/utils/renewalMigration').runFullMigration({dryRun: false})\"",
     "migrate:renewal:dry": "node -e \"require('./src/utils/renewalMigration').runFullMigration({dryRun: true})\"",
-    "lint": "echo \"Add linting scripts\" && exit 0"
+    "lint": "echo \"Add linting scripts\" && exit 0",
+    "bmad:refresh": "bmad-method install -f -i codex",
+    "bmad:list": "bmad-method list:agents",
+    "bmad:validate": "bmad-method validate"
   },
   "engines": {
     "node": ">=18"
