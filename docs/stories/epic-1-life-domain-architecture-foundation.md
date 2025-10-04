@@ -97,8 +97,8 @@ This epic transforms the abstract "bills and categories" structure into a **doma
 
 ---
 
-### Story 1.2: GridFS Document Storage Integration
-**Status:** Not Started
+### ✅ Story 1.2: GridFS Document Storage Integration
+**Status:** Complete
 **Priority:** High
 **Estimated Effort:** 6-10 hours (1-2 sessions)
 **Dependencies:** Story 1.1 (Complete ✓)
@@ -129,10 +129,10 @@ Enable file upload/download functionality using MongoDB GridFS, allowing users t
 ---
 
 ### Story 1.3: Domain Record Management & Validation
-**Status:** Not Started
+**Status:** Ready for Development
 **Priority:** Medium
 **Estimated Effort:** 4-6 hours
-**Dependencies:** Story 1.1 (Complete ✓), Story 1.2 (Pending)
+**Dependencies:** Story 1.1 (Complete ✓), Story 1.2 (Complete ✓)
 
 **Goal:**
 Enhance domain record management with advanced validation, search capabilities, and business logic specific to each domain type.
@@ -270,7 +270,7 @@ Provide safe, reversible data migration from existing bills/categories structure
 ### Epic-Level Completion Criteria
 
 - [x] **Story 1.1 Complete:** Domain models and API infrastructure working
-- [ ] **Story 1.2 Complete:** GridFS document storage integrated and tested
+- [x] **Story 1.2 Complete:** GridFS document storage integrated and tested
 - [ ] **Story 1.3 Complete:** Advanced record management and validation working
 - [ ] **Story 1.4 Complete:** Migration utilities tested with production data
 - [ ] **All Tests Passing:** 100% test pass rate across all stories
@@ -354,11 +354,12 @@ Provide safe, reversible data migration from existing bills/categories structure
 
 ## Next Steps
 
-1. **Create Story 1.2** - GridFS Document Storage Integration
-2. **Dev implements Story 1.2** using `@BMad:agents:dev`
-3. **Create Story 1.3** after Story 1.2 complete
-4. **Create Story 1.4** after Story 1.3 complete
-5. **Epic review** when all stories complete
+1. ✅ ~~Create Story 1.2~~ - Complete
+2. ✅ ~~Dev implements Story 1.2~~ - Complete
+3. ✅ ~~Create Story 1.3~~ - Complete
+4. **Dev implements Story 1.3** using `@BMad:agents:dev`
+5. **Create Story 1.4** after Story 1.3 complete
+6. **Epic review** when all stories complete
 
 ---
 
