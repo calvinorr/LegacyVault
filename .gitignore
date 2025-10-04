@@ -52,3 +52,5 @@ design/
 *.key
 .env.production
 .env.staging
+My Details.txt
+my-details.txt
