@@ -3,13 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Shield,
   LayoutDashboard,
-  Wallet,
-  Receipt,
-  FolderTree,
   Calendar,
   AlertCircle,
-  Users,
-  FileText,
   Settings,
   User
 } from "lucide-react";
@@ -147,27 +142,6 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             Home
           </Link>
           <Link
-            to="/accounts"
-            style={navLinkStyle(location.pathname === "/accounts")}
-          >
-            <Wallet size={18} strokeWidth={1.5} />
-            Accounts
-          </Link>
-          <Link
-            to="/bills"
-            style={navLinkStyle(location.pathname === "/bills")}
-          >
-            <Receipt size={18} strokeWidth={1.5} />
-            Bills
-          </Link>
-          <Link
-            to="/categories"
-            style={navLinkStyle(location.pathname === "/categories")}
-          >
-            <FolderTree size={18} strokeWidth={1.5} />
-            Categories
-          </Link>
-          <Link
             to="/renewals"
             style={navLinkStyle(location.pathname === "/renewals")}
           >
@@ -185,20 +159,6 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           >
             <AlertCircle size={18} strokeWidth={1.5} />
             Emergency
-          </Link>
-          <Link
-            to="/contacts"
-            style={navLinkStyle(location.pathname === "/contacts")}
-          >
-            <Users size={18} strokeWidth={1.5} />
-            Contacts
-          </Link>
-          <Link
-            to="/documents"
-            style={navLinkStyle(location.pathname === "/documents")}
-          >
-            <FileText size={18} strokeWidth={1.5} />
-            Documents
           </Link>
           <Link
             to="/settings"
