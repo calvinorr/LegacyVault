@@ -82,6 +82,7 @@ The life domain architecture breakthrough came from "What If" scenarios asking: 
 | Change | Date | Version | Description | Author |
 |--------|------|---------|-------------|--------|
 | Initial PRD | 2025-10-04 | 1.0 | Created from comprehensive project brief | John (PM Agent) |
+| Epic 2 Added | 2025-10-05 | 2.0 | Added Epic 2 (Legacy System Retirement), moved Story 1.9 to Epic 2 as Story 2.4 | John (PM Agent) |
 
 ---
 
@@ -856,7 +857,7 @@ This brownfield enhancement should be structured as a **single epic** because:
 - ✅ Story 1.3: Property MVP - First domain end-to-end (validate approach)
 - ✅ Story 1.4-1.6: Domain Expansion - All 8 domains functional
 - ✅ Story 1.7-1.8: Cross-domain features (renewals, emergency view)
-- ✅ Story 1.9: Bank import enhancement (adoption accelerator)
+- ⏸️ Story 1.9: Bank import enhancement → **MOVED TO EPIC 2 as Story 2.4** (see Epic 2 below)
 
 **Risk Mitigation Through Sequencing:**
 1. Infrastructure first (no UI changes, low risk)
@@ -867,7 +868,179 @@ This brownfield enhancement should be structured as a **single epic** because:
 
 ---
 
-**Document Version:** 1.0
-**Date:** 2025-10-04
-**Status:** Complete - Ready for Implementation
-**Next Review:** After Story 1.3 (Property MVP) completion
+## Epic 2: Legacy System Retirement & Bank Import Migration
+
+**Epic Status:** 📋 **Approved - Ready for Implementation**
+**Created:** 2025-10-05
+**Epic Goal:** Remove legacy Bills/Accounts/Categories system, migrate Bank Import functionality to domain architecture, and establish clean domain-first user experience.
+
+**Why Epic 2:** Epic 1 successfully built domain architecture but didn't retire the old system. Users currently see two parallel navigation systems (legacy + domains), creating confusion. Epic 2 completes the migration vision by systematically removing legacy components while preserving valuable Bank Import functionality.
+
+**Integration Requirements:**
+- Preserve Bank Import functionality (HSBC parser, recurring payment detection)
+- Archive legacy data in database (safety net - don't delete)
+- Prioritize Bank Import migration early (unlock productivity)
+- Maintain Epic 1 stability (180+ tests must pass)
+
+---
+
+### Story 2.1: Navigation Cleanup & Domain-First Experience
+
+**As a** household administrator,
+**I want** to see only domain-based navigation (no legacy Accounts/Bills/Categories),
+**so that** I have a clear, unconfused navigation experience.
+
+**Acceptance Criteria:**
+
+1. Remove Accounts, Bills, Categories, Contacts, Documents navigation items from Layout.tsx
+2. Update navigation to show: Home, Renewals, Emergency, Settings (as per PRD)
+3. HomePage displays 8 domain cards as primary interface (already built in Epic 1)
+4. No broken links or console errors after removal
+5. Breadcrumb navigation works correctly for all domain pages
+
+**Integration Verification:**
+- **IV1: Epic 1 Preservation** - All Epic 1 domain pages still accessible via domain cards
+- **IV2: Cross-Domain Features** - Renewals and Emergency pages still accessible via navigation
+- **IV3: Mobile Responsive** - Navigation maintained on mobile/tablet/desktop breakpoints
+
+**Estimated Effort:** 1-2 hours
+
+---
+
+### Story 2.2: Legacy Route & Component Removal
+
+**As a** developer,
+**I want** to remove unused legacy routes and components (while preserving Bank Import),
+**so that** the codebase is clean and maintainable.
+
+**Acceptance Criteria:**
+
+1. Archive (don't delete) legacy routes: `src/routes/entries.js`
+2. Archive legacy page components: Accounts.tsx, Bills.tsx, Categories.tsx, Contacts.tsx, Documents.tsx (if exist)
+3. **Preserve Bank Import routes:** `src/routes/import.js` remains fully functional
+4. Remove route registrations from `src/server.js` for archived routes
+5. Update React Router in `web/src/App.tsx` to remove legacy page routes
+6. No console errors or broken references after cleanup
+7. All Epic 1 tests still pass (180+ tests)
+
+**Integration Verification:**
+- **IV1: Bank Import Preserved** - Bank Import page still accessible, all functionality intact
+- **IV2: Epic 1 Unaffected** - Domain pages, renewals, emergency view all functional
+- **IV3: Authentication Unchanged** - Google OAuth flow continues to work
+
+**Estimated Effort:** 3-4 hours
+
+---
+
+### Story 2.3: Bank Import Schema Migration
+
+**As a** developer,
+**I want** to update Bank Import to create domain records instead of legacy entries,
+**so that** parsed transactions flow into the new domain architecture.
+
+**Acceptance Criteria:**
+
+1. Update `ImportController.js` to create records in domain collections (not legacy `entries` collection)
+2. Transaction confirmation creates domain record with appropriate schema (PropertyRecord, VehicleRecord, etc.)
+3. Import sessions still track transactions correctly (preserve existing ImportSession model)
+4. HSBC multi-line transaction parsing still works (no regression)
+5. Recurring payment detection preserved
+6. Background processing via `backgroundProcessor.js` still functional
+7. All Bank Import tests pass
+
+**Integration Verification:**
+- **IV1: Parser Preserved** - Upload HSBC statement → transactions parsed correctly
+- **IV2: Domain Creation** - Confirm transaction → creates record in correct domain collection
+- **IV3: Session Management** - ImportSession shows correct transaction count and status
+
+**Estimated Effort:** 6-8 hours
+**Priority:** CRITICAL (unlocks productivity)
+
+---
+
+### Story 2.4: Bank Import Domain Intelligence
+
+**As a** household administrator,
+**I want** bank transactions to suggest the appropriate domain when creating records,
+**so that** I can quickly populate domains with intelligent defaults.
+
+**Acceptance Criteria:**
+
+1. Transaction table in BankImport.tsx shows "Create Record" button per transaction
+2. Click "Create Record" opens domain selection dialog with intelligent suggestion:
+   - Energy bill transaction (British Gas, EDF, OVO) → suggests Property domain
+   - Car insurance transaction (Direct Line, Admiral) → suggests Vehicles domain
+   - Pension contribution (Aviva, Standard Life) → suggests Employment domain
+   - Council Tax → suggests Property domain
+3. After domain selection, opens domain-specific form pre-populated with:
+   - Provider name extracted from transaction description
+   - Amount from transaction
+   - Date from transaction
+4. User can edit pre-populated fields before saving
+5. Transaction marked as "record created" to avoid duplicates
+6. Domain suggestion accuracy ≥80% for common UK providers
+
+**Integration Verification:**
+- **IV1: Domain Suggestions** - Test with real HSBC statement, verify domain suggestions accurate
+- **IV2: Form Pre-population** - Verify form pre-population reduces data entry time
+- **IV3: Productivity Metric** - Create 10 domain records in <5 minutes (vs ~20 minutes manual entry)
+
+**Estimated Effort:** 8-10 hours
+**Note:** Originally PRD Story 1.9, moved to Epic 2 for clean epic separation
+
+---
+
+### Story 2.5: Legacy Data Archive & Safety Net
+
+**As a** developer,
+**I want** to archive legacy data collections (keep in database but hidden from UI),
+**so that** we have a safety net if migration issues arise.
+
+**Acceptance Criteria:**
+
+1. Legacy collections (`entries`, `categories`) remain in MongoDB (not deleted)
+2. Add `_archived: true` field to all documents in legacy collections (migration script)
+3. Legacy API routes return 410 Gone status (not 404) with message: "This API has been replaced by domain-based endpoints"
+4. Database backup script created before archival (safety precaution)
+5. README documentation updated with instructions for accessing archived data if needed
+6. Storage monitoring confirms legacy data size (verify within MongoDB Atlas 512MB limit)
+
+**Integration Verification:**
+- **IV1: Data Preserved** - Run migration script on test database, verify legacy data still in MongoDB
+- **IV2: API Status** - Verify API endpoints return appropriate 410 Gone status
+- **IV3: Backup Process** - Test database backup/restore process works correctly
+
+**Estimated Effort:** 4-5 hours
+
+---
+
+## Epic 2 Summary
+
+**Total Stories:** 5
+**Estimated Effort:** 22-29 hours (4-6 weeks part-time at 5-7 hours/week)
+
+**Key Milestones:**
+- Story 2.1-2.2: Navigation cleanup, legacy route removal (Quick wins)
+- Story 2.3: Bank Import schema migration (Critical path - PRIORITY)
+- Story 2.4: Bank Import domain intelligence (Productivity unlock)
+- Story 2.5: Legacy data archive (Safety net)
+
+**Risk Mitigation:**
+1. Archive (don't delete) legacy code - easy rollback if needed
+2. Bank Import migration in isolation - doesn't affect Epic 1 features
+3. Incremental testing after each story - catch regressions early
+4. Database backup before data archive - safety precaution
+
+**Epic 2 Success Criteria:**
+- ✅ Legacy navigation removed, clean domain-first UX
+- ✅ Bank Import creates domain records (not legacy entries)
+- ✅ Domain suggestions ≥80% accurate for UK providers
+- ✅ Legacy data archived (safety net preserved)
+- ✅ All Epic 1 tests still passing (180+)
+
+---
+
+**Document Version:** 2.0
+**Date:** 2025-10-05
+**Status:** Epic 1 Complete, Epic 2 Approved - Ready for Implementation
+**Next Review:** After Epic 2 completion
