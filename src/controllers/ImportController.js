@@ -4,6 +4,8 @@ const ImportSession = require('../models/ImportSession');
 const pdfProcessor = require('../services/pdfProcessor');
 const recurringDetector = require('../services/recurringDetector');
 const backgroundProcessor = require('../services/backgroundProcessor');
+// Story 2.4: Domain suggestion engine for intelligent domain detection
+const { suggestDomain, getDomainModel } = require('../services/domainSuggestionEngine');
 
 class ImportController {
   // Upload PDF bank statement
@@ -284,45 +286,33 @@ class ImportController {
 
   // Helper method to create domain record from suggestion
   // Story 2.3: Updated to create domain records instead of legacy Entry
-  // TODO Story 2.4: Add intelligent domain suggestion logic
-  static async _createEntryFromSuggestion(suggestion, session, user) {
+  // Story 2.4: Added intelligent domain suggestion logic
+  static async _createEntryFromSuggestion(suggestion, session, user, overrideDomain = null) {
     const { suggested_entry } = suggestion;
 
-    // Map category to domain record type
-    // Story 2.3: Default to Finance domain for all transactions
-    // Story 2.4 will add intelligent domain detection (energy → Property, car insurance → Vehicles, etc.)
-    const domainMapping = {
-      'utilities': { domain: 'finance', recordType: 'bill' },
-      'council_tax': { domain: 'finance', recordType: 'bill' },
-      'telecoms': { domain: 'finance', recordType: 'bill' },
-      'subscription': { domain: 'finance', recordType: 'subscription' },
-      'insurance': { domain: 'finance', recordType: 'insurance' },
-      'other': { domain: 'finance', recordType: 'other' }
-    };
+    // Story 2.4: Use domain suggestion engine for intelligent domain detection
+    const domainSuggestion = suggestDomain({
+      payee: suggestion.payee,
+      category: suggestion.category,
+      subcategory: suggestion.subcategory,
+      amount: suggestion.amount
+    });
 
-    const mapping = domainMapping[suggestion.category] || { domain: 'finance', recordType: 'other' };
+    // Allow override from user selection, otherwise use suggestion
+    const targetDomain = overrideDomain || domainSuggestion.domain;
+    const recordType = domainSuggestion.recordType;
 
-    // Import domain model dynamically based on mapping
-    // Story 2.3: Only Finance domain for now
-    const FinanceRecord = require('../models/domain/FinanceRecord');
+    // Get the appropriate domain model
+    const DomainModel = getDomainModel(targetDomain);
 
-    // Create domain record with Bank Import metadata
-    const record = new FinanceRecord({
+    // Build common fields for all domain records
+    const commonFields = {
       user: user._id,
       name: suggested_entry.title || `${suggestion.payee} - ${suggestion.category}`,
-      accountType: mapping.recordType,
-      institution: suggested_entry.provider || suggestion.payee,
       priority: 'Standard',
-      notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}\nConfidence: ${suggestion.confidence}`,
-
-      // Finance-specific fields populated from transaction
-      balance: Math.abs(suggestion.amount), // Store transaction amount as positive
-
-      // Audit trail
       createdBy: user._id,
 
-      // Bank Import metadata (stored in notes for Story 2.3)
-      // Story 2.4 will add proper metadata field to domain schemas
+      // Bank Import metadata (all domains support this via FinanceRecord pattern)
       import_metadata: {
         source: 'bank_import',
         import_session_id: session._id,
@@ -331,16 +321,91 @@ class ImportController {
         confidence_score: suggestion.confidence,
         import_date: new Date(),
         detected_frequency: suggestion.frequency,
+        domain_suggestion: {
+          suggested_domain: domainSuggestion.domain,
+          confidence: domainSuggestion.confidence,
+          reasoning: domainSuggestion.reasoning,
+          actual_domain: targetDomain
+        },
         amount_pattern: {
           typical_amount: Math.abs(suggestion.amount),
           variance: 0.1,
           currency: 'GBP'
         }
       }
+    };
+
+    // Build domain-specific fields based on target domain
+    const domainSpecificFields = ImportController._buildDomainFields(
+      targetDomain,
+      recordType,
+      suggestion,
+      suggested_entry
+    );
+
+    // Create domain record
+    const record = new DomainModel({
+      ...commonFields,
+      ...domainSpecificFields
     });
 
     await record.save();
     return record;
+  }
+
+  // Helper to build domain-specific fields
+  static _buildDomainFields(domain, recordType, suggestion, suggested_entry) {
+    const provider = suggested_entry.provider || suggestion.payee;
+    const amount = Math.abs(suggestion.amount);
+
+    const fieldMap = {
+      property: {
+        recordType: recordType,
+        provider: provider,
+        monthlyAmount: amount,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      vehicles: {
+        recordType: recordType,
+        name: suggested_entry.title || `${suggestion.payee}`,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      finance: {
+        accountType: recordType,
+        institution: provider,
+        balance: amount,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      insurance: {
+        recordType: recordType,
+        provider: provider,
+        premium: amount,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      services: {
+        recordType: recordType,
+        provider: provider,
+        monthlyFee: amount,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      government: {
+        recordType: recordType,
+        issuingAuthority: provider,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      employment: {
+        recordType: recordType,
+        employer: provider,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      },
+      legal: {
+        recordType: recordType,
+        provider: provider,
+        notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}`
+      }
+    };
+
+    return fieldMap[domain] || fieldMap.finance; // Default to finance structure
   }
 
   // Get all raw transactions from a session 

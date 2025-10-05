@@ -7,8 +7,10 @@ const path = require('path');
 const User = require('../../src/models/user');
 const ImportSession = require('../../src/models/ImportSession');
 const RecurringDetectionRules = require('../../src/models/RecurringDetectionRules');
-// Story 2.3: Updated to use domain records instead of legacy Entry
+// Story 2.3/2.4: Updated to use domain records with intelligent domain detection
 const FinanceRecord = require('../../src/models/domain/FinanceRecord');
+const PropertyRecord = require('../../src/models/domain/PropertyRecord');
+const { suggestDomain } = require('../../src/services/domainSuggestionEngine');
 
 // Mock dependencies that we'll implement
 jest.mock('../../src/services/pdfProcessor', () => ({
@@ -377,12 +379,17 @@ describe('Import API Endpoints', () => {
       expect(response.body.created_entries).toHaveLength(1);
       expect(response.body.rejected_suggestions).toHaveLength(1);
 
-      // Verify domain record was created (Story 2.3: FinanceRecord instead of Entry)
-      const createdRecord = await FinanceRecord.findById(response.body.created_entries[0].entry_id);
+      // Story 2.4: Domain intelligence suggests PropertyRecord for utilities
+      const suggestion = suggestDomain({ payee: 'Test Utility', category: 'utilities', amount: -85.50 });
+      expect(suggestion.domain).toBe('property'); // Domain intelligence at work
+
+      // Verify domain record was created in correct domain
+      const createdRecord = await PropertyRecord.findById(response.body.created_entries[0].entry_id);
       expect(createdRecord).toBeTruthy();
       expect(createdRecord.name).toBe('Modified Utility Title'); // domain records use 'name' not 'title'
       expect(createdRecord.import_metadata.source).toBe('bank_import');
       expect(createdRecord.import_metadata.import_session_id).toEqual(session._id);
+      expect(createdRecord.import_metadata.domain_suggestion.suggested_domain).toBe('property');
     });
 
     test('should handle bulk accept action', async () => {
