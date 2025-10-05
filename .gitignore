@@ -52,6 +52,10 @@ design/
 *.key
 .env.production
 .env.staging
+
+# Personal credentials and secrets (NEVER COMMIT)
+My Details.txt
+**/My Details.txt
 # BMAD (local only)
 .bmad-core/
 .bmad-*/
