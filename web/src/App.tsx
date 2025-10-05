@@ -24,11 +24,6 @@ import ModernDashboard from "./pages/ModernDashboard";
 import EntryDetail from "./pages/EntryDetail";
 import AuthRedirect from "./pages/AuthRedirect";
 import Login from "./pages/Login";
-import Accounts from "./pages/Accounts";
-import Bills from "./pages/Bills";
-import Categories from "./pages/Categories";
-import Contacts from "./pages/Contacts";
-import Documents from "./pages/Documents";
 import Settings from "./pages/Settings";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
@@ -197,30 +192,6 @@ export default function App(): JSX.Element {
           }
         />
         <Route
-          path="/accounts"
-          element={
-            <ProtectedRoute>
-              <Accounts />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/bills"
-          element={
-            <ProtectedRoute>
-              <Bills />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <ProtectedRoute>
-              <Categories />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/renewals"
           element={
             <ProtectedRoute>
@@ -233,22 +204,6 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <EmergencyViewPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/contacts"
-          element={
-            <ProtectedRoute>
-              <Contacts />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/documents"
-          element={
-            <ProtectedRoute>
-              <Documents />
             </ProtectedRoute>
           }
         />
