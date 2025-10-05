@@ -20,10 +20,34 @@ const insuranceRecordSchema = new Schema({
   coverageAmount: { type: Number },
   beneficiaries: { type: String }, // Comma-separated list or text field
   notes: { type: String },
+
+  // Audit trail fields
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  lastModifiedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  history: [{
+    modifiedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    modifiedAt: { type: Date, default: Date.now },
+    changes: { type: Map, of: Schema.Types.Mixed }
+  }]
 }, { timestamps: true });
 
 // Indexes for common queries
 insuranceRecordSchema.index({ user: 1, policyType: 1 });
 insuranceRecordSchema.index({ renewalDate: 1 });
+
+// Middleware to track modifications
+insuranceRecordSchema.pre('save', function(next) {
+  if (this.isNew && this.user) this.createdBy = this.user;
+  if (this.isModified() && !this.isNew) {
+    const changes = {};
+    this.modifiedPaths().forEach(path => {
+      if (path !== 'history' && path !== 'lastModifiedBy' && path !== 'updatedAt') changes[path] = this[path];
+    });
+    if (Object.keys(changes).length > 0) {
+      this.history.push({ modifiedBy: this.lastModifiedBy || this.user, modifiedAt: new Date(), changes });
+    }
+  }
+  next();
+});
 
 module.exports = mongoose.model('InsuranceRecord', insuranceRecordSchema);

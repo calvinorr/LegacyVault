@@ -19,8 +19,10 @@ const categoriesRouter = require('./routes/categories');
 const categorySuggestionsRouter = require('./routes/categorySuggestions');
 const productDetectionRouter = require('./routes/productDetection');
 const renewalRemindersRouter = require('./routes/renewalReminders');
+const renewalsRouter = require('./routes/renewals');
 const domainsRouter = require('./routes/domains');
 const domainDocumentsRouter = require('./routes/domain-documents');
+const emergencyRouter = require('./routes/emergency');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -127,12 +129,18 @@ app.use('/api/product-detection', productDetectionRouter);
 // Renewal Reminders API
 app.use('/api/renewal-reminders', renewalRemindersRouter);
 
+// Renewals API (Story 1.8 - Enhanced Renewal Dashboard)
+app.use('/api/renewals', renewalsRouter);
+
 // Domain Records API (Story 1.1 - Foundation)
 app.use('/api/domains', domainsRouter);
 
 // Domain Documents API (Story 1.2 - GridFS Storage)
 app.use('/api/domains', domainDocumentsRouter); // For upload/list endpoints
 app.use('/api/domain-documents', domainDocumentsRouter); // For download/delete endpoints
+
+// Emergency API (Story 1.9 - Emergency View)
+app.use('/api/emergency', emergencyRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

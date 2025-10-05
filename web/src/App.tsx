@@ -1,5 +1,24 @@
 import React from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import PropertyDomainPage from "./pages/PropertyDomainPage";
+import PropertyRecordDetailPage from "./pages/PropertyRecordDetailPage";
+import VehiclesDomainPage from "./pages/VehiclesDomainPage";
+import VehicleRecordDetailPage from "./pages/VehicleRecordDetailPage";
+import FinanceDomainPage from "./pages/FinanceDomainPage";
+import FinanceRecordDetailPage from "./pages/FinanceRecordDetailPage";
+import EmploymentDomainPage from "./pages/EmploymentDomainPage";
+import EmploymentRecordDetailPage from "./pages/EmploymentRecordDetailPage";
+import GovernmentDomainPage from "./pages/GovernmentDomainPage";
+import GovernmentRecordDetailPage from "./pages/GovernmentRecordDetailPage";
+import InsuranceDomainPage from "./pages/InsuranceDomainPage";
+import InsuranceRecordDetailPage from "./pages/InsuranceRecordDetailPage";
+import LegalDomainPage from "./pages/LegalDomainPage";
+import LegalRecordDetailPage from "./pages/LegalRecordDetailPage";
+import ServicesDomainPage from "./pages/ServicesDomainPage";
+import ServicesRecordDetailPage from "./pages/ServicesRecordDetailPage";
+import RenewalDashboardPage from "./pages/RenewalDashboardPage";
+import EmergencyViewPage from "./pages/EmergencyViewPage";
 import Dashboard from "./pages/Dashboard";
 import ModernDashboard from "./pages/ModernDashboard";
 import EntryDetail from "./pages/EntryDetail";
@@ -37,7 +56,143 @@ export default function App(): JSX.Element {
           path="/"
           element={
             <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
               <ModernDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/property"
+          element={
+            <ProtectedRoute>
+              <PropertyDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/property/:recordId"
+          element={
+            <ProtectedRoute>
+              <PropertyRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vehicles"
+          element={
+            <ProtectedRoute>
+              <VehiclesDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vehicles/:recordId"
+          element={
+            <ProtectedRoute>
+              <VehicleRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/finance"
+          element={
+            <ProtectedRoute>
+              <FinanceDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/finance/:recordId"
+          element={
+            <ProtectedRoute>
+              <FinanceRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employment"
+          element={
+            <ProtectedRoute>
+              <EmploymentDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employment/:recordId"
+          element={
+            <ProtectedRoute>
+              <EmploymentRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government"
+          element={
+            <ProtectedRoute>
+              <GovernmentDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/:recordId"
+          element={
+            <ProtectedRoute>
+              <GovernmentRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/insurance"
+          element={
+            <ProtectedRoute>
+              <InsuranceDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/insurance/:recordId"
+          element={
+            <ProtectedRoute>
+              <InsuranceRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/legal"
+          element={
+            <ProtectedRoute>
+              <LegalDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/legal/:recordId"
+          element={
+            <ProtectedRoute>
+              <LegalRecordDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/services"
+          element={
+            <ProtectedRoute>
+              <ServicesDomainPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/services/:recordId"
+          element={
+            <ProtectedRoute>
+              <ServicesRecordDetailPage />
             </ProtectedRoute>
           }
         />
@@ -62,6 +217,22 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <Categories />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/renewals"
+          element={
+            <ProtectedRoute>
+              <RenewalDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/emergency"
+          element={
+            <ProtectedRoute>
+              <EmergencyViewPage />
             </ProtectedRoute>
           }
         />

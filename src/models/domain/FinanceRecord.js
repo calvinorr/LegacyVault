@@ -22,10 +22,46 @@ const financeRecordSchema = new Schema({
   creditLimit: { type: Number }, // For credit cards
   monthlyPayment: { type: Number }, // For loans
   notes: { type: String },
+
+  // Audit trail fields
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  lastModifiedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  history: [{
+    modifiedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    modifiedAt: { type: Date, default: Date.now },
+    changes: { type: Map, of: Schema.Types.Mixed }
+  }]
 }, { timestamps: true });
 
 // Indexes for common queries
 financeRecordSchema.index({ user: 1, accountType: 1 });
 financeRecordSchema.index({ renewalDate: 1 });
+
+// Middleware to track modifications
+financeRecordSchema.pre('save', function(next) {
+  // Track creation
+  if (this.isNew && this.user) {
+    this.createdBy = this.user;
+  }
+
+  // Track modifications
+  if (this.isModified() && !this.isNew) {
+    const changes = {};
+    this.modifiedPaths().forEach(path => {
+      if (path !== 'history' && path !== 'lastModifiedBy' && path !== 'updatedAt') {
+        changes[path] = this[path];
+      }
+    });
+
+    if (Object.keys(changes).length > 0) {
+      this.history.push({
+        modifiedBy: this.lastModifiedBy || this.user,
+        modifiedAt: new Date(),
+        changes
+      });
+    }
+  }
+  next();
+});
 
 module.exports = mongoose.model('FinanceRecord', financeRecordSchema);

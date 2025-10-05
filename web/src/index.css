@@ -181,3 +181,58 @@ body,
   --muted-foreground: #6b7280;
   --card-bg: #ffffff;
 }
+
+/* Print-friendly CSS for Emergency View */
+@media print {
+  /* Hide elements that shouldn't print */
+  .no-print,
+  nav,
+  header button,
+  .no-print-border {
+    display: none !important;
+  }
+
+  /* Adjust page layout for print */
+  body {
+    background: white !important;
+    font-size: 12pt;
+  }
+
+  /* Prevent page breaks inside emergency records */
+  .emergency-record,
+  [class*="EmergencyRecordCard"] {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Ensure borders print */
+  .border,
+  .border-2 {
+    border-color: #000 !important;
+  }
+
+  /* Remove background colors for ink efficiency */
+  .bg-red-50,
+  .bg-slate-50,
+  .bg-green-50,
+  .bg-blue-50 {
+    background-color: white !important;
+  }
+
+  /* Keep text colors readable */
+  .text-slate-900,
+  .text-slate-700,
+  .text-slate-600 {
+    color: #000 !important;
+  }
+
+  /* Ensure links display as text */
+  a[href]:after {
+    content: none;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 1cm;
+  }
+}
