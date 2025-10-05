@@ -30,7 +30,24 @@ const financeRecordSchema = new Schema({
     modifiedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     modifiedAt: { type: Date, default: Date.now },
     changes: { type: Map, of: Schema.Types.Mixed }
-  }]
+  }],
+
+  // Bank Import metadata (Story 2.3)
+  // This field tracks records created via Bank Import feature
+  import_metadata: {
+    source: { type: String }, // 'bank_import'
+    import_session_id: { type: Schema.Types.ObjectId, ref: 'ImportSession' },
+    created_from_suggestion: { type: Boolean },
+    original_payee: { type: String },
+    confidence_score: { type: Number },
+    import_date: { type: Date },
+    detected_frequency: { type: String },
+    amount_pattern: {
+      typical_amount: { type: Number },
+      variance: { type: Number },
+      currency: { type: String }
+    }
+  }
 }, { timestamps: true });
 
 // Indexes for common queries

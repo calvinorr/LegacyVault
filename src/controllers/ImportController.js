@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const ImportSession = require('../models/ImportSession');
-const Entry = require('../models/entry');
+// Story 2.3: Entry model no longer used - Bank Import creates domain records
 const pdfProcessor = require('../services/pdfProcessor');
 const recurringDetector = require('../services/recurringDetector');
 const backgroundProcessor = require('../services/backgroundProcessor');
@@ -229,15 +229,16 @@ class ImportController {
         return res.status(403).json({ error: 'Access denied to this import session' });
       }
 
-      // Check if session has associated entries
-      const associatedEntries = await Entry.find({
+      // Check if session has associated domain records (Story 2.3: FinanceRecord instead of Entry)
+      const FinanceRecord = require('../models/domain/FinanceRecord');
+      const associatedRecords = await FinanceRecord.find({
         'import_metadata.import_session_id': session._id
       });
 
-      if (associatedEntries.length > 0) {
+      if (associatedRecords.length > 0) {
         return res.status(409).json({
           error: 'Cannot delete import session that has associated entries',
-          associated_entries_count: associatedEntries.length
+          associated_entries_count: associatedRecords.length
         });
       }
 
@@ -281,29 +282,47 @@ class ImportController {
     }
   }
 
-  // Helper method to create Entry from suggestion
+  // Helper method to create domain record from suggestion
+  // Story 2.3: Updated to create domain records instead of legacy Entry
+  // TODO Story 2.4: Add intelligent domain suggestion logic
   static async _createEntryFromSuggestion(suggestion, session, user) {
     const { suggested_entry } = suggestion;
-    
-    // Map category to Entry category enum
-    const categoryMapping = {
-      'utilities': 'Bills',
-      'council_tax': 'Bills',
-      'telecoms': 'Bills',
-      'subscription': 'Subscriptions',
-      'insurance': 'Insurance',
-      'other': 'Other'
+
+    // Map category to domain record type
+    // Story 2.3: Default to Finance domain for all transactions
+    // Story 2.4 will add intelligent domain detection (energy → Property, car insurance → Vehicles, etc.)
+    const domainMapping = {
+      'utilities': { domain: 'finance', recordType: 'bill' },
+      'council_tax': { domain: 'finance', recordType: 'bill' },
+      'telecoms': { domain: 'finance', recordType: 'bill' },
+      'subscription': { domain: 'finance', recordType: 'subscription' },
+      'insurance': { domain: 'finance', recordType: 'insurance' },
+      'other': { domain: 'finance', recordType: 'other' }
     };
 
-    const entry = new Entry({
-      title: suggested_entry.title || `${suggestion.payee} - ${suggestion.category}`,
-      type: suggested_entry.type || 'bill',
-      provider: suggested_entry.provider || suggestion.payee,
-      category: categoryMapping[suggestion.category] || 'Other',
-      subCategory: suggestion.subcategory,
-      owner: user._id,
-      sharedWith: [],
-      accountDetails: suggested_entry.accountDetails || {},
+    const mapping = domainMapping[suggestion.category] || { domain: 'finance', recordType: 'other' };
+
+    // Import domain model dynamically based on mapping
+    // Story 2.3: Only Finance domain for now
+    const FinanceRecord = require('../models/domain/FinanceRecord');
+
+    // Create domain record with Bank Import metadata
+    const record = new FinanceRecord({
+      user: user._id,
+      name: suggested_entry.title || `${suggestion.payee} - ${suggestion.category}`,
+      accountType: mapping.recordType,
+      institution: suggested_entry.provider || suggestion.payee,
+      priority: 'Standard',
+      notes: `Created from Bank Import\nOriginal payee: ${suggestion.payee}\nCategory: ${suggestion.category}\nConfidence: ${suggestion.confidence}`,
+
+      // Finance-specific fields populated from transaction
+      balance: Math.abs(suggestion.amount), // Store transaction amount as positive
+
+      // Audit trail
+      createdBy: user._id,
+
+      // Bank Import metadata (stored in notes for Story 2.3)
+      // Story 2.4 will add proper metadata field to domain schemas
       import_metadata: {
         source: 'bank_import',
         import_session_id: session._id,
@@ -313,15 +332,15 @@ class ImportController {
         import_date: new Date(),
         detected_frequency: suggestion.frequency,
         amount_pattern: {
-          typical_amount: Math.abs(suggestion.amount), // Store as positive
-          variance: 0.1, // Default variance
+          typical_amount: Math.abs(suggestion.amount),
+          variance: 0.1,
           currency: 'GBP'
         }
       }
     });
 
-    await entry.save();
-    return entry;
+    await record.save();
+    return record;
   }
 
   // Get all raw transactions from a session 

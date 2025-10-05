@@ -7,7 +7,8 @@ const path = require('path');
 const User = require('../../src/models/user');
 const ImportSession = require('../../src/models/ImportSession');
 const RecurringDetectionRules = require('../../src/models/RecurringDetectionRules');
-const Entry = require('../../src/models/entry');
+// Story 2.3: Updated to use domain records instead of legacy Entry
+const FinanceRecord = require('../../src/models/domain/FinanceRecord');
 
 // Mock dependencies that we'll implement
 jest.mock('../../src/services/pdfProcessor', () => ({
@@ -376,12 +377,12 @@ describe('Import API Endpoints', () => {
       expect(response.body.created_entries).toHaveLength(1);
       expect(response.body.rejected_suggestions).toHaveLength(1);
 
-      // Verify entry was created
-      const createdEntry = await Entry.findById(response.body.created_entries[0].entry_id);
-      expect(createdEntry).toBeTruthy();
-      expect(createdEntry.title).toBe('Modified Utility Title');
-      expect(createdEntry.import_metadata.source).toBe('bank_import');
-      expect(createdEntry.import_metadata.import_session_id).toEqual(session._id);
+      // Verify domain record was created (Story 2.3: FinanceRecord instead of Entry)
+      const createdRecord = await FinanceRecord.findById(response.body.created_entries[0].entry_id);
+      expect(createdRecord).toBeTruthy();
+      expect(createdRecord.name).toBe('Modified Utility Title'); // domain records use 'name' not 'title'
+      expect(createdRecord.import_metadata.source).toBe('bank_import');
+      expect(createdRecord.import_metadata.import_session_id).toEqual(session._id);
     });
 
     test('should handle bulk accept action', async () => {
@@ -476,16 +477,17 @@ describe('Import API Endpoints', () => {
       });
       await session.save();
 
-      // Create an entry linked to this session
-      const linkedEntry = new Entry({
-        title: 'Linked Entry',
-        owner: testUser._id,
+      // Create a domain record linked to this session (Story 2.3: FinanceRecord instead of Entry)
+      const linkedRecord = new FinanceRecord({
+        user: testUser._id,
+        name: 'Linked Record',
+        accountType: 'bill',
         import_metadata: {
           source: 'bank_import',
           import_session_id: session._id
         }
       });
-      await linkedEntry.save();
+      await linkedRecord.save();
 
       const response = await request(app)
         .delete(`/api/import/sessions/${session._id}`)
