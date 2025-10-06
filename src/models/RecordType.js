@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const VALID_DOMAINS = [
-  'property',
-  'vehicles',
-  'employment',
-  'government',
-  'finance',
-  'insurance',
-  'legal',
-  'services'
+  'Property',
+  'Vehicle',
+  'Employment',
+  'Government',
+  'Finance',
+  'Insurance',
+  'Legal',
+  'Services'
 ];
 
 const recordTypeSchema = new Schema({

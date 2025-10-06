@@ -30,8 +30,12 @@ exports.createRecordType = async (req, res) => {
     await recordType.save();
     res.status(201).json(recordType);
   } catch (error) {
+    console.error('Error creating record type:', error);
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Duplicate record type name for this domain.' });
+    }
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message });
     }
     res.status(500).json({ error: 'Server error' });
   }
