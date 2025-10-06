@@ -10,6 +10,14 @@ To refine the user experience by adding a layer of administrator-managed customi
 
 ## Stories
 
+### Story 3.0: Refactor Settings Page
+- **Goal:** Modernize Settings page with clean card-based layout, removing legacy components
+- **Status:** ✅ Complete
+
 ### Story 3.1: Domain Record Type Management
-- **Goal:** Allow administrators to manage the list of "Record Types" available for each domain, providing customization and ensuring data consistency.
-- **Status:** Draft
+- **Goal:** Allow administrators to manage the list of "Record Types" available for each domain, providing customization and ensuring data consistency
+- **Status:** ✅ Complete
+
+### Story 3.2: Improve Record Type Management UI
+- **Goal:** Enhance Record Type Management UI with collapsible domains, visual hierarchy, and better navigation
+- **Status:** 📋 Ready for Dev
