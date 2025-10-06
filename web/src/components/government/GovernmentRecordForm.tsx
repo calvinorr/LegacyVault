@@ -272,4 +272,3 @@ const GovernmentRecordForm: React.FC<GovernmentRecordFormProps> = ({
 };
 
 export default GovernmentRecordForm;
-ault GovernmentRecordForm;

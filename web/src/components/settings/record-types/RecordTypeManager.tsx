@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useRecordTypes } from '@/hooks/useRecordTypes';
 import RecordTypeList from './RecordTypeList';
 import RecordTypeForm from './RecordTypeForm';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 
 const DOMAINS = [
   'Property',
@@ -56,11 +54,11 @@ const RecordTypeManager: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-muted-foreground">Loading record types...</div>;
+    return <div className="text-slate-600">Loading record types...</div>;
   }
 
   if (error) {
-    return <div className="text-destructive">{error}</div>;
+    return <div className="text-red-600">{error}</div>;
   }
 
   return (
@@ -68,14 +66,16 @@ const RecordTypeManager: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">Record Type Management</h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-600">
             Manage the types of records available for each life domain
           </p>
         </div>
-        <Button onClick={handleAdd} size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Record Type
-        </Button>
+        <button
+          onClick={handleAdd}
+          className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800"
+        >
+          + Add Record Type
+        </button>
       </div>
 
       <div className="space-y-8">
@@ -90,16 +90,17 @@ const RecordTypeManager: React.FC = () => {
         ))}
       </div>
 
-      <RecordTypeForm
-        open={isFormOpen}
-        onClose={() => {
-          setIsFormOpen(false);
-          setEditingType(null);
-        }}
-        onSubmit={handleSubmit}
-        initialData={editingType}
-        domains={DOMAINS}
-      />
+      {isFormOpen && (
+        <RecordTypeForm
+          onClose={() => {
+            setIsFormOpen(false);
+            setEditingType(null);
+          }}
+          onSubmit={handleSubmit}
+          initialData={editingType}
+          domains={DOMAINS}
+        />
+      )}
     </div>
   );
 };

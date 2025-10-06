@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import RecordTypeManager from './record-types/RecordTypeManager';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -12,15 +11,9 @@ const DomainManagement: React.FC = () => {
   }
 
   return (
-    <div className="col-span-full">
-      <Card>
-        <CardHeader>
-          <CardTitle>Domain Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <RecordTypeManager />
-        </CardContent>
-      </Card>
+    <div className="col-span-full bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold mb-4">Domain Management</h3>
+      <RecordTypeManager />
     </div>
   );
 };

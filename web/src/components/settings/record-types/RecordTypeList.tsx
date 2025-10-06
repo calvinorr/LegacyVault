@@ -1,6 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Pencil, Trash2 } from 'lucide-react';
 
 interface RecordType {
   _id: string;
@@ -20,32 +18,28 @@ const RecordTypeList: React.FC<RecordTypeListProps> = ({ domain, recordTypes, on
     <div>
       <h4 className="font-medium text-base mb-3">{domain}</h4>
       {recordTypes.length === 0 ? (
-        <p className="text-sm text-muted-foreground italic">No record types defined</p>
+        <p className="text-sm text-slate-500 italic">No record types defined</p>
       ) : (
         <div className="space-y-2">
           {recordTypes.map(recordType => (
             <div
               key={recordType._id}
-              className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <span className="text-sm">{recordType.name}</span>
               <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => onEdit(recordType)}
-                  className="h-8 w-8 p-0"
+                  className="px-3 py-1 text-sm text-slate-700 hover:text-slate-900"
                 >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                  Edit
+                </button>
+                <button
                   onClick={() => onDelete(recordType._id)}
-                  className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                  className="px-3 py-1 text-sm text-red-600 hover:text-red-800"
                 >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                  Delete
+                </button>
               </div>
             </div>
           ))}

@@ -1,18 +1,13 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const ApplicationSettings: React.FC = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Application Settings</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">
-          Application preferences and configurations will be available here.
-        </p>
-      </CardContent>
-    </Card>
+    <div className="bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold mb-4">Application Settings</h3>
+      <p className="text-sm text-slate-600">
+        Application preferences and configurations will be available here.
+      </p>
+    </div>
   );
 };
 

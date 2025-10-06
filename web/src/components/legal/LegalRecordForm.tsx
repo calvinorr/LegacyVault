@@ -252,14 +252,3 @@ const LegalRecordForm: React.FC<LegalRecordFormProps> = ({
 };
 
 export default LegalRecordForm;
-led:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
-        </button>
-      </div>
-    </form>
-  );
-};
-
-export default LegalRecordForm;
-t default LegalRecordForm;

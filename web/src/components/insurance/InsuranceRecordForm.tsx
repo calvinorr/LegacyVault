@@ -264,4 +264,3 @@ const InsuranceRecordForm: React.FC<InsuranceRecordFormProps> = ({
 };
 
 export default InsuranceRecordForm;
-fault InsuranceRecordForm;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface UserProfileSettingsProps {
   user: {
@@ -11,25 +10,23 @@ interface UserProfileSettingsProps {
 
 const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user }) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Profile</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
+    <div className="bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold mb-4">User Profile</h3>
+      <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium text-muted-foreground">Name</label>
+          <label className="text-sm font-medium text-slate-600">Name</label>
           <p className="text-base">{user.displayName}</p>
         </div>
         <div>
-          <label className="text-sm font-medium text-muted-foreground">Email</label>
+          <label className="text-sm font-medium text-slate-600">Email</label>
           <p className="text-base">{user.email}</p>
         </div>
         <div>
-          <label className="text-sm font-medium text-muted-foreground">Role</label>
+          <label className="text-sm font-medium text-slate-600">Role</label>
           <p className="text-base capitalize">{user.role}</p>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
