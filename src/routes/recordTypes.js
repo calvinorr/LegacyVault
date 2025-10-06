@@ -6,17 +6,17 @@ const {
   updateRecordType,
   deleteRecordType
 } = require('../controllers/recordTypeController');
-const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 // All routes are protected
-router.use(ensureAuthenticated);
+router.use(requireAuth);
 
 router.route('/')
   .get(getRecordTypes)
-  .post(ensureAdmin, createRecordType);
+  .post(requireAdmin, createRecordType);
 
 router.route('/:id')
-  .put(ensureAdmin, updateRecordType)
-  .delete(ensureAdmin, deleteRecordType);
+  .put(requireAdmin, updateRecordType)
+  .delete(requireAdmin, deleteRecordType);
 
 module.exports = router;
