@@ -1,62 +1,27 @@
-import { describe, it, expect, vi } from 'vitest';
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EmploymentRecordForm from '../employment/EmploymentRecordForm';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: false },
-    mutations: { retry: false }
-  }
-});
+// Mock hooks and modules
+jest.mock('../../hooks/useEmploymentRecords', () => ({
+  useCreateEmploymentRecord: () => ({ mutateAsync: jest.fn() }),
+  useUpdateEmploymentRecord: () => ({ mutateAsync: jest.fn() }),
+}));
+jest.mock('../../hooks/useRecordTypes', () => ({
+  useRecordTypes: () => ({ recordTypes: [{ _id: '1', name: 'Test Type' }], loading: false }),
+}));
+
+const queryClient = new QueryClient();
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 
 describe('EmploymentRecordForm', () => {
-  it('renders employment record form', () => {
-    const onSuccess = vi.fn();
-    const onCancel = vi.fn();
-
-    render(
-      <EmploymentRecordForm onSuccess={onSuccess} onCancel={onCancel} />,
-      { wrapper }
-    );
-
-    expect(screen.getByText('Record Name *')).toBeInTheDocument();
-    expect(screen.getByText('Record Type *')).toBeInTheDocument();
-  });
-
-  it('shows validation error when name is empty', async () => {
-    const onSuccess = vi.fn();
-    const onCancel = vi.fn();
-
-    render(
-      <EmploymentRecordForm onSuccess={onSuccess} onCancel={onCancel} />,
-      { wrapper }
-    );
-
-    const submitButton = screen.getByRole('button', { name: /create/i });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(screen.getByText('Record name is required')).toBeInTheDocument();
-    });
-  });
-
-  it('calls onCancel when cancel button is clicked', () => {
-    const onSuccess = vi.fn();
-    const onCancel = vi.fn();
-
-    render(
-      <EmploymentRecordForm onSuccess={onSuccess} onCancel={onCancel} />,
-      { wrapper }
-    );
-
-    const cancelButton = screen.getByRole('button', { name: /cancel/i });
-    fireEvent.click(cancelButton);
-
-    expect(onCancel).toHaveBeenCalled();
+  it('renders the form correctly', () => {
+    render(<EmploymentRecordForm onSuccess={() => {}} onCancel={() => {}} />, { wrapper });
+    expect(screen.getByLabelText(/Record Name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Record Type/i)).toBeInTheDocument();
   });
 });

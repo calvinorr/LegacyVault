@@ -24,19 +24,12 @@ interface LegalRecordFormProps {
   initialData?: Partial<LegalRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'will', label: 'Will' },
-  { value: 'power-of-attorney', label: 'Power of Attorney' },
-  { value: 'deed', label: 'Deed' },
-  { value: 'trust', label: 'Trust' },
-  { value: 'legal-agreement', label: 'Legal Agreement' }
-];
-
 const LegalRecordForm: React.FC<LegalRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('legal');
   const {
     register,
     handleSubmit,
@@ -259,3 +252,14 @@ const LegalRecordForm: React.FC<LegalRecordFormProps> = ({
 };
 
 export default LegalRecordForm;
+led:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default LegalRecordForm;
+t default LegalRecordForm;

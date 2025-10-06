@@ -24,19 +24,12 @@ interface ServicesRecordFormProps {
   initialData?: Partial<ServicesRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'tradesperson', label: 'Tradesperson' },
-  { value: 'cleaner', label: 'Cleaner' },
-  { value: 'gardener', label: 'Gardener' },
-  { value: 'pest-control', label: 'Pest Control' },
-  { value: 'other-service', label: 'Other Service' }
-];
-
 const ServicesRecordForm: React.FC<ServicesRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('services');
   const {
     register,
     handleSubmit,
@@ -259,3 +252,14 @@ const ServicesRecordForm: React.FC<ServicesRecordFormProps> = ({
 };
 
 export default ServicesRecordForm;
+00 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default ServicesRecordForm;
+efault ServicesRecordForm;

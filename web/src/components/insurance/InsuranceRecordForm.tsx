@@ -100,11 +100,12 @@ const InsuranceRecordForm: React.FC<InsuranceRecordFormProps> = ({
         <select
           {...register('recordType', { required: 'Record type is required' })}
           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+          disabled={recordTypesLoading}
         >
           <option value="">Select type...</option>
-          {RECORD_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
+          {recordTypes.map((type) => (
+            <option key={type._id} value={type.name}>
+              {type.name}
             </option>
           ))}
         </select>
@@ -263,3 +264,4 @@ const InsuranceRecordForm: React.FC<InsuranceRecordFormProps> = ({
 };
 
 export default InsuranceRecordForm;
+fault InsuranceRecordForm;

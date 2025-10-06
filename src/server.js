@@ -18,6 +18,7 @@ const renewalsRouter = require('./routes/renewals');
 const domainsRouter = require('./routes/domains');
 const domainDocumentsRouter = require('./routes/domain-documents');
 const emergencyRouter = require('./routes/emergency');
+const recordTypesRouter = require('./routes/recordTypes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -120,6 +121,9 @@ app.use('/api/domain-documents', domainDocumentsRouter); // For download/delete 
 
 // Emergency API (Story 1.9 - Emergency View)
 app.use('/api/emergency', emergencyRouter);
+
+// Record Types API (Story 3.1 - Record Type Management)
+app.use('/api/record-types', recordTypesRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

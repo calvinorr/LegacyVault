@@ -4,6 +4,8 @@ import { isValidSortCode } from '../../utils/ukValidation';
 import { useCreateFinanceRecord, useUpdateFinanceRecord } from '../../hooks/useFinanceRecords';
 import type { FinanceRecord } from '../../services/api/domains';
 
+import { useRecordTypes } from '../../hooks/useRecordTypes';
+
 interface FinanceFormData {
   name: string;
   recordType: string;
@@ -27,22 +29,12 @@ interface FinanceRecordFormProps {
   initialData?: Partial<FinanceRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'current-account', label: 'Current Account' },
-  { value: 'savings-account', label: 'Savings Account' },
-  { value: 'isa', label: 'ISA' },
-  { value: 'credit-card', label: 'Credit Card' },
-  { value: 'loan', label: 'Loan' },
-  { value: 'investment', label: 'Investment' },
-  { value: 'premium-bonds', label: 'Premium Bonds' },
-  { value: 'pension', label: 'Pension / SIPP' }
-];
-
 const FinanceRecordForm: React.FC<FinanceRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('finance');
   const {
     register,
     handleSubmit,
@@ -114,11 +106,12 @@ const FinanceRecordForm: React.FC<FinanceRecordFormProps> = ({
         <select
           {...register('recordType', { required: 'Account type is required' })}
           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+          disabled={recordTypesLoading}
         >
           <option value="">Select type...</option>
-          {RECORD_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
+          {recordTypes.map((type) => (
+            <option key={type._id} value={type.name}>
+              {type.name}
             </option>
           ))}
         </select>

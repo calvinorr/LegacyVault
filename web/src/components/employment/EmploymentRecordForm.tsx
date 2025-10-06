@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useCreateEmploymentRecord, useUpdateEmploymentRecord } from '../../hooks/useEmploymentRecords';
 import type { EmploymentRecord } from '../../services/api/domains';
 
+import { useRecordTypes } from '../../hooks/useRecordTypes';
+
 interface EmploymentFormData {
   name: string;
   recordType: string;
@@ -23,18 +25,12 @@ interface EmploymentRecordFormProps {
   initialData?: Partial<EmploymentRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'employment-details', label: 'Employment Details' },
-  { value: 'pension', label: 'Pension' },
-  { value: 'payroll', label: 'Payroll' },
-  { value: 'benefits', label: 'Benefits' }
-];
-
 const EmploymentRecordForm: React.FC<EmploymentRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('employment');
   const {
     register,
     handleSubmit,
@@ -98,11 +94,12 @@ const EmploymentRecordForm: React.FC<EmploymentRecordFormProps> = ({
         <select
           {...register('recordType', { required: 'Record type is required' })}
           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+          disabled={recordTypesLoading}
         >
           <option value="">Select type...</option>
-          {RECORD_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
+          {recordTypes.map((type) => (
+            <option key={type._id} value={type.name}>
+              {type.name}
             </option>
           ))}
         </select>

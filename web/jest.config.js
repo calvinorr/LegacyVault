@@ -14,6 +14,9 @@ module.exports = {
     '<rootDir>/src/**/__tests__/**/*.(ts|tsx|js|jsx)',
     '<rootDir>/src/**/?(*.)(spec|test).(ts|tsx|js|jsx)'
   ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
   collectCoverageFrom: [
     'src/**/*.(ts|tsx)',
     '!src/**/*.d.ts',

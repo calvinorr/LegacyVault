@@ -4,22 +4,16 @@ import { useCreatePropertyRecord } from '../../hooks/usePropertyRecords';
 import { PropertyRecord } from '../../services/api/domains';
 import { isValidPostcode } from '../../utils/ukValidation';
 
+import { useRecordTypes } from '../../hooks/useRecordTypes';
+
 interface PropertyRecordFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const RECORD_TYPES = [
-  { value: 'mortgage', label: 'Mortgage' },
-  { value: 'utility-electric', label: 'Electricity' },
-  { value: 'utility-gas', label: 'Gas' },
-  { value: 'utility-water', label: 'Water' },
-  { value: 'home-insurance', label: 'Home Insurance' },
-  { value: 'rates', label: 'Domestic Rates' }
-];
-
 const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose, onSuccess }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('property');
   const createMutation = useCreatePropertyRecord();
   const [formData, setFormData] = useState<Partial<PropertyRecord>>({
     name: '',
@@ -202,11 +196,12 @@ const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose
               value={formData.recordType}
               onChange={(e) => handleChange('recordType', e.target.value)}
               style={inputStyle}
+              disabled={recordTypesLoading}
             >
               <option value="">Select type...</option>
-              {RECORD_TYPES.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
+              {recordTypes.map((type) => (
+                <option key={type._id} value={type.name}>
+                  {type.name}
                 </option>
               ))}
             </select>
