@@ -5,6 +5,7 @@ interface RecordTypeFormProps {
   onSubmit: (data: { name: string; domain: string }) => void;
   initialData?: { _id: string; name: string; domain: string } | null;
   domains: string[];
+  hideDomainSelect?: boolean;
 }
 
 const RecordTypeForm: React.FC<RecordTypeFormProps> = ({
@@ -12,6 +13,7 @@ const RecordTypeForm: React.FC<RecordTypeFormProps> = ({
   onSubmit,
   initialData,
   domains,
+  hideDomainSelect = false,
 }) => {
   const [name, setName] = useState('');
   const [domain, setDomain] = useState('');
@@ -50,25 +52,27 @@ const RecordTypeForm: React.FC<RecordTypeFormProps> = ({
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Domain
-            </label>
-            <select
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent"
-              disabled={!!initialData}
-              required
-            >
-              <option value="">Select a domain</option>
-              {domains.map(d => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-          </div>
+          {!hideDomainSelect && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Domain
+              </label>
+              <select
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+                disabled={!!initialData}
+                required
+              >
+                <option value="">Select a domain</option>
+                {domains.map(d => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"

@@ -75,6 +75,27 @@ const getSearchFields = (domain) => {
 };
 
 /**
+ * STATS - Get record counts for all domains
+ * GET /api/domains/stats
+ */
+router.get('/stats', requireAuth, async (req, res) => {
+  try {
+    const stats = {};
+
+    // Query each domain model for count
+    for (const domain of VALID_DOMAINS) {
+      const Model = getDomainModel(domain);
+      const count = await Model.countDocuments({ user: req.user._id });
+      stats[domain] = count;
+    }
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * SEARCH - Search domain records (must come before GET /:id route)
  * GET /api/domains/:domain/records/search?q=searchTerm
  */

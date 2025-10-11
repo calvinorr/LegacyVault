@@ -18,9 +18,14 @@ const RecordTypeManager: React.FC = () => {
   const { recordTypes, loading, error, addRecordType, updateRecordType, deleteRecordType } = useRecordTypes();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingType, setEditingType] = useState<{ _id: string; name: string; domain: string } | null>(null);
+  const [expandedDomains, setExpandedDomains] = useState<Set<string>>(new Set(DOMAINS)); // All expanded by default
 
-  const handleAdd = () => {
-    setEditingType(null);
+  const handleAdd = (domain?: string) => {
+    if (domain) {
+      setEditingType({ _id: '', name: '', domain });
+    } else {
+      setEditingType(null);
+    }
     setIsFormOpen(true);
   };
 
@@ -53,6 +58,19 @@ const RecordTypeManager: React.FC = () => {
     }
   };
 
+  const toggleDomain = (domain: string) => {
+    const newExpanded = new Set(expandedDomains);
+    if (newExpanded.has(domain)) {
+      newExpanded.delete(domain);
+    } else {
+      newExpanded.add(domain);
+    }
+    setExpandedDomains(newExpanded);
+  };
+
+  const expandAll = () => setExpandedDomains(new Set(DOMAINS));
+  const collapseAll = () => setExpandedDomains(new Set());
+
   if (loading) {
     return <div className="text-slate-600">Loading record types...</div>;
   }
@@ -70,24 +88,45 @@ const RecordTypeManager: React.FC = () => {
             Manage the types of records available for each life domain
           </p>
         </div>
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800"
-        >
-          + Add Record Type
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={collapseAll}
+            className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            Collapse All
+          </button>
+          <button
+            onClick={expandAll}
+            className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
+          >
+            Expand All
+          </button>
+          <button
+            onClick={() => handleAdd()}
+            className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800"
+          >
+            + Add Record Type
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-8">
-        {DOMAINS.map(domain => (
-          <RecordTypeList
-            key={domain}
-            domain={domain}
-            recordTypes={recordTypes.filter(rt => rt.domain === domain)}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
+      <div className="space-y-3">
+        {DOMAINS.map(domain => {
+          const domainRecordTypes = recordTypes.filter(rt => rt.domain === domain);
+          return (
+            <RecordTypeList
+              key={domain}
+              domain={domain}
+              recordTypes={domainRecordTypes}
+              recordCount={domainRecordTypes.length}
+              isExpanded={expandedDomains.has(domain)}
+              onToggle={() => toggleDomain(domain)}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onAddForDomain={() => handleAdd(domain)}
+            />
+          );
+        })}
       </div>
 
       {isFormOpen && (

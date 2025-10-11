@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { createEntry } from "../api";
-import { suggestCategoriesFromTransaction, CategorySuggestion } from "../services/categorySuggestionService";
-import { useCategories } from "../hooks/useCategories";
+import { X, Sparkles } from "lucide-react";
+import { useQueryClient } from '@tanstack/react-query';
+import { useRecordTypes } from "../hooks/useRecordTypes";
 
 interface Transaction {
   date: string;
   description: string;
   amount: number;
   originalText: string;
+  recordCreated?: boolean;
 }
 
 interface CreateEntryFromTransactionModalProps {
@@ -15,206 +16,167 @@ interface CreateEntryFromTransactionModalProps {
   onClose: () => void;
   onSuccess: () => void;
   transaction: Transaction | null;
+  sessionId?: string;
+  transactionIndex?: number;
 }
 
-interface FormData {
-  title: string;
-  provider: string;
-  type: string;
-  category: string;
-  subCategory: string;
-  categoryId: string;
-  subCategoryId: string;
-  accountDetails: {
-    accountType: string;
-    accountNumber: string;
-    sortCode: string;
-    branch: string;
-    billType: string;
-    monthlyAmount: string;
-    paymentDate: string;
-    directDebit: boolean;
-  };
-  notes: string;
-  confidential: boolean;
-}
+// Domain configuration - values MUST match backend RecordType.js VALID_DOMAINS
+const DOMAINS = [
+  { value: "Property", label: "Property", description: "Utilities, Council Tax, Rent/Mortgage", apiPath: "property" },
+  { value: "Vehicle", label: "Vehicles", description: "Car Insurance, MOT, Vehicle Tax", apiPath: "vehicles" },
+  { value: "Finance", label: "Finance", description: "Bank Accounts, Loans, Credit Cards", apiPath: "finance" },
+  { value: "Employment", label: "Employment", description: "Payroll, Pensions, Benefits", apiPath: "employment" },
+  { value: "Government", label: "Government", description: "Tax, TV Licence, Passports", apiPath: "government" },
+  { value: "Insurance", label: "Insurance", description: "Life, Health, Home Insurance", apiPath: "insurance" },
+  { value: "Legal", label: "Legal", description: "Solicitors, Legal Services", apiPath: "legal" },
+  { value: "Services", label: "Services", description: "Subscriptions, Broadband, Mobile", apiPath: "services" },
+];
 
-const initialFormData: FormData = {
-  title: "",
-  provider: "",
-  type: "bill",
-  category: "",
-  subCategory: "",
-  categoryId: "",
-  subCategoryId: "",
-  accountDetails: {
-    accountType: "",
-    accountNumber: "",
-    sortCode: "",
-    branch: "",
-    billType: "Other",
-    monthlyAmount: "",
-    paymentDate: "",
-    directDebit: false,
-  },
-  notes: "",
-  confidential: true,
-};
+// Smart domain suggestion based on transaction description
+// Returns capitalized domain names to match RecordType.js VALID_DOMAINS
+function suggestDomain(description: string): string {
+  const desc = description.toLowerCase();
+
+  // Property/Utilities
+  if (desc.includes('gas') || desc.includes('electric') || desc.includes('water') ||
+      desc.includes('council tax') || desc.includes('rent') || desc.includes('mortgage')) {
+    return 'Property';
+  }
+
+  // Vehicles
+  if (desc.includes('car') || desc.includes('vehicle') || desc.includes('mot') ||
+      desc.includes('insurance') && (desc.includes('car') || desc.includes('motor'))) {
+    return 'Vehicle';
+  }
+
+  // Services/Subscriptions
+  if (desc.includes('netflix') || desc.includes('spotify') || desc.includes('amazon') ||
+      desc.includes('broadband') || desc.includes('mobile') || desc.includes('phone') ||
+      desc.includes('sky') || desc.includes('virgin') || desc.includes('bt ')) {
+    return 'Services';
+  }
+
+  // Government
+  if (desc.includes('tv licence') || desc.includes('hmrc') || desc.includes('dvla') ||
+      desc.includes('passport')) {
+    return 'Government';
+  }
+
+  // Insurance (general)
+  if (desc.includes('insurance') || desc.includes('policy')) {
+    return 'Insurance';
+  }
+
+  // Finance (default for payments/transfers)
+  return 'Finance';
+}
 
 export default function CreateEntryFromTransactionModal({
   isOpen,
   onClose,
   onSuccess,
   transaction,
+  sessionId,
+  transactionIndex,
 }: CreateEntryFromTransactionModalProps) {
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [selectedDomain, setSelectedDomain] = useState<string>("");
+  const [selectedRecordType, setSelectedRecordType] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [provider, setProvider] = useState<string>("");
+  const [monthlyAmount, setMonthlyAmount] = useState<string>("");
+  const [notes, setNotes] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [suggestions, setSuggestions] = useState<CategorySuggestion[]>([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-  
-  // Category management
-  const { getRootCategories, getCategoriesByParent, getCategoryById, loading: categoriesLoading } = useCategories();
-  const [selectedParentId, setSelectedParentId] = useState<string | null>(null);
 
-  // Load category suggestions when transaction changes
+  // Inline record type creation
+  const [showAddRecordType, setShowAddRecordType] = useState(false);
+  const [newRecordTypeName, setNewRecordTypeName] = useState("");
+  const [creatingRecordType, setCreatingRecordType] = useState(false);
+  const [recordTypeError, setRecordTypeError] = useState<string | null>(null);
+
+  const queryClient = useQueryClient();
+  const { recordTypes, loading: recordTypesLoading, addRecordType } = useRecordTypes(selectedDomain);
+
+  // Auto-populate form when transaction changes
   useEffect(() => {
     if (transaction && isOpen) {
-      loadCategorySuggestions();
-      populateFormFromTransaction();
+      // Suggest domain
+      const suggested = suggestDomain(transaction.description);
+      setSelectedDomain(suggested);
+
+      // Extract provider from description
+      const cleanDesc = transaction.description
+        .replace(/PAYMENT|DD|DIRECT DEBIT|CARD|ONLINE|TO /gi, '')
+        .trim();
+      const words = cleanDesc.split(' ');
+      const extractedProvider = words.length >= 2 ? words.slice(0, 2).join(' ') : words[0];
+
+      setProvider(extractedProvider || cleanDesc);
+      setName(`${extractedProvider || cleanDesc} Payment`);
+      setMonthlyAmount(Math.abs(transaction.amount).toFixed(2));
+      setNotes(`Auto-generated from bank transaction:\n${transaction.originalText}\nDate: ${transaction.date}`);
     }
   }, [transaction, isOpen]);
 
-  const loadCategorySuggestions = async () => {
-    if (!transaction) return;
-    
-    setLoadingSuggestions(true);
+  // Reset selected record type when domain changes
+  useEffect(() => {
+    setSelectedRecordType("");
+    setShowAddRecordType(false);
+    setNewRecordTypeName("");
+    setRecordTypeError(null);
+  }, [selectedDomain]);
+
+  // Handle inline record type creation
+  const handleCreateRecordType = async () => {
+    setRecordTypeError(null);
+
+    // Validate name
+    const trimmedName = newRecordTypeName.trim();
+    if (!trimmedName) {
+      setRecordTypeError("Record type name cannot be empty");
+      return;
+    }
+
+    // Check for duplicates (case-insensitive)
+    const isDuplicate = recordTypes.some(
+      rt => rt.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      setRecordTypeError("A record type with this name already exists");
+      return;
+    }
+
     try {
-      const categorySuggestions = await suggestCategoriesFromTransaction(transaction);
-      setSuggestions(categorySuggestions);
-      
-      // Auto-select the best suggestion if available
-      if (categorySuggestions.length > 0) {
-        const bestSuggestion = categorySuggestions[0];
-        
-        // Find the category by ID from the suggestion
-        const selectedCategory = getCategoryById(bestSuggestion.categoryId);
-        const parentCategory = selectedCategory?.parentId ? getCategoryById(selectedCategory.parentId) : null;
-        
-        setFormData(prev => ({
-          ...prev,
-          category: parentCategory?.name || bestSuggestion.rootCategoryName,
-          subCategory: selectedCategory?.name || bestSuggestion.categoryName,
-          categoryId: parentCategory?._id || bestSuggestion.categoryId,
-          subCategoryId: selectedCategory?._id || bestSuggestion.categoryId,
-          provider: bestSuggestion.provider || extractProviderFromDescription(transaction.description),
-          accountDetails: {
-            ...prev.accountDetails,
-            billType: bestSuggestion.suggestedBillType || "Other",
-          }
-        }));
-        
-        // Update selected parent for dropdown cascade
-        setSelectedParentId(parentCategory?._id || null);
-      }
-    } catch (error) {
-      console.error('Failed to load category suggestions:', error);
+      setCreatingRecordType(true);
+      const newRecordType = await addRecordType({
+        name: trimmedName,
+        domain: selectedDomain,
+      });
+
+      // Auto-select the newly created record type
+      setSelectedRecordType(newRecordType.name);
+
+      // Reset inline form
+      setShowAddRecordType(false);
+      setNewRecordTypeName("");
+      setRecordTypeError(null);
+    } catch (err: any) {
+      setRecordTypeError(err.message || "Failed to create record type");
     } finally {
-      setLoadingSuggestions(false);
+      setCreatingRecordType(false);
     }
   };
 
-  const populateFormFromTransaction = () => {
-    if (!transaction) return;
-
-    const provider = extractProviderFromDescription(transaction.description);
-    const amount = Math.abs(transaction.amount).toFixed(2);
-    const paymentDate = extractPaymentDate(transaction.date);
-
-    setFormData(prev => ({
-      ...prev,
-      title: generateTitle(transaction.description, provider),
-      provider: provider,
-      accountDetails: {
-        ...prev.accountDetails,
-        monthlyAmount: amount,
-        paymentDate: paymentDate,
-        directDebit: transaction.originalText.includes('DD') || transaction.originalText.includes('DIRECT DEBIT'),
-      },
-      notes: `Auto-generated from bank transaction: ${transaction.originalText}`,
-    }));
-  };
-
-  const extractProviderFromDescription = (description: string): string => {
-    // Extract likely provider name from transaction description
-    const cleanDesc = description.replace(/PAYMENT|DD|DIRECT DEBIT|CARD|ONLINE/gi, '').trim();
-    const words = cleanDesc.split(' ');
-    
-    // Take first 1-2 meaningful words as provider name
-    if (words.length >= 2) {
-      return words.slice(0, 2).join(' ');
-    }
-    return words[0] || cleanDesc;
-  };
-
-  const generateTitle = (description: string, provider: string): string => {
-    // Generate a clean title for the entry
-    if (provider) {
-      return `${provider} Payment`;
-    }
-    return description.replace(/PAYMENT|DD|DIRECT DEBIT/gi, '').trim() || 'Monthly Payment';
-  };
-
-  const extractPaymentDate = (transactionDate: string): string => {
-    // Extract day of month for recurring payment prediction
-    const date = new Date(transactionDate);
-    return date.getDate().toString();
-  };
-
-  const applySuggestion = (suggestion: CategorySuggestion) => {
-    // Find the category by ID from the suggestion
-    const selectedCategory = getCategoryById(suggestion.categoryId);
-    const parentCategory = selectedCategory?.parentId ? getCategoryById(selectedCategory.parentId) : null;
-    
-    setFormData(prev => ({
-      ...prev,
-      category: parentCategory?.name || suggestion.rootCategoryName,
-      subCategory: selectedCategory?.name || suggestion.categoryName,
-      categoryId: parentCategory?._id || suggestion.categoryId,
-      subCategoryId: selectedCategory?._id || suggestion.categoryId,
-      provider: suggestion.provider || prev.provider,
-      accountDetails: {
-        ...prev.accountDetails,
-        billType: suggestion.suggestedBillType || "Other",
-      }
-    }));
-    
-    // Update selected parent for dropdown cascade
-    setSelectedParentId(parentCategory?._id || null);
-  };
-  
-  const handleCategoryChange = (categoryId: string) => {
-    const category = getCategoryById(categoryId);
-    if (category) {
-      setSelectedParentId(categoryId);
-      setFormData(prev => ({
-        ...prev,
-        category: category.name,
-        categoryId: categoryId,
-        subCategory: '',
-        subCategoryId: ''
-      }));
-    }
-  };
-  
-  const handleSubCategoryChange = (subCategoryId: string) => {
-    const subCategory = getCategoryById(subCategoryId);
-    if (subCategory) {
-      setFormData(prev => ({
-        ...prev,
-        subCategory: subCategory.name,
-        subCategoryId: subCategoryId
-      }));
+  // Handle record type dropdown change
+  const handleRecordTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (value === "__ADD_NEW__") {
+      setShowAddRecordType(true);
+      setSelectedRecordType("");
+    } else {
+      setSelectedRecordType(value);
+      setShowAddRecordType(false);
     }
   };
 
@@ -224,170 +186,218 @@ export default function CreateEntryFromTransactionModal({
     setLoading(true);
 
     try {
-      const payload = {
-        title: formData.title,
-        type: formData.type as "account" | "bill" | "investment" | "property" | "policy",
-        provider: formData.provider,
-        category: formData.category,
-        subCategory: formData.subCategory,
-        categoryId: formData.categoryId,
-        accountDetails: {
-          ...formData.accountDetails,
-          category: formData.type,
-        },
-        notes: formData.notes,
-        confidential: formData.confidential,
+      if (!selectedDomain) {
+        throw new Error("Please select a domain");
+      }
+
+      // Build payload based on domain
+      const payload: any = {
+        name,
+        priority: "Standard",
+        notes,
       };
 
-      await createEntry(payload);
+      // Add recordType if selected (user-defined record type from Settings)
+      if (selectedRecordType) {
+        payload.recordType = selectedRecordType;
+      }
+
+      // Add domain-specific required fields with defaults
+      // Each domain model has specific required fields that must be populated
+      switch (selectedDomain) {
+        case 'Finance':
+          // FinanceRecord requires accountType
+          payload.accountType = selectedRecordType || 'other'; // Use recordType or default to 'other'
+          payload.institution = provider || 'Unknown';
+          if (monthlyAmount) {
+            payload.balance = parseFloat(monthlyAmount);
+          }
+          break;
+
+        case 'Property':
+          // PropertyRecord requires recordType
+          payload.recordType = selectedRecordType || 'Other';
+          payload.provider = provider;
+          if (monthlyAmount) {
+            payload.monthlyAmount = parseFloat(monthlyAmount);
+          }
+          break;
+
+        case 'Vehicle':
+          // VehicleRecord requires recordType
+          payload.recordType = selectedRecordType || 'Other';
+          payload.name = name;
+          break;
+
+        case 'Insurance':
+          // InsuranceRecord requires policyType (not recordType)
+          payload.policyType = selectedRecordType || 'other';
+          payload.provider = provider;
+          if (monthlyAmount) {
+            payload.premium = parseFloat(monthlyAmount);
+          }
+          break;
+
+        case 'Services':
+          // ServicesRecord requires serviceType (not recordType)
+          payload.serviceType = selectedRecordType || 'subscription';
+          payload.tradesperson = provider;
+          if (monthlyAmount) {
+            payload.monthlyFee = parseFloat(monthlyAmount);
+          }
+          break;
+
+        case 'Government':
+          // GovernmentRecord requires recordType
+          payload.recordType = selectedRecordType || 'Other';
+          payload.issuingAuthority = provider || 'Government';
+          break;
+
+        case 'Employment':
+          // EmploymentRecord requires recordType
+          payload.recordType = selectedRecordType || 'Employment';
+          payload.employer = provider || 'Employer';
+          break;
+
+        case 'Legal':
+          // LegalRecord requires documentType (not recordType)
+          payload.documentType = selectedRecordType || 'other';
+          payload.solicitorName = provider;
+          break;
+
+        default:
+          // Generic fallback
+          if (provider) {
+            payload.provider = provider;
+          }
+          if (monthlyAmount) {
+            payload.amount = parseFloat(monthlyAmount);
+          }
+      }
+
+      // Add import metadata
+      payload.import_metadata = {
+        source: 'bank_import',
+        created_from_transaction: true,
+        original_description: transaction?.description,
+        transaction_amount: transaction?.amount,
+        transaction_date: transaction?.date,
+        import_date: new Date().toISOString(),
+      };
+
+      // Get the API path for this domain (lowercase for API endpoints)
+      const domainConfig = DOMAINS.find(d => d.value === selectedDomain);
+      const apiPath = domainConfig?.apiPath || selectedDomain.toLowerCase();
+
+      // Create record via domain-specific API
+      const response = await fetch(`/api/domains/${apiPath}/records`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to create ${selectedDomain} record`);
+      }
+
+      const createdRecord = await response.json();
+
+      // Mark transaction as processed if we have session info
+      if (sessionId && transactionIndex !== undefined) {
+        try {
+          await fetch(`/api/import/sessions/${sessionId}/transactions/${transactionIndex}/mark-processed`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              recordId: createdRecord._id,
+              domain: selectedDomain,
+            }),
+          });
+        } catch (markError) {
+          console.error('Failed to mark transaction as processed:', markError);
+          // Don't fail the whole operation if this fails
+        }
+      }
+
+      // Invalidate domain stats cache to refresh home page counts
+      queryClient.invalidateQueries({ queryKey: ['domain-stats'] });
 
       // Reset form and close modal
-      setFormData(initialFormData);
-      setSuggestions([]);
+      resetForm();
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || "Failed to create entry");
+      setError(err.message || "Failed to create record");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (field: keyof FormData, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const resetForm = () => {
+    setSelectedDomain("");
+    setSelectedRecordType("");
+    setName("");
+    setProvider("");
+    setMonthlyAmount("");
+    setNotes("");
+    setError(null);
   };
 
-  const handleAccountDetailChange = (
-    field: keyof FormData["accountDetails"],
-    value: string | boolean
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      accountDetails: {
-        ...prev.accountDetails,
-        [field]: value,
-      },
-    }));
+  const handleClose = () => {
+    resetForm();
+    onClose();
   };
 
   if (!isOpen || !transaction) return null;
 
-  const overlayStyle = {
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(15, 23, 42, 0.4)",
-    backdropFilter: "blur(8px)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-  };
-
-  const modalStyle = {
-    backgroundColor: "#ffffff",
-    borderRadius: "20px",
-    width: "90%",
-    maxWidth: "640px",
-    maxHeight: "90vh",
-    overflow: "auto",
-    boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.05)",
-    border: "1px solid #f1f5f9",
-  };
-
-  const headerStyle = {
-    padding: "32px 32px 0 32px",
-    borderBottom: "1px solid #f1f5f9",
-    marginBottom: "32px",
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-  };
-
-  const contentStyle = {
-    padding: "0 32px 32px 32px",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "14px 16px",
-    borderRadius: "12px",
-    border: "1px solid #e2e8f0",
-    fontSize: "16px",
-    marginBottom: "20px",
-    boxSizing: "border-box" as const,
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-    backgroundColor: "#fefefe",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    outline: "none",
-    color: "#0f172a",
-  };
-
-  const selectStyle = {
-    ...inputStyle,
-    appearance: "none" as const,
-    backgroundImage:
-      "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e\")",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 16px center",
-    backgroundSize: "16px",
-    paddingRight: "48px",
-    cursor: "pointer",
-  };
-
-  const suggestionStyle = {
-    padding: "16px",
-    border: "1px solid #f1f5f9",
-    borderRadius: "12px",
-    marginBottom: "12px",
-    cursor: "pointer",
-    backgroundColor: "#f8fafc",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-  };
-
-  const buttonStyle = {
-    padding: "12px 24px",
-    borderRadius: "12px",
-    fontSize: "15px",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    border: "none",
-    marginRight: "12px",
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-  };
-
-  const primaryButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#0f172a",
-    color: "#ffffff",
-    fontWeight: "600",
-    boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.1)",
-  };
-
-  const secondaryButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#ffffff",
-    color: "#64748b",
-    border: "1px solid #e2e8f0",
-    fontWeight: "500",
-  };
-
   return (
-    <div style={overlayStyle} onClick={onClose}>
-      <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-        <div style={headerStyle}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(15, 23, 42, 0.4)",
+        backdropFilter: "blur(8px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+        fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+      }}
+      onClick={handleClose}
+    >
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "20px",
+          width: "90%",
+          maxWidth: "600px",
+          maxHeight: "90vh",
+          overflow: "auto",
+          boxShadow:
+            "0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.05)",
+          border: "1px solid #f1f5f9",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "32px 32px 24px 32px",
+            borderBottom: "1px solid #f1f5f9",
+          }}
+        >
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              paddingBottom: "16px",
+              marginBottom: "16px",
             }}
           >
             <h2
@@ -396,341 +406,461 @@ export default function CreateEntryFromTransactionModal({
                 fontWeight: "600",
                 color: "#0f172a",
                 margin: 0,
-                fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 letterSpacing: "-0.025em",
               }}
             >
-              Create Entry from Transaction
+              Create Domain Record
             </h2>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               style={{
                 background: "none",
                 border: "none",
-                fontSize: "24px",
                 cursor: "pointer",
                 color: "#64748b",
                 padding: "8px",
                 borderRadius: "8px",
-                transition: "all 0.2s ease",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                transition: "all 0.2s ease",
               }}
             >
-              ×
+              <X size={24} strokeWidth={1.5} />
             </button>
           </div>
-          
+
           {/* Transaction Preview */}
-          <div style={{
-            backgroundColor: "#f3f4f6",
-            padding: "12px",
-            borderRadius: "8px",
-            marginBottom: "16px",
-          }}>
-            <div style={{ fontSize: "14px", color: "#64748b", marginBottom: "4px" }}>
+          <div
+            style={{
+              backgroundColor: "#f8fafc",
+              padding: "16px",
+              borderRadius: "12px",
+              border: "1px solid #f1f5f9",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "13px",
+                color: "#64748b",
+                marginBottom: "6px",
+                fontWeight: "500",
+              }}
+            >
               Transaction:
             </div>
-            <div style={{ fontWeight: "500" }}>
+            <div style={{ fontWeight: "600", color: "#0f172a", marginBottom: "4px" }}>
               {transaction.description} • £{Math.abs(transaction.amount).toFixed(2)}
             </div>
-            <div style={{ fontSize: "12px", color: "#9ca3af" }}>
-              {transaction.date} • {transaction.originalText}
+            <div style={{ fontSize: "12px", color: "#94a3b8" }}>
+              {new Date(transaction.date).toLocaleDateString('en-GB')} • {transaction.originalText}
             </div>
           </div>
         </div>
 
-        <div style={contentStyle}>
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <div
-                style={{
-                  backgroundColor: "#fee2e2",
-                  border: "1px solid #fecaca",
-                  color: "#dc2626",
-                  padding: "12px 16px",
-                  borderRadius: "8px",
-                  marginBottom: "16px",
-                  fontSize: "14px",
-                }}
-              >
-                {error}
-              </div>
-            )}
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ padding: "32px" }}>
+          {error && (
+            <div
+              style={{
+                backgroundColor: "#fef2f2",
+                border: "1px solid #fecaca",
+                color: "#dc2626",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                marginBottom: "24px",
+                fontSize: "14px",
+              }}
+            >
+              {error}
+            </div>
+          )}
 
-            {/* Category Suggestions */}
-            {suggestions.length > 0 && (
-              <div style={{ marginBottom: "24px" }}>
-                <label style={{
+          {/* Domain Selection */}
+          <div style={{ marginBottom: "24px" }}>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#334155",
+                marginBottom: "8px",
+              }}
+            >
+              <Sparkles size={16} strokeWidth={2} color="#f59e0b" />
+              Domain *
+            </label>
+            <select
+              value={selectedDomain}
+              onChange={(e) => setSelectedDomain(e.target.value)}
+              required
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "15px",
+                fontFamily: "inherit",
+                backgroundColor: "#fefefe",
+                cursor: "pointer",
+                appearance: "none",
+                backgroundImage:
+                  "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e\")",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 16px center",
+                backgroundSize: "16px",
+                paddingRight: "48px",
+              }}
+            >
+              <option value="">Select Domain</option>
+              {DOMAINS.map((domain) => (
+                <option key={domain.value} value={domain.value}>
+                  {domain.label} - {domain.description}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Record Type Selection (if domain selected) */}
+          {selectedDomain && (
+            <div style={{ marginBottom: "24px" }}>
+              <label
+                style={{
                   display: "block",
                   fontSize: "14px",
                   fontWeight: "500",
                   color: "#334155",
                   marginBottom: "8px",
-                }}>
-                  Suggested Categories {loadingSuggestions && "(Loading...)"}
-                </label>
-                {suggestions.map((suggestion, index) => (
-                  <div
-                    key={index}
-                    style={suggestionStyle}
-                    onClick={() => applySuggestion(suggestion)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#e5e7eb";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#f9fafb";
-                    }}
-                  >
-                    <div style={{ fontWeight: "500", marginBottom: "4px" }}>
-                      {suggestion.categoryPath}
-                    </div>
-                    <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                      {suggestion.reason} • Confidence: {(suggestion.confidence * 100).toFixed(0)}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#334155",
-                marginBottom: "4px",
-              }}>
-                Entry Title *
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                placeholder="e.g., British Gas Energy Bill"
-                required
-                style={inputStyle}
-              />
-            </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#334155",
-                marginBottom: "4px",
-              }}>
-                Provider *
-              </label>
-              <input
-                type="text"
-                value={formData.provider}
-                onChange={(e) => handleInputChange("provider", e.target.value)}
-                placeholder="e.g., British Gas"
-                required
-                style={inputStyle}
-              />
-            </div>
-
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "16px",
-              marginBottom: "16px",
-            }}>
-              <div>
-                <label style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}>
-                  Category
-                </label>
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  style={selectStyle}
-                  disabled={categoriesLoading}
-                >
-                  <option value="">Select Category</option>
-                  {getRootCategories().map(category => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}>
-                  Sub-Category
-                </label>
-                <select
-                  value={formData.subCategoryId}
-                  onChange={(e) => handleSubCategoryChange(e.target.value)}
-                  style={selectStyle}
-                  disabled={categoriesLoading || !selectedParentId}
-                >
-                  <option value="">Select Sub-Category</option>
-                  {selectedParentId && getCategoriesByParent(selectedParentId).map(subCategory => (
-                    <option key={subCategory._id} value={subCategory._id}>
-                      {subCategory.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "16px",
-              marginBottom: "16px",
-            }}>
-              <div>
-                <label style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}>
-                  Monthly Amount
-                </label>
-                <input
-                  type="text"
-                  value={formData.accountDetails.monthlyAmount}
-                  onChange={(e) => handleAccountDetailChange("monthlyAmount", e.target.value)}
-                  placeholder="85.50"
-                  style={inputStyle}
-                />
-              </div>
-
-              <div>
-                <label style={{
-                  display: "block",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}>
-                  Payment Date (day of month)
-                </label>
-                <input
-                  type="text"
-                  value={formData.accountDetails.paymentDate}
-                  onChange={(e) => handleAccountDetailChange("paymentDate", e.target.value)}
-                  placeholder="15"
-                  style={inputStyle}
-                />
-              </div>
-            </div>
-
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "16px",
-            }}>
-              <input
-                type="checkbox"
-                id="directDebit"
-                checked={formData.accountDetails.directDebit}
-                onChange={(e) => handleAccountDetailChange("directDebit", e.target.checked)}
-                style={{ width: "16px", height: "16px" }}
-              />
-              <label htmlFor="directDebit" style={{
-                fontSize: "14px",
-                color: "#334155",
-                cursor: "pointer",
-              }}>
-                Direct Debit Payment
-              </label>
-            </div>
-
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#334155",
-                marginBottom: "4px",
-              }}>
-                Notes
-              </label>
-              <textarea
-                value={formData.notes}
-                onChange={(e) => handleInputChange("notes", e.target.value)}
-                placeholder="Additional information..."
-                style={{
-                  ...inputStyle,
-                  minHeight: "80px",
-                  resize: "vertical" as const,
-                  fontFamily: "inherit",
                 }}
-              />
-            </div>
-
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "24px",
-            }}>
-              <input
-                type="checkbox"
-                id="confidential"
-                checked={formData.confidential}
-                onChange={(e) => handleInputChange("confidential", e.target.checked)}
-                style={{ width: "16px", height: "16px" }}
-              />
-              <label htmlFor="confidential" style={{
-                fontSize: "14px",
-                color: "#334155",
-                cursor: "pointer",
-              }}>
-                Mark as confidential
+              >
+                Record Type {recordTypesLoading && "(Loading...)"}
               </label>
-            </div>
+              <select
+                value={showAddRecordType ? "__ADD_NEW__" : selectedRecordType}
+                onChange={handleRecordTypeChange}
+                disabled={recordTypesLoading}
+                style={{
+                  width: "100%",
+                  padding: "14px 16px",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                  fontSize: "15px",
+                  fontFamily: "inherit",
+                  backgroundColor: "#fefefe",
+                  cursor: "pointer",
+                  appearance: "none",
+                  backgroundImage:
+                    "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e\")",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 16px center",
+                  backgroundSize: "16px",
+                  paddingRight: "48px",
+                }}
+              >
+                <option value="">Select Record Type (Optional)</option>
+                {recordTypes.map((rt) => (
+                  <option key={rt._id} value={rt.name}>
+                    {rt.name}
+                  </option>
+                ))}
+                {recordTypes.length > 0 && (
+                  <option disabled style={{ borderTop: "1px solid #e2e8f0" }}>
+                    ─────────────────
+                  </option>
+                )}
+                <option value="__ADD_NEW__">+ Add New Record Type</option>
+              </select>
 
-            <div style={{
+              {/* Inline Record Type Creation Form */}
+              {showAddRecordType && (
+                <div
+                  style={{
+                    marginTop: "12px",
+                    padding: "16px",
+                    backgroundColor: "#f8fafc",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "12px",
+                  }}
+                >
+                  <div style={{ marginBottom: "12px" }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        color: "#334155",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      New Record Type Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newRecordTypeName}
+                      onChange={(e) => setNewRecordTypeName(e.target.value)}
+                      placeholder="e.g., Water Bill"
+                      disabled={creatingRecordType}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleCreateRecordType();
+                        }
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "14px",
+                        fontFamily: "inherit",
+                        backgroundColor: "#ffffff",
+                        boxSizing: "border-box",
+                      }}
+                      autoFocus
+                    />
+                  </div>
+
+                  {recordTypeError && (
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#dc2626",
+                        marginBottom: "12px",
+                        padding: "8px",
+                        backgroundColor: "#fef2f2",
+                        borderRadius: "6px",
+                        border: "1px solid #fecaca",
+                      }}
+                    >
+                      {recordTypeError}
+                    </div>
+                  )}
+
+                  <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAddRecordType(false);
+                        setNewRecordTypeName("");
+                        setRecordTypeError(null);
+                      }}
+                      disabled={creatingRecordType}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        cursor: creatingRecordType ? "not-allowed" : "pointer",
+                        border: "1px solid #e2e8f0",
+                        backgroundColor: "#ffffff",
+                        color: "#64748b",
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCreateRecordType}
+                      disabled={creatingRecordType || !newRecordTypeName.trim()}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        cursor: creatingRecordType || !newRecordTypeName.trim() ? "not-allowed" : "pointer",
+                        border: "none",
+                        backgroundColor: "#0f172a",
+                        color: "#ffffff",
+                        fontFamily: "inherit",
+                        opacity: creatingRecordType || !newRecordTypeName.trim() ? 0.5 : 1,
+                      }}
+                    >
+                      {creatingRecordType ? "Creating..." : "Create"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Name */}
+          <div style={{ marginBottom: "24px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#334155",
+                marginBottom: "8px",
+              }}
+            >
+              Name *
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., British Gas Energy Bill"
+              required
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "15px",
+                fontFamily: "inherit",
+                backgroundColor: "#fefefe",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          {/* Provider */}
+          <div style={{ marginBottom: "24px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#334155",
+                marginBottom: "8px",
+              }}
+            >
+              Provider
+            </label>
+            <input
+              type="text"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              placeholder="e.g., British Gas"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "15px",
+                fontFamily: "inherit",
+                backgroundColor: "#fefefe",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          {/* Monthly Amount */}
+          <div style={{ marginBottom: "24px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#334155",
+                marginBottom: "8px",
+              }}
+            >
+              Amount (£)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={monthlyAmount}
+              onChange={(e) => setMonthlyAmount(e.target.value)}
+              placeholder="85.50"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "15px",
+                fontFamily: "inherit",
+                backgroundColor: "#fefefe",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          {/* Notes */}
+          <div style={{ marginBottom: "32px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#334155",
+                marginBottom: "8px",
+              }}
+            >
+              Notes
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Additional information..."
+              rows={3}
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "15px",
+                fontFamily: "inherit",
+                backgroundColor: "#fefefe",
+                boxSizing: "border-box",
+                resize: "vertical",
+              }}
+            />
+          </div>
+
+          {/* Buttons */}
+          <div
+            style={{
               display: "flex",
               justifyContent: "flex-end",
-              paddingTop: "16px",
-              borderTop: "1px solid #e5e7eb",
-            }}>
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={loading}
-                style={secondaryButtonStyle}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading || !formData.title || !formData.provider}
-                style={{
-                  ...primaryButtonStyle,
-                  opacity: loading || !formData.title || !formData.provider ? 0.5 : 1,
-                  cursor: loading || !formData.title || !formData.provider ? "not-allowed" : "pointer",
-                }}
-              >
-                {loading ? "Creating..." : "Create Entry"}
-              </button>
-            </div>
-          </form>
-        </div>
+              gap: "12px",
+              paddingTop: "24px",
+              borderTop: "1px solid #f1f5f9",
+            }}
+          >
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={loading}
+              style={{
+                padding: "12px 24px",
+                borderRadius: "12px",
+                fontSize: "15px",
+                fontWeight: "500",
+                cursor: "pointer",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#ffffff",
+                color: "#64748b",
+                fontFamily: "inherit",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !selectedDomain || !name}
+              style={{
+                padding: "12px 24px",
+                borderRadius: "12px",
+                fontSize: "15px",
+                fontWeight: "600",
+                cursor: loading || !selectedDomain || !name ? "not-allowed" : "pointer",
+                border: "none",
+                backgroundColor: "#0f172a",
+                color: "#ffffff",
+                fontFamily: "inherit",
+                opacity: loading || !selectedDomain || !name ? 0.5 : 1,
+              }}
+            >
+              {loading ? "Creating..." : "Create Record"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

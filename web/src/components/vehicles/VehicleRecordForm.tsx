@@ -12,7 +12,7 @@ interface VehicleRecordFormProps {
 }
 
 const VehicleRecordForm: React.FC<VehicleRecordFormProps> = ({ isOpen, onClose, onSuccess }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('vehicles');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Vehicle');
   const createMutation = useCreateVehicleRecord();
   const [formData, setFormData] = useState<Partial<VehicleRecord>>({
     name: '',

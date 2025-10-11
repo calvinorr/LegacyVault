@@ -32,7 +32,9 @@ interface TransactionData {
     amount: number;
     balance?: number;
     originalText: string;
-    status?: "pending" | "processed" | "skipped";
+    recordCreated?: boolean;
+    createdRecordId?: string;
+    createdRecordDomain?: string;
   }[];
 }
 
@@ -68,9 +70,13 @@ export default function BankImport() {
   const [createEntryModal, setCreateEntryModal] = useState<{
     isOpen: boolean;
     transaction: any | null;
+    sessionId?: string;
+    transactionIndex?: number;
   }>({
     isOpen: false,
     transaction: null,
+    sessionId: undefined,
+    transactionIndex: undefined,
   });
 
   // Redirect non-admin users
@@ -359,13 +365,15 @@ export default function BankImport() {
   const handleCreateEntry = (sessionId: string, transactionIndex: number) => {
     const sessionData = transactionData[sessionId];
     if (!sessionData) return;
-    
+
     const transaction = sessionData.transactions[transactionIndex];
     console.log('Creating entry for transaction:', transaction);
-    
+
     setCreateEntryModal({
       isOpen: true,
       transaction: transaction,
+      sessionId: sessionId,
+      transactionIndex: transactionIndex,
     });
   };
 
@@ -1117,7 +1125,7 @@ export default function BankImport() {
                               )
                               .map((transaction, txIndex) => {
                                 const isSelected = selectedTransactions[session._id]?.has(txIndex) || false;
-                                const isProcessed = transaction.status === "processed";
+                                const isProcessed = transaction.recordCreated === true;
                                 
                                 return (
                                   <tr
@@ -1341,13 +1349,15 @@ export default function BankImport() {
 
       <CreateEntryFromTransactionModal
         isOpen={createEntryModal.isOpen}
-        onClose={() => setCreateEntryModal({ isOpen: false, transaction: null })}
+        onClose={() => setCreateEntryModal({ isOpen: false, transaction: null, sessionId: undefined, transactionIndex: undefined })}
         onSuccess={() => {
-          setCreateEntryModal({ isOpen: false, transaction: null });
+          setCreateEntryModal({ isOpen: false, transaction: null, sessionId: undefined, transactionIndex: undefined });
           // Refresh the page data to reflect the new entry
           loadSessions();
         }}
         transaction={createEntryModal.transaction}
+        sessionId={createEntryModal.sessionId}
+        transactionIndex={createEntryModal.transactionIndex}
       />
     </div>
   );

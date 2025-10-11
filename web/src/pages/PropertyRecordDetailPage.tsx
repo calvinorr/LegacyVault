@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Home, Calendar, Mail, Phone, MapPin, Pencil, Trash2, ChevronRight } from 'lucide-react';
 import { usePropertyRecord, useDeletePropertyRecord } from '../hooks/usePropertyRecords';
+import PropertyRecordForm from '../components/property/PropertyRecordForm';
 
 const PropertyRecordDetailPage: React.FC = () => {
   const { recordId } = useParams<{ recordId: string }>();
@@ -9,6 +10,7 @@ const PropertyRecordDetailPage: React.FC = () => {
   const { data: record, isLoading } = usePropertyRecord(recordId!);
   const deleteMutation = useDeletePropertyRecord();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const handleDelete = async () => {
     if (!recordId) return;
@@ -130,7 +132,7 @@ const PropertyRecordDetailPage: React.FC = () => {
 
           <div style={{ display: 'flex', gap: '12px' }}>
             <button
-              onClick={() => {/* TODO: Implement edit */}}
+              onClick={() => setShowEditModal(true)}
               style={{
                 padding: '10px 20px',
                 border: '1px solid #e2e8f0',
@@ -382,6 +384,15 @@ const PropertyRecordDetailPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {showEditModal && record && (
+        <PropertyRecordForm
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          record={record}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (

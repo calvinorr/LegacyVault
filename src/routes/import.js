@@ -54,6 +54,9 @@ router.get('/status/:id', ImportController.getStatus);
 // GET /api/import/sessions/:id/transactions - Get all parsed transactions from session
 router.get('/sessions/:id/transactions', ImportController.getSessionTransactions);
 
+// POST /api/import/sessions/:id/transactions/:transactionIndex/mark-processed - Mark transaction as processed
+router.post('/sessions/:id/transactions/:transactionIndex/mark-processed', ImportController.markTransactionProcessed);
+
 // Error handling middleware for multer
 router.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {

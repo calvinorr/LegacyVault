@@ -8,6 +8,12 @@ const TransactionSchema = new Schema({
   amount: { type: Number, required: true }, // Negative for debits, positive for credits
   balance: { type: Number },
   originalText: { type: String }, // Raw text from PDF for debugging
+
+  // Track if domain record has been created from this transaction
+  recordCreated: { type: Boolean, default: false },
+  createdRecordId: { type: Schema.Types.ObjectId }, // Reference to created domain record
+  createdRecordDomain: { type: String }, // Which domain the record was created in
+  createdAt: { type: Date }, // When the record was created
 }, { _id: false });
 
 const RecurringPaymentSuggestionSchema = new Schema({

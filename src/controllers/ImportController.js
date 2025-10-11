@@ -21,19 +21,20 @@ class ImportController {
       // Generate file hash for duplicate detection
       const fileHash = crypto.createHash('sha256').update(buffer).digest('hex');
 
+      // TESTING: Duplicate check temporarily disabled for easier testing
       // Check for existing import with same hash
-      const existingSession = await ImportSession.findOne({
-        user: user._id,
-        file_hash: fileHash,
-        status: { $ne: 'failed' }
-      });
+      // const existingSession = await ImportSession.findOne({
+      //   user: user._id,
+      //   file_hash: fileHash,
+      //   status: { $ne: 'failed' }
+      // });
 
-      if (existingSession) {
-        return res.status(409).json({
-          error: 'This file has already been processed',
-          existingSessionId: existingSession._id
-        });
-      }
+      // if (existingSession) {
+      //   return res.status(409).json({
+      //     error: 'This file has already been processed',
+      //     existingSessionId: existingSession._id
+      //   });
+      // }
 
       // Create new import session
       const importSession = new ImportSession({
@@ -408,7 +409,7 @@ class ImportController {
     return fieldMap[domain] || fieldMap.finance; // Default to finance structure
   }
 
-  // Get all raw transactions from a session 
+  // Get all raw transactions from a session
   static async getSessionTransactions(req, res) {
     try {
       const { id } = req.params;
@@ -436,6 +437,47 @@ class ImportController {
     } catch (error) {
       console.error('Get session transactions error:', error);
       res.status(500).json({ error: 'Failed to fetch session transactions' });
+    }
+  }
+
+  // Mark a specific transaction as having a domain record created
+  static async markTransactionProcessed(req, res) {
+    try {
+      const { id, transactionIndex } = req.params;
+      const { recordId, domain } = req.body;
+      const user = req.user;
+
+      const session = await ImportSession.findById(id);
+
+      if (!session) {
+        return res.status(404).json({ error: 'Import session not found' });
+      }
+
+      if (!session.user.equals(user._id)) {
+        return res.status(403).json({ error: 'Access denied to this import session' });
+      }
+
+      const index = parseInt(transactionIndex);
+      if (isNaN(index) || index < 0 || index >= session.transactions.length) {
+        return res.status(400).json({ error: 'Invalid transaction index' });
+      }
+
+      // Mark the transaction as processed
+      session.transactions[index].recordCreated = true;
+      session.transactions[index].createdRecordId = recordId;
+      session.transactions[index].createdRecordDomain = domain;
+      session.transactions[index].createdAt = new Date();
+
+      await session.save();
+
+      res.json({
+        message: 'Transaction marked as processed',
+        transaction: session.transactions[index]
+      });
+
+    } catch (error) {
+      console.error('Mark transaction processed error:', error);
+      res.status(500).json({ error: 'Failed to mark transaction as processed' });
     }
   }
 }

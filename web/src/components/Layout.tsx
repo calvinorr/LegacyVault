@@ -6,7 +6,9 @@ import {
   Calendar,
   AlertCircle,
   Settings,
-  User
+  User,
+  Layers,
+  Upload
 } from "lucide-react";
 
 interface LayoutProps {
@@ -22,6 +24,17 @@ interface TopNavigationProps {
 
 function TopNavigation({ user, onSignOut }: TopNavigationProps) {
   const location = useLocation();
+
+  // Helper function to check if a nav item is active
+  const isPathActive = (path: string): boolean => {
+    if (path === '/') {
+      // Home is active only on exact match OR domain detail pages (property, vehicles, etc.)
+      return location.pathname === '/' ||
+             /^\/(property|vehicles|finance|employment|government|insurance|legal|services)(\/|$)/.test(location.pathname);
+    }
+    // For other paths, check if current path starts with the nav path
+    return location.pathname.startsWith(path);
+  };
 
   const navStyle = {
     display: "flex",
@@ -97,11 +110,11 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     borderRadius: "12px",
     textDecoration: "none",
     fontSize: "14px",
-    fontWeight: "500",
+    fontWeight: isActive ? "600" : "500",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    backgroundColor: isActive ? "#f1f5f9" : "transparent",
-    color: isActive ? "#0f172a" : "#64748b",
-    border: "1px solid transparent",
+    backgroundColor: isActive ? "#0f172a" : "transparent",
+    color: isActive ? "#ffffff" : "#64748b",
+    border: `1px solid ${isActive ? "#0f172a" : "transparent"}`,
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   });
 
@@ -137,13 +150,27 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
 
         {/* Navigation Links */}
         <div style={navLinksStyle}>
-          <Link to="/" style={navLinkStyle(location.pathname === "/")}>
+          <Link to="/" style={navLinkStyle(isPathActive("/"))}>
             <LayoutDashboard size={18} strokeWidth={1.5} />
             Home
           </Link>
           <Link
+            to="/domains"
+            style={navLinkStyle(isPathActive("/domains"))}
+          >
+            <Layers size={18} strokeWidth={1.5} />
+            Admin
+          </Link>
+          <Link
+            to="/bank-import"
+            style={navLinkStyle(isPathActive("/bank-import"))}
+          >
+            <Upload size={18} strokeWidth={1.5} />
+            Bank Import
+          </Link>
+          <Link
             to="/renewals"
-            style={navLinkStyle(location.pathname === "/renewals")}
+            style={navLinkStyle(isPathActive("/renewals"))}
           >
             <Calendar size={18} strokeWidth={1.5} />
             Renewals
@@ -151,9 +178,9 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           <Link
             to="/emergency"
             style={{
-              ...navLinkStyle(location.pathname === "/emergency"),
-              backgroundColor: location.pathname === "/emergency" ? "#fef2f2" : "#fef2f2",
-              color: location.pathname === "/emergency" ? "#dc2626" : "#dc2626",
+              ...navLinkStyle(isPathActive("/emergency")),
+              backgroundColor: isPathActive("/emergency") ? "#dc2626" : "#fef2f2",
+              color: isPathActive("/emergency") ? "#ffffff" : "#dc2626",
               border: "1px solid #fecaca",
             }}
           >
@@ -162,7 +189,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           </Link>
           <Link
             to="/settings"
-            style={navLinkStyle(location.pathname === "/settings")}
+            style={navLinkStyle(isPathActive("/settings"))}
           >
             <Settings size={18} strokeWidth={1.5} />
             Settings

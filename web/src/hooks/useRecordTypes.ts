@@ -24,7 +24,7 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
-export const useRecordTypes = () => {
+export const useRecordTypes = (domain?: string) => {
   const [recordTypes, setRecordTypes] = useState<RecordType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,10 @@ export const useRecordTypes = () => {
     const fetchRecordTypes = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/record-types', { credentials: 'include' });
+        const url = domain
+          ? `/api/record-types?domain=${encodeURIComponent(domain)}`
+          : '/api/record-types';
+        const res = await fetch(url, { credentials: 'include' });
         const data = await handleResponse(res);
         setRecordTypes(data.recordTypes || data);
       } catch (err: any) {
@@ -45,7 +48,7 @@ export const useRecordTypes = () => {
     };
 
     fetchRecordTypes();
-  }, []);
+  }, [domain]);
 
   const addRecordType = async (data: { name: string; domain: string }) => {
     try {

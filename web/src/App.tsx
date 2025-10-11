@@ -21,10 +21,12 @@ import RenewalDashboardPage from "./pages/RenewalDashboardPage";
 import EmergencyViewPage from "./pages/EmergencyViewPage";
 import Dashboard from "./pages/Dashboard";
 import ModernDashboard from "./pages/ModernDashboard";
+import DomainsPage from "./pages/DomainsPage";
 import EntryDetail from "./pages/EntryDetail";
 import AuthRedirect from "./pages/AuthRedirect";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
+import BankImport from "./pages/BankImport";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
 
@@ -192,6 +194,14 @@ export default function App(): JSX.Element {
           }
         />
         <Route
+          path="/domains"
+          element={
+            <ProtectedRoute>
+              <DomainsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/renewals"
           element={
             <ProtectedRoute>
@@ -212,6 +222,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bank-import"
+          element={
+            <ProtectedRoute>
+              <BankImport />
             </ProtectedRoute>
           }
         />

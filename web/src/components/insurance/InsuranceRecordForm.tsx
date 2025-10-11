@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateInsuranceRecord, useUpdateInsuranceRecord } from '../../hooks/useInsuranceRecords';
+import { useRecordTypes } from '../../hooks/useRecordTypes';
 import type { InsuranceRecord } from '../../services/api/domains';
 
 interface InsuranceFormData {
@@ -24,19 +25,12 @@ interface InsuranceRecordFormProps {
   initialData?: Partial<InsuranceRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'life-insurance', label: 'Life Insurance' },
-  { value: 'income-protection', label: 'Income Protection' },
-  { value: 'critical-illness', label: 'Critical Illness Cover' },
-  { value: 'warranty', label: 'Warranty' },
-  { value: 'gap-insurance', label: 'GAP Insurance' }
-];
-
 const InsuranceRecordForm: React.FC<InsuranceRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('insurance');
   const {
     register,
     handleSubmit,

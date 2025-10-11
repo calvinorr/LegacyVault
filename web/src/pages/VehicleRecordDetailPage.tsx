@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Car, Calendar, Pencil, Trash2, ChevronRight, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { useVehicleRecord, useDeleteVehicleRecord } from '../hooks/useVehicleRecords';
+import VehicleRecordForm from '../components/vehicles/VehicleRecordForm';
 
 const VehicleRecordDetailPage: React.FC = () => {
   const { recordId } = useParams<{ recordId: string }>();
@@ -9,6 +10,7 @@ const VehicleRecordDetailPage: React.FC = () => {
   const { data: record, isLoading } = useVehicleRecord(recordId!);
   const deleteMutation = useDeleteVehicleRecord();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const handleDelete = async () => {
     if (!recordId) return;
@@ -177,7 +179,7 @@ const VehicleRecordDetailPage: React.FC = () => {
 
           <div style={{ display: 'flex', gap: '12px' }}>
             <button
-              onClick={() => {/* TODO: Implement edit */}}
+              onClick={() => setShowEditModal(true)}
               style={{
                 padding: '10px 20px',
                 border: '1px solid #e2e8f0',
@@ -431,6 +433,15 @@ const VehicleRecordDetailPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {showEditModal && record && (
+        <VehicleRecordForm
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          record={record}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (

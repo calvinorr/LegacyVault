@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useCreateGovernmentRecord, useUpdateGovernmentRecord } from '../../hooks/useGovernmentRecords';
+import { useRecordTypes } from '../../hooks/useRecordTypes';
 import { isValidNINumber } from '../../utils/ukValidation';
 import type { GovernmentRecord } from '../../services/api/domains';
 
@@ -24,21 +25,12 @@ interface GovernmentRecordFormProps {
   initialData?: Partial<GovernmentRecord>;
 }
 
-const RECORD_TYPES = [
-  { value: 'ni-number', label: 'National Insurance' },
-  { value: 'tax', label: 'Tax' },
-  { value: 'passport', label: 'Passport' },
-  { value: 'driving-licence', label: 'Driving Licence' },
-  { value: 'vehicle-tax', label: 'Vehicle Tax' },
-  { value: 'tv-licence', label: 'TV Licence' },
-  { value: 'other-licence', label: 'Other Licence' }
-];
-
 const GovernmentRecordForm: React.FC<GovernmentRecordFormProps> = ({
   onSuccess,
   onCancel,
   initialData
 }) => {
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('government');
   const {
     register,
     handleSubmit,

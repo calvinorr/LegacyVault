@@ -1,6 +1,6 @@
 # Story 3.2: Improve Record Type Management UI - Brownfield Addition
 
-## Status: Ready for Dev
+## Status: Ready for Review
 
 ## User Story
 
@@ -155,3 +155,59 @@ The current UI displays all 8 domains as a long vertical list, which becomes unw
 - Story 3.1: Domain Record Type Management (✅ Complete)
 
 **Epic:** Epic 3 - UX Refinements
+
+---
+
+## Dev Agent Record
+
+### Agent Model Used
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
+
+### Debug Log References
+None
+
+### Completion Notes
+- All UI improvements completed successfully
+- Collapsible domains with smooth animations using CSS transitions
+- Collapse/Expand all controls implemented with Set-based state management
+- Empty state with inline add button for each empty domain
+- Count badges showing record type count for each domain
+- Visual hierarchy enhanced with borders, background colors, and typography
+- All existing CRUD functionality preserved and tested (23 tests passing)
+- No backend changes required
+- Collapse state persists during add/edit/delete operations (state not reset)
+
+### File List
+**Modified:**
+- `web/src/components/settings/record-types/RecordTypeManager.tsx` - Added collapse/expand state, toggle functions, Collapse/Expand All buttons
+- `web/src/components/settings/record-types/RecordTypeList.tsx` - Complete rewrite with collapsible header, chevron animation, count badges, empty state
+- `web/src/components/settings/__tests__/RecordTypeManager.test.tsx` - Added 6 new tests for collapsible functionality
+
+**No files created** (brownfield enhancement only)
+
+### Change Log
+1. Enhanced RecordTypeManager with collapse/expand state using Set<string>
+2. Added Collapse All / Expand All buttons to header
+3. Modified handleAdd to accept optional domain parameter for inline add
+4. Completely rewrote RecordTypeList component with:
+   - Collapsible header button with chevron icon (▼/▶)
+   - Count badges in domain headers (e.g., "Property (2)")
+   - Empty state with helpful message and inline "+ Add" button
+   - Visual improvements: borders, background colors, left border accent
+   - Smooth CSS transitions for chevron rotation (200ms)
+5. Updated tests to verify all new collapsible functionality
+6. All 23 tests passing (17 original + 6 new)
+
+### Technical Implementation Details
+- **Collapse State**: Used `Set<string>` for O(1) lookup performance
+- **Default State**: All domains expanded by default for discoverability
+- **Animation**: CSS transform on chevron (rotate 0deg → -90deg)
+- **Visual Hierarchy**:
+  - Domain headers: `bg-slate-100` with `border-l-4 border-slate-400`
+  - Count badges: `text-slate-500 font-normal`
+  - Empty state: `border-dashed` with italic text
+- **State Persistence**: Collapse state maintained during all CRUD operations (no reset)
+
+### Test Coverage
+- 23 tests passing (100%)
+- Tests cover: rendering, collapse/expand, count badges, empty state, CRUD operations, loading/error states

@@ -57,29 +57,48 @@ async function parsePdfBuffer(buffer, timeout = 30000) {
  * @returns {string} Bank name
  */
 function identifyBankFromContent(pdfContent) {
+  const textContent = extractAllText(pdfContent).toUpperCase();
+
+  // DEBUG: Log first 500 chars of extracted text
+  console.log('[PDF PROCESSOR DEBUG] Extracted text preview (first 500 chars):');
+  console.log(textContent.substring(0, 500));
+  console.log('[PDF PROCESSOR DEBUG] Total text length:', textContent.length);
+
+  // Check for HSBC-specific transaction patterns first (more reliable than just bank name)
+  // HSBC uses specific date format and transaction type codes
+  const hasHSBCDatePattern = /\d{1,2}\s+(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\s+\d{2}/i.test(textContent);
+  const hasHSBCTransactionTypes = /\b(DD|SO|VIS INT'L|VIS|OBP)\s+[A-Z]/i.test(textContent);
+
+  if (hasHSBCDatePattern && hasHSBCTransactionTypes) {
+    console.log('[PDF PROCESSOR DEBUG] Identified bank: HSBC (based on date format and transaction type patterns)');
+    return 'HSBC';
+  }
+
+  // If HSBC patterns not found, check for explicit bank mentions
+  // Order matters: check specific banks first before generic patterns
   const bankPatterns = {
+    'HSBC': ['HSBC UK BANK', 'HSBC BANK'],
     'NatWest': ['NATWEST', 'NAT WEST', 'NATIONAL WESTMINSTER'],
-    'Barclays': ['BARCLAYS'],
-    'HSBC': ['HSBC'],
-    'Lloyds': ['LLOYDS', 'LLOYDS BANK'],
-    'Santander': ['SANTANDER'],
+    'Barclays': ['BARCLAYS BANK PLC', 'BARCLAYS PLC'],
+    'Lloyds': ['LLOYDS BANK PLC', 'LLOYDS'],
+    'Santander': ['SANTANDER UK PLC', 'SANTANDER'],
     'TSB': ['TSB BANK', 'THE SAVINGS BANK'],
-    'Halifax': ['HALIFAX'],
-    'Nationwide': ['NATIONWIDE'],
-    'Co-operative': ['CO-OPERATIVE', 'COOP BANK'],
+    'Halifax': ['HALIFAX PLC', 'HALIFAX'],
+    'Nationwide': ['NATIONWIDE BUILDING SOCIETY', 'NATIONWIDE'],
+    'Co-operative': ['CO-OPERATIVE BANK', 'COOP BANK'],
     'First Direct': ['FIRST DIRECT']
   };
-
-  const textContent = extractAllText(pdfContent).toUpperCase();
 
   for (const [bankName, patterns] of Object.entries(bankPatterns)) {
     for (const pattern of patterns) {
       if (textContent.includes(pattern)) {
+        console.log(`[PDF PROCESSOR DEBUG] Identified bank: ${bankName} (based on pattern: ${pattern})`);
         return bankName;
       }
     }
   }
 
+  console.log('[PDF PROCESSOR DEBUG] Bank not identified, returning "Unknown"');
   return 'Unknown';
 }
 
@@ -127,16 +146,24 @@ async function extractTransactions(pdfContent, bankName) {
   let sortCode = null;
   let statementPeriod = null;
 
+  console.log(`[PDF PROCESSOR DEBUG] Extracting transactions for bank: ${bankName}`);
+
   // Extract account details
   const accountMatch = textContent.match(/Account\s+Number[:\s]+(\d{6,12})/i);
   if (accountMatch) {
     const fullAccount = accountMatch[1];
     accountNumber = `****${fullAccount.slice(-4)}`; // Mask all but last 4 digits
+    console.log(`[PDF PROCESSOR DEBUG] Found account number: ${accountNumber}`);
+  } else {
+    console.log('[PDF PROCESSOR DEBUG] No account number found');
   }
 
   const sortCodeMatch = textContent.match(/Sort\s+Code[:\s]+(\d{2}[-\s]?\d{2}[-\s]?\d{2})/i);
   if (sortCodeMatch) {
     sortCode = sortCodeMatch[1].replace(/\s+/g, '-');
+    console.log(`[PDF PROCESSOR DEBUG] Found sort code: ${sortCode}`);
+  } else {
+    console.log('[PDF PROCESSOR DEBUG] No sort code found');
   }
 
   // Extract statement period
@@ -146,19 +173,38 @@ async function extractTransactions(pdfContent, bankName) {
       start: parseUKDate(periodMatch[1]),
       end: parseUKDate(periodMatch[2])
     };
+    console.log(`[PDF PROCESSOR DEBUG] Found statement period:`, statementPeriod);
+  } else {
+    console.log('[PDF PROCESSOR DEBUG] No statement period found');
   }
 
   // Parse transactions based on bank format
+  let result;
   switch (bankName) {
     case 'NatWest':
-      return await extractNatWestTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      console.log('[PDF PROCESSOR DEBUG] Using NatWest parser');
+      result = await extractNatWestTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      break;
     case 'Barclays':
-      return await extractBarclaysTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      console.log('[PDF PROCESSOR DEBUG] Using Barclays parser');
+      result = await extractBarclaysTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      break;
     case 'HSBC':
-      return await extractHSBCTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      console.log('[PDF PROCESSOR DEBUG] Using HSBC parser');
+      result = await extractHSBCTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      break;
     default:
-      return await extractGenericTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      console.log('[PDF PROCESSOR DEBUG] Using Generic parser (fallback)');
+      result = await extractGenericTransactions(textContent, { accountNumber, sortCode, statementPeriod });
+      break;
   }
+
+  console.log(`[PDF PROCESSOR DEBUG] Extraction complete. Found ${result.length} transactions`);
+  if (result.length > 0) {
+    console.log('[PDF PROCESSOR DEBUG] Sample transaction:', JSON.stringify(result[0], null, 2));
+  }
+
+  return result;
 }
 
 /**
@@ -432,31 +478,45 @@ async function extractHSBCTransactions(textContent, metadata) {
  * Extract generic transactions (fallback)
  */
 async function extractGenericTransactions(textContent, metadata) {
+  console.log('[PDF PROCESSOR DEBUG - GENERIC] Starting generic transaction extraction');
+
   const transactions = [];
   const datePattern = /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/g;
   const amountPattern = /([-+]?)([£]?)(\d{1,3}(?:,\d{3})*\.?\d{0,2})/g;
-  
+
   const lines = textContent.split('\n');
-  
+  console.log(`[PDF PROCESSOR DEBUG - GENERIC] Split text into ${lines.length} lines`);
+
+  // Debug: Show first 10 lines
+  console.log('[PDF PROCESSOR DEBUG - GENERIC] First 10 lines:');
+  for (let i = 0; i < Math.min(10, lines.length); i++) {
+    console.log(`  Line ${i}: ${lines[i].substring(0, 100)}`);
+  }
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const dateMatch = line.match(datePattern);
-    
+
     if (dateMatch) {
+      console.log(`[PDF PROCESSOR DEBUG - GENERIC] Found date in line ${i}: ${dateMatch[0]}`);
+
       // Look for amount in the same line or next few lines
       for (let j = i; j < Math.min(i + 3, lines.length); j++) {
         const amountMatch = lines[j].match(amountPattern);
         if (amountMatch) {
+          console.log(`[PDF PROCESSOR DEBUG - GENERIC] Found amount in line ${j}: ${amountMatch[0]}`);
+
           let amount = parseFloat(amountMatch[3].replace(/,/g, ''));
-          
+
           if (amountMatch[1] === '-') {
             amount = -amount;
           }
-          
+
           // Extract description (text between date and amount)
           const description = line.replace(dateMatch[0], '').replace(amountMatch[0], '').trim();
-          
+
           if (description.length > 0) {
+            console.log(`[PDF PROCESSOR DEBUG - GENERIC] Adding transaction: ${description} - ${amount}`);
             transactions.push({
               date: parseUKDate(dateMatch[0]),
               description,
@@ -464,19 +524,25 @@ async function extractGenericTransactions(textContent, metadata) {
               balance: null, // Generic parser doesn't extract balance
               originalText: line
             });
+          } else {
+            console.log('[PDF PROCESSOR DEBUG - GENERIC] Skipping - no description found');
           }
           break;
         }
       }
     }
   }
-  
-  return transactions.filter(t => 
-    t.date && 
-    t.description && 
+
+  const filtered = transactions.filter(t =>
+    t.date &&
+    t.description &&
     t.amount !== null &&
     !isNaN(t.amount)
   );
+
+  console.log(`[PDF PROCESSOR DEBUG - GENERIC] Raw transactions: ${transactions.length}, Filtered: ${filtered.length}`);
+
+  return filtered;
 }
 
 /**
