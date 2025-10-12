@@ -8,7 +8,8 @@ import {
   Settings,
   User,
   Layers,
-  Upload
+  Upload,
+  List
 } from "lucide-react";
 
 interface LayoutProps {
@@ -167,6 +168,13 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           >
             <Upload size={18} strokeWidth={1.5} />
             Bank Import
+          </Link>
+          <Link
+            to="/transactions"
+            style={navLinkStyle(isPathActive("/transactions"))}
+          >
+            <List size={18} strokeWidth={1.5} />
+            Transactions
           </Link>
           <Link
             to="/renewals"

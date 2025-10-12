@@ -1,11 +1,14 @@
 const crypto = require('crypto');
 const ImportSession = require('../models/ImportSession');
+const Transaction = require('../models/Transaction');
 // Story 2.3: Entry model no longer used - Bank Import creates domain records
 const pdfProcessor = require('../services/pdfProcessor');
 const recurringDetector = require('../services/recurringDetector');
 const backgroundProcessor = require('../services/backgroundProcessor');
 // Story 2.4: Domain suggestion engine for intelligent domain detection
 const { suggestDomain, getDomainModel } = require('../services/domainSuggestionEngine');
+// Epic 5: Duplicate detection service
+const duplicateDetector = require('../services/duplicateDetector');
 
 class ImportController {
   // Upload PDF bank statement
@@ -158,17 +161,26 @@ class ImportController {
       if (bulk_action === 'accept_all') {
         for (let i = 0; i < session.recurring_payments.length; i++) {
           const suggestion = session.recurring_payments[i];
+          if (!suggestion) {
+            console.warn(`Skipping undefined suggestion at index ${i}`);
+            continue;
+          }
           if (suggestion.status === 'pending') {
             const entry = await ImportController._createEntryFromSuggestion(suggestion, session, user);
             createdEntries.push({ suggestion_index: i, entry_id: entry._id });
-            
+
             // Update suggestion status
             session.recurring_payments[i].status = 'accepted';
           }
         }
       } else if (bulk_action === 'reject_all') {
         for (let i = 0; i < session.recurring_payments.length; i++) {
-          if (session.recurring_payments[i].status === 'pending') {
+          const suggestion = session.recurring_payments[i];
+          if (!suggestion) {
+            console.warn(`Skipping undefined suggestion at index ${i}`);
+            continue;
+          }
+          if (suggestion.status === 'pending') {
             session.recurring_payments[i].status = 'rejected';
             rejectedSuggestions.push({ suggestion_index: i });
           }
@@ -184,6 +196,10 @@ class ImportController {
 
           const suggestion = session.recurring_payments[suggestion_index];
 
+          if (!suggestion) {
+            return res.status(400).json({ error: `Suggestion at index ${suggestion_index} is undefined` });
+          }
+
           if (action === 'accept') {
             // Apply user modifications if provided
             if (modifications) {
@@ -193,7 +209,7 @@ class ImportController {
 
             const entry = await ImportController._createEntryFromSuggestion(suggestion, session, user);
             createdEntries.push({ suggestion_index, entry_id: entry._id });
-            
+
             session.recurring_payments[suggestion_index].status = 'accepted';
           } else if (action === 'reject') {
             session.recurring_payments[suggestion_index].status = 'rejected';
@@ -478,6 +494,64 @@ class ImportController {
     } catch (error) {
       console.error('Mark transaction processed error:', error);
       res.status(500).json({ error: 'Failed to mark transaction as processed' });
+    }
+  }
+
+  // Epic 5: Get import timeline for user
+  static async getImportTimeline(req, res) {
+    try {
+      const user = req.user;
+
+      const timeline = await duplicateDetector.getImportTimeline(user._id);
+
+      res.json({
+        timeline,
+        totalImports: timeline.filter(m => m.imported).length
+      });
+
+    } catch (error) {
+      console.error('Get import timeline error:', error);
+      res.status(500).json({ error: 'Failed to retrieve import timeline' });
+    }
+  }
+
+  // Epic 5: Check for duplicate before upload
+  static async checkDuplicate(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file provided' });
+      }
+
+      const { buffer } = req.file;
+      const user = req.user;
+
+      // Calculate file hash
+      const fileHash = duplicateDetector.calculateFileHash(buffer);
+
+      // Check for duplicate
+      const fileDuplicate = await duplicateDetector.checkFileDuplicate(user._id, fileHash);
+
+      if (fileDuplicate) {
+        return res.json({
+          isDuplicate: true,
+          duplicateSession: {
+            id: fileDuplicate._id,
+            filename: fileDuplicate.filename,
+            uploadedAt: fileDuplicate.createdAt,
+            transactionCount: fileDuplicate.statistics?.total_transactions || 0,
+            statementPeriod: fileDuplicate.statement_period
+          }
+        });
+      }
+
+      res.json({
+        isDuplicate: false,
+        fileHash
+      });
+
+    } catch (error) {
+      console.error('Check duplicate error:', error);
+      res.status(500).json({ error: 'Failed to check for duplicates' });
     }
   }
 }

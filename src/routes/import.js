@@ -57,6 +57,13 @@ router.get('/sessions/:id/transactions', ImportController.getSessionTransactions
 // POST /api/import/sessions/:id/transactions/:transactionIndex/mark-processed - Mark transaction as processed
 router.post('/sessions/:id/transactions/:transactionIndex/mark-processed', ImportController.markTransactionProcessed);
 
+// Epic 5: Import timeline and duplicate detection
+// GET /api/import/timeline - Get user's import timeline
+router.get('/timeline', ImportController.getImportTimeline);
+
+// POST /api/import/check-duplicate - Check for duplicate file before upload
+router.post('/check-duplicate', upload.single('statement'), ImportController.checkDuplicate);
+
 // Error handling middleware for multer
 router.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {

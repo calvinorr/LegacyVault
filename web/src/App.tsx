@@ -27,6 +27,7 @@ import AuthRedirect from "./pages/AuthRedirect";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import BankImport from "./pages/BankImport";
+import TransactionHistory from "./pages/TransactionHistory";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
 
@@ -230,6 +231,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <BankImport />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <TransactionHistory />
             </ProtectedRoute>
           }
         />

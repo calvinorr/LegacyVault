@@ -1,6 +1,8 @@
 const ImportSession = require('../models/ImportSession');
+const Transaction = require('../models/Transaction');
 const pdfProcessor = require('./pdfProcessor');
-const recurringDetector = require('./recurringDetector');
+const duplicateDetector = require('./duplicateDetector');
+const patternDetector = require('./patternDetector'); // Epic 5 - Story 5.4
 
 /**
  * Background processor for PDF import tasks
@@ -50,23 +52,102 @@ class BackgroundProcessor {
         };
       }
 
-      // Step 3: Pattern analysis
+      // Get session and user for Transaction creation
+      const session = await ImportSession.findById(sessionId);
+      if (!session) {
+        throw new Error('Import session not found');
+      }
+
+      // Step 3: Duplicate detection and Transaction creation (Epic 5)
+      console.log(`Checking duplicates and creating Transactions for session ${sessionId}`);
+
+      const duplicateResults = await duplicateDetector.checkTransactionDuplicates(
+        session.user,
+        transactions
+      );
+
+      // Create Transaction documents for new transactions
+      const transactionRefs = [];
+      for (const txnData of duplicateResults.new) {
+        try {
+          const transaction = new Transaction({
+            user: session.user,
+            importSession: sessionId,
+            date: txnData.date,
+            description: txnData.description,
+            reference: txnData.reference,
+            amount: txnData.amount,
+            balance: txnData.balance,
+            originalText: txnData.originalText,
+            transactionHash: txnData.transactionHash,
+            status: 'pending'
+          });
+
+          await transaction.save();
+          transactionRefs.push(transaction._id);
+        } catch (saveError) {
+          // Handle duplicate key errors gracefully
+          if (saveError.code === 11000) {
+            console.warn(`Skipping duplicate transaction: ${txnData.description} on ${txnData.date}`);
+            // Try to find existing transaction and use its ID
+            const existingTransaction = await Transaction.findOne({
+              user: session.user,
+              transactionHash: txnData.transactionHash
+            });
+            if (existingTransaction) {
+              transactionRefs.push(existingTransaction._id);
+            }
+          } else {
+            // Re-throw non-duplicate errors
+            throw saveError;
+          }
+        }
+      }
+
+      // Step 4: Pattern analysis
       await this.updateSessionStage(sessionId, 'pattern_analysis');
       console.log(`Analyzing patterns for session ${sessionId}`);
-      
-      const recurringPayments = await recurringDetector.detectRecurringPayments(transactions);
-      
-      // Step 4: Generate suggestions
-      await this.updateSessionStage(sessionId, 'suggestion_generation');
-      console.log(`Generating suggestions for session ${sessionId}`);
-      
+
+      // Epic 5 - Story 5.4: Cross-import pattern detection
+      // Run pattern detection in background (non-blocking)
+      setImmediate(async () => {
+        try {
+          console.log(`Running cross-import pattern detection for user ${session.user}`);
+          const detectedPatterns = await patternDetector.detectPatternsForUser(session.user);
+          const savedPatterns = await patternDetector.savePatterns(detectedPatterns);
+
+          // Match new transactions against patterns
+          for (const pattern of savedPatterns) {
+            await Transaction.updateMany(
+              { _id: { $in: pattern.transactions } },
+              {
+                $set: {
+                  patternMatched: true,
+                  patternConfidence: pattern.confidence,
+                  patternId: pattern._id
+                }
+              }
+            );
+          }
+
+          console.log(`Pattern detection completed: ${savedPatterns.length} patterns detected`);
+        } catch (patternError) {
+          console.error('Pattern detection error (non-blocking):', patternError);
+          // Don't fail the import if pattern detection fails
+        }
+      });
+
       // Calculate statistics
-      const statistics = this.calculateStatistics(transactions, recurringPayments);
-      
+      const statistics = this.calculateStatistics(
+        transactions,
+        duplicateResults.new.length,
+        duplicateResults.duplicates.length
+      );
+
       // Step 5: Complete processing
       await this.updateSessionStage(sessionId, 'complete');
-      
-      const session = await ImportSession.findByIdAndUpdate(
+
+      await ImportSession.findByIdAndUpdate(
         sessionId,
         {
           status: 'completed',
@@ -74,15 +155,15 @@ class BackgroundProcessor {
           bank_name: bankName,
           account_number: metadata.accountNumber,
           statement_period: metadata.statementPeriod,
-          transactions,
-          recurring_payments: recurringPayments,
+          transactions, // Keep for backwards compatibility during migration
+          transaction_refs: transactionRefs, // Epic 5: References to Transaction collection
           statistics,
           error_message: null
         },
         { new: true }
       );
 
-      console.log(`Processing completed for session ${sessionId}. Found ${recurringPayments.length} recurring payment suggestions`);
+      console.log(`Processing completed for session ${sessionId}. Created ${transactionRefs.length} new transactions, ${duplicateResults.duplicates.length} duplicates skipped.`);
       
     } catch (error) {
       console.error(`Processing failed for session ${sessionId}:`, error);
@@ -111,28 +192,31 @@ class BackgroundProcessor {
   /**
    * Calculate processing statistics
    * @param {Array} transactions - Extracted transactions
-   * @param {Array} recurringPayments - Detected recurring payments
+   * @param {Number} newCount - Count of new transactions created
+   * @param {Number} duplicateCount - Count of duplicate transactions skipped
    * @returns {Object} Statistics object
    */
-  calculateStatistics(transactions, recurringPayments) {
+  calculateStatistics(transactions, newCount = 0, duplicateCount = 0) {
     const debits = transactions.filter(t => t.amount < 0);
     const credits = transactions.filter(t => t.amount > 0);
-    
+
     const totalDebits = debits.reduce((sum, t) => sum + Math.abs(t.amount), 0);
     const totalCredits = credits.reduce((sum, t) => sum + t.amount, 0);
-    
+
     // Calculate date range
     const dates = transactions.map(t => t.date).sort((a, b) => a - b);
-    const dateRangeDays = dates.length > 1 
+    const dateRangeDays = dates.length > 1
       ? Math.round((dates[dates.length - 1] - dates[0]) / (1000 * 60 * 60 * 24))
       : 0;
 
     return {
       total_transactions: transactions.length,
-      recurring_detected: recurringPayments.length,
+      new_transactions: newCount, // Epic 5: New transactions created
+      duplicate_transactions: duplicateCount, // Epic 5: Duplicates skipped
       date_range_days: dateRangeDays,
       total_debits: Math.round(totalDebits * 100) / 100,
-      total_credits: Math.round(totalCredits * 100) / 100
+      total_credits: Math.round(totalCredits * 100) / 100,
+      records_created: 0 // Will be updated as records are created from transactions
     };
   }
 
@@ -231,10 +315,8 @@ class BackgroundProcessor {
       processing_stage: 'pdf_parsing',
       error_message: null,
       transactions: [],
-      recurring_payments: [],
       statistics: {
         total_transactions: 0,
-        recurring_detected: 0,
         date_range_days: 0,
         total_debits: 0,
         total_credits: 0

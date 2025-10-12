@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Upload, Building2, TrendingUp, AlertTriangle, CheckCircle, Clock, Calendar, FileText, Trash2 } from 'lucide-react';
+import { Upload, Building2, TrendingUp, AlertTriangle, CheckCircle, Clock, Calendar, FileText, Trash2, List } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import CreateEntryFromTransactionModal from "../components/CreateEntryFromTransactionModal";
+import ImportTimeline from "../components/bank-import/ImportTimeline";
 
 interface ImportSession {
   _id: string;
@@ -11,12 +13,10 @@ interface ImportSession {
   bank_name?: string;
   statistics?: {
     total_transactions: number;
-    recurring_detected: number;
     date_range_days: number;
     total_debits: number;
     total_credits: number;
   };
-  recurring_payments?: RecurringPaymentSuggestion[];
   createdAt: string;
   expires_at: string;
 }
@@ -35,27 +35,16 @@ interface TransactionData {
     recordCreated?: boolean;
     createdRecordId?: string;
     createdRecordDomain?: string;
+    // Epic 5 - Story 5.4: Pattern detection fields
+    patternMatched?: boolean;
+    patternConfidence?: number;
+    patternId?: string;
   }[];
-}
-
-interface RecurringPaymentSuggestion {
-  payee: string;
-  category: string;
-  subcategory?: string;
-  amount: number;
-  frequency: string;
-  confidence: number;
-  transactions: any[];
-  suggested_entry: {
-    title: string;
-    provider: string;
-    type: string;
-  };
-  status: "pending" | "accepted" | "rejected";
 }
 
 export default function BankImport() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState<ImportSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +67,8 @@ export default function BankImport() {
     sessionId: undefined,
     transactionIndex: undefined,
   });
+  const [timelineMonths, setTimelineMonths] = useState<any[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
   // Redirect non-admin users
   if (user && user.role !== "admin") {
@@ -127,7 +118,25 @@ export default function BankImport() {
 
   useEffect(() => {
     loadSessions();
+    loadTimeline();
   }, []);
+
+  const loadTimeline = async () => {
+    try {
+      const response = await fetch("/api/import/timeline", {
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to load timeline");
+      }
+
+      const data = await response.json();
+      setTimelineMonths(data.timeline || []);
+    } catch (err: any) {
+      console.error("Error loading timeline:", err);
+    }
+  };
 
   const loadSessions = async () => {
     try {
@@ -155,31 +164,6 @@ export default function BankImport() {
 
       const data = await response.json();
       console.log("Sessions data:", data);
-
-      // Debug the recurring payments data structure
-      if (data.sessions) {
-        data.sessions.forEach((session, i) => {
-          console.log(`Session ${i}:`, session.filename);
-          if (session.recurring_payments) {
-            session.recurring_payments.forEach((suggestion, j) => {
-              console.log(`  Suggestion ${j}:`, {
-                payee: suggestion.payee,
-                transactions: suggestion.transactions,
-                transactionCount: suggestion.transactions?.length || 0,
-              });
-              if (
-                suggestion.transactions &&
-                suggestion.transactions.length > 0
-              ) {
-                console.log(
-                  `    First transaction:`,
-                  suggestion.transactions[0]
-                );
-              }
-            });
-          }
-        });
-      }
 
       const sessions = data.sessions || [];
       setSessions(sessions);
@@ -263,35 +247,6 @@ export default function BankImport() {
       setError(err.message || "Failed to upload statement");
     } finally {
       setUploading(false);
-    }
-  };
-
-  const confirmSuggestions = async (
-    sessionId: string,
-    confirmations: any[]
-  ) => {
-    try {
-      const response = await fetch(
-        `/api/import/sessions/${sessionId}/confirm`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ confirmations }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to confirm suggestions");
-      }
-
-      // Refresh sessions
-      await loadSessions();
-    } catch (err: any) {
-      setError(err.message || "Failed to confirm suggestions");
     }
   };
 
@@ -386,6 +341,19 @@ export default function BankImport() {
     console.log('Creating bulk entries for transactions:', selectedTransactionData);
     // TODO: Open bulk creation interface
   };
+
+  const handleMonthClick = (month: string) => {
+    setSelectedMonth(month === selectedMonth ? null : month);
+  };
+
+  // Filter sessions based on selected month
+  const filteredSessions = selectedMonth
+    ? sessions.filter((session) => {
+        const sessionDate = new Date(session.createdAt);
+        const sessionMonth = `${sessionDate.getFullYear()}-${String(sessionDate.getMonth() + 1).padStart(2, '0')}`;
+        return sessionMonth === selectedMonth;
+      })
+    : sessions;
 
   const pageStyle = {
     minHeight: '100vh',
@@ -584,7 +552,7 @@ export default function BankImport() {
             margin: '0',
             lineHeight: '1.5'
           }}>
-            Import bank statements and detect recurring payments
+            Import bank statements and create entries from transactions
           </p>
         </div>
         {error && (
@@ -639,7 +607,7 @@ export default function BankImport() {
             marginBottom: '24px',
             lineHeight: '1.5'
           }}>
-            Upload a PDF bank statement to automatically detect recurring payments like utilities, subscriptions, and council tax.
+            Upload a PDF bank statement to parse transactions and detect patterns across imports.
           </p>
 
           <div style={{
@@ -721,6 +689,98 @@ export default function BankImport() {
           )}
         </div>
 
+        {/* Import Timeline */}
+        {timelineMonths.length > 0 && (
+          <div style={cardStyle}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '24px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Calendar size={20} color="#0f172a" strokeWidth={1.5} />
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: '#0f172a',
+                  margin: '0'
+                }}>
+                  Import Timeline
+                </h3>
+              </div>
+              <button
+                style={{
+                  ...primaryButtonStyle,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onClick={() => navigate('/transactions')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1e293b';
+                  e.currentTarget.style.borderColor = '#1e293b';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#0f172a';
+                  e.currentTarget.style.borderColor = '#0f172a';
+                }}
+              >
+                <List size={18} strokeWidth={1.5} />
+                View All Transactions
+              </button>
+            </div>
+            <ImportTimeline
+              months={timelineMonths}
+              onMonthClick={handleMonthClick}
+              selectedMonth={selectedMonth}
+            />
+            {selectedMonth && (
+              <div style={{
+                marginTop: '16px',
+                padding: '12px 16px',
+                backgroundColor: '#f0f9ff',
+                border: '1px solid #bae6fd',
+                borderRadius: '12px',
+                fontSize: '14px',
+                color: '#0ea5e9',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <span>
+                  Showing imports from {new Date(selectedMonth + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+                </span>
+                <button
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #0ea5e9',
+                    backgroundColor: 'transparent',
+                    color: '#0ea5e9',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                  }}
+                  onClick={() => setSelectedMonth(null)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0ea5e9';
+                    e.currentTarget.style.color = '#ffffff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = '#0ea5e9';
+                  }}
+                >
+                  Clear Filter
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Import Sessions */}
         <div style={cardStyle}>
           <div style={{
@@ -783,9 +843,53 @@ export default function BankImport() {
                 No import sessions found. Upload a bank statement to get started.
               </p>
             </div>
+          ) : filteredSessions.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '80px 40px',
+              color: '#64748b'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '16px',
+                margin: '0 auto 24px'
+              }}>
+                <FileText size={28} color="#64748b" strokeWidth={1.5} />
+              </div>
+              <p style={{
+                fontSize: '16px',
+                fontWeight: '500',
+                margin: '0 0 8px 0',
+                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+              }}>
+                No imports found for selected month
+              </p>
+              <button
+                style={{
+                  ...buttonStyle,
+                  marginRight: 0
+                }}
+                onClick={() => setSelectedMonth(null)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                  e.currentTarget.style.borderColor = '#cbd5e1';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                }}
+              >
+                Show All Sessions
+              </button>
+            </div>
           ) : (
             <div style={{ display: 'grid', gap: '20px' }}>
-              {sessions.map((session) => (
+              {filteredSessions.map((session) => (
                 <div
                   key={session._id}
                   style={{
@@ -927,31 +1031,6 @@ export default function BankImport() {
                       <div style={{
                         textAlign: 'center',
                         padding: '16px',
-                        backgroundColor: '#f0fdf4',
-                        borderRadius: '12px',
-                        border: '1px solid #dcfce7'
-                      }}>
-                        <div style={{
-                          fontSize: '20px',
-                          fontWeight: '600',
-                          color: '#059669',
-                          marginBottom: '4px',
-                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                        }}>
-                          {session.statistics.recurring_detected}
-                        </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: '#16a34a',
-                          fontWeight: '500',
-                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                        }}>
-                          Recurring
-                        </div>
-                      </div>
-                      <div style={{
-                        textAlign: 'center',
-                        padding: '16px',
                         backgroundColor: '#fef2f2',
                         borderRadius: '12px',
                         border: '1px solid #fecaca'
@@ -1087,6 +1166,16 @@ export default function BankImport() {
                               </th>
                               <th style={{
                                 padding: '12px 16px',
+                                textAlign: 'center',
+                                fontWeight: '600',
+                                color: '#0f172a',
+                                width: '100px',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                              }}>
+                                Pattern
+                              </th>
+                              <th style={{
+                                padding: '12px 16px',
                                 textAlign: 'right',
                                 fontWeight: '600',
                                 color: '#0f172a',
@@ -1169,6 +1258,36 @@ export default function BankImport() {
                                         {transaction.description}
                                       </div>
                                     </td>
+                                    {/* Epic 5 - Story 5.4: Pattern detection badge */}
+                                    <td style={{
+                                      padding: '12px 16px',
+                                      textAlign: 'center'
+                                    }}>
+                                      {transaction.patternMatched && transaction.patternConfidence ? (
+                                        <span style={{
+                                          padding: '4px 8px',
+                                          borderRadius: '6px',
+                                          fontSize: '10px',
+                                          fontWeight: '600',
+                                          backgroundColor: transaction.patternConfidence >= 0.85 ? '#dcfce7' : transaction.patternConfidence >= 0.65 ? '#fef3c7' : '#f3f4f6',
+                                          color: transaction.patternConfidence >= 0.85 ? '#16a34a' : transaction.patternConfidence >= 0.65 ? '#d97706' : '#6b7280',
+                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: '4px'
+                                        }}>
+                                          🔄 {Math.round(transaction.patternConfidence * 100)}%
+                                        </span>
+                                      ) : (
+                                        <span style={{
+                                          fontSize: '10px',
+                                          color: '#cbd5e1',
+                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                                        }}>
+                                          -
+                                        </span>
+                                      )}
+                                    </td>
                                     <td style={{
                                       padding: '12px 16px',
                                       textAlign: 'right',
@@ -1234,112 +1353,6 @@ export default function BankImport() {
                       </div>
                     </div>
                   )}
-
-                  {session.recurring_payments && session.recurring_payments.length > 0 && (
-                      <div style={{ marginTop: '24px' }}>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          marginBottom: '16px'
-                        }}>
-                          <TrendingUp size={18} color="#0f172a" strokeWidth={1.5} />
-                          <h5 style={{
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            color: '#0f172a',
-                            margin: '0',
-                            fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                          }}>
-                            Recurring Payment Suggestions
-                          </h5>
-                        </div>
-                        <div style={{ display: 'grid', gap: '12px' }}>
-                          {session.recurring_payments.map(
-                            (suggestion, index) => (
-                              <div
-                                key={index}
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  padding: '16px 20px',
-                                  backgroundColor: '#f8fafc',
-                                  borderRadius: '12px',
-                                  border: '1px solid #e2e8f0'
-                                }}
-                              >
-                                <div style={{ flex: 1 }}>
-                                  <div style={{
-                                    fontWeight: '600',
-                                    fontSize: '16px',
-                                    color: '#0f172a',
-                                    marginBottom: '4px',
-                                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                  }}>
-                                    {suggestion.payee}
-                                  </div>
-                                  <div style={{
-                                    fontSize: '13px',
-                                    color: '#64748b',
-                                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                  }}>
-                                    {suggestion.category} • {suggestion.frequency} • {formatCurrency(suggestion.amount)} • {Math.round(suggestion.confidence * 100)}% confident • {suggestion.transactions?.length || 0} transactions
-                                  </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                  {suggestion.status === "pending" && (
-                                    <>
-                                      <button
-                                        style={{
-                                          ...primaryButtonStyle,
-                                          fontSize: '12px',
-                                          padding: '8px 16px'
-                                        }}
-                                        onClick={() =>
-                                          confirmSuggestions(session._id, [
-                                            { index, action: 'accept' }
-                                          ])
-                                        }
-                                      >
-                                        Accept
-                                      </button>
-                                      <button
-                                        style={{
-                                          ...buttonStyle,
-                                          fontSize: '12px',
-                                          padding: '8px 16px'
-                                        }}
-                                        onClick={() =>
-                                          confirmSuggestions(session._id, [
-                                            { index, action: 'reject' }
-                                          ])
-                                        }
-                                      >
-                                        Reject
-                                      </button>
-                                    </>
-                                  )}
-                                  {suggestion.status !== "pending" && (
-                                    <span style={{
-                                      padding: '6px 12px',
-                                      borderRadius: '8px',
-                                      fontSize: '12px',
-                                      fontWeight: '500',
-                                      backgroundColor: suggestion.status === 'accepted' ? '#dcfce7' : '#fef3c7',
-                                      color: suggestion.status === 'accepted' ? '#16a34a' : '#d97706',
-                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                    }}>
-                                      {suggestion.status.charAt(0).toUpperCase() + suggestion.status.slice(1)}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
                 </div>
               ))}
             </div>

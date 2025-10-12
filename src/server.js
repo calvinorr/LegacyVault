@@ -11,6 +11,8 @@ const { initGridFS } = require('./db/gridfs');
 const { configurePassport, router: authRouter } = require('./auth/google');
 const usersRouter = require('./routes/users');
 const importRouter = require('./routes/import');
+const transactionsRouter = require('./routes/transactions'); // Epic 5
+const patternsRouter = require('./routes/patterns'); // Epic 5 - Story 5.4
 const detectionRulesRouter = require('./routes/detectionRules');
 const productDetectionRouter = require('./routes/productDetection');
 const renewalRemindersRouter = require('./routes/renewalReminders');
@@ -99,6 +101,12 @@ app.use('/api/users', usersRouter);
 
 // Bank Import API (Story 2.3 - PRESERVED for migration)
 app.use('/api/import', importRouter);
+
+// Transactions API (Epic 5 - Transaction Ledger)
+app.use('/api/transactions', transactionsRouter);
+
+// Patterns API (Epic 5 - Pattern Intelligence)
+app.use('/api/patterns', patternsRouter);
 
 // Detection Rules API
 app.use('/api/detection-rules', detectionRulesRouter);
