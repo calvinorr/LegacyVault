@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { List, Filter, Search, Calendar, ChevronDown, ChevronRight } from 'lucide-react';
+import { List, Filter, Search, Calendar, ChevronDown, ChevronRight, ExternalLink } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import PatternBadge from '../components/bank-import/PatternBadge';
 import TransactionStatusBadge from '../components/bank-import/TransactionStatusBadge';
 import CreateEntryFromTransactionModal from '../components/CreateEntryFromTransactionModal';
 import IgnoreTransactionModal from '../components/bank-import/IgnoreTransactionModal';
+import PatternInsightsPanel from '../components/bank-import/PatternInsightsPanel';
 
 interface Transaction {
   _id: string;
@@ -199,6 +200,25 @@ export default function TransactionHistory() {
     });
   };
 
+  const handleUndoIgnore = async (transactionId: string) => {
+    try {
+      const response = await fetch(`/api/transactions/${transactionId}/ignore`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to undo ignore');
+      }
+
+      // Refresh transactions to show updated status
+      loadTransactions();
+    } catch (err: any) {
+      console.error('Error undoing ignore:', err);
+      setError(err.message || 'Failed to undo ignore');
+    }
+  };
+
   const pageStyle = {
     minHeight: '100vh',
     background: '#fefefe',
@@ -308,7 +328,7 @@ export default function TransactionHistory() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr 320px', gap: '24px' }}>
           {/* Left Sidebar - Filter Panel */}
           <div
             style={{
@@ -593,6 +613,31 @@ export default function TransactionHistory() {
                                       {transaction.originalText}
                                     </div>
 
+                                    {/* Pattern Info */}
+                                    {transaction.patternMatched && transaction.patternConfidence && (
+                                      <div
+                                        style={{
+                                          marginTop: '16px',
+                                          padding: '16px',
+                                          backgroundColor: transaction.patternConfidence >= 0.85 ? '#dcfce7' : transaction.patternConfidence >= 0.65 ? '#fef3c7' : '#f3f4f6',
+                                          border: `1px solid ${transaction.patternConfidence >= 0.85 ? '#bbf7d0' : transaction.patternConfidence >= 0.65 ? '#fde68a' : '#e5e7eb'}`,
+                                          borderRadius: '12px',
+                                        }}
+                                      >
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                          <PatternBadge confidence={transaction.patternConfidence} />
+                                          <strong style={{ fontSize: '14px', color: '#0f172a' }}>
+                                            Recurring Pattern Detected
+                                          </strong>
+                                        </div>
+                                        <div style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
+                                          This transaction matches a pattern with {Math.round(transaction.patternConfidence * 100)}% confidence.
+                                          {transaction.patternConfidence >= 0.85 && ' This is a strong match - likely a recurring payment.'}
+                                          {transaction.patternConfidence >= 0.65 && transaction.patternConfidence < 0.85 && ' This appears to be a recurring payment.'}
+                                        </div>
+                                      </div>
+                                    )}
+
                                     {/* Action Buttons */}
                                     <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
                                       {transaction.status === 'pending' && (
@@ -640,6 +685,55 @@ export default function TransactionHistory() {
                                             Ignore
                                           </button>
                                         </>
+                                      )}
+                                      {transaction.status === 'ignored' && (
+                                        <button
+                                          style={{
+                                            ...buttonStyle,
+                                            fontSize: '13px',
+                                            padding: '8px 16px',
+                                          }}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleUndoIgnore(transaction._id);
+                                          }}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f8fafc';
+                                            e.currentTarget.style.borderColor = '#cbd5e1';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#ffffff';
+                                            e.currentTarget.style.borderColor = '#e2e8f0';
+                                          }}
+                                        >
+                                          Undo Ignore
+                                        </button>
+                                      )}
+                                      {transaction.status === 'record_created' && transaction.createdRecordId && transaction.createdRecordDomain && (
+                                        <Link
+                                          to={`/${transaction.createdRecordDomain}/${transaction.createdRecordId}`}
+                                          style={{
+                                            ...buttonStyle,
+                                            fontSize: '13px',
+                                            padding: '8px 16px',
+                                            textDecoration: 'none',
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                          onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#f8fafc';
+                                            e.currentTarget.style.borderColor = '#cbd5e1';
+                                          }}
+                                          onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = '#ffffff';
+                                            e.currentTarget.style.borderColor = '#e2e8f0';
+                                          }}
+                                        >
+                                          <ExternalLink size={14} strokeWidth={1.5} />
+                                          View Record
+                                        </Link>
                                       )}
                                     </div>
                                   </div>
@@ -698,6 +792,9 @@ export default function TransactionHistory() {
               )}
             </div>
           </div>
+
+          {/* Right Sidebar - Pattern Insights Panel */}
+          <PatternInsightsPanel />
         </div>
       </div>
 

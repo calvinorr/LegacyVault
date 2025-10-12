@@ -4,11 +4,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRecordTypes } from "../hooks/useRecordTypes";
 
 interface Transaction {
+  _id: string;
   date: string;
   description: string;
   amount: number;
   originalText: string;
   recordCreated?: boolean;
+  patternMatched?: boolean;
+  patternConfidence?: number;
+  patternId?: string;
 }
 
 interface CreateEntryFromTransactionModalProps {
@@ -94,26 +98,74 @@ export default function CreateEntryFromTransactionModal({
   const [creatingRecordType, setCreatingRecordType] = useState(false);
   const [recordTypeError, setRecordTypeError] = useState<string | null>(null);
 
+  // Pattern enhancement state
+  const [patternData, setPatternData] = useState<any>(null);
+  const [loadingPattern, setLoadingPattern] = useState(false);
+  const [rememberPattern, setRememberPattern] = useState(false);
+
   const queryClient = useQueryClient();
   const { recordTypes, loading: recordTypesLoading, addRecordType } = useRecordTypes(selectedDomain);
+
+  // Load pattern data if pattern is detected
+  useEffect(() => {
+    const loadPatternData = async () => {
+      if (transaction && isOpen && transaction.patternMatched && transaction.patternId) {
+        try {
+          setLoadingPattern(true);
+          const response = await fetch(`/api/patterns/${transaction.patternId}/transactions`, {
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setPatternData(data.pattern);
+
+            // Pre-populate from pattern if confidence >= 75%
+            if (transaction.patternConfidence && transaction.patternConfidence >= 0.75) {
+              if (data.pattern.suggestedDomain) {
+                setSelectedDomain(data.pattern.suggestedDomain.charAt(0).toUpperCase() + data.pattern.suggestedDomain.slice(1));
+              }
+              if (data.pattern.suggestedRecordType) {
+                setSelectedRecordType(data.pattern.suggestedRecordType);
+              }
+              setProvider(data.pattern.payee || '');
+              setName(`${data.pattern.payee || ''} Payment`);
+              setMonthlyAmount(Math.abs(data.pattern.averageAmount || transaction.amount).toFixed(2));
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load pattern data:', err);
+        } finally {
+          setLoadingPattern(false);
+        }
+      }
+    };
+
+    loadPatternData();
+  }, [transaction, isOpen]);
 
   // Auto-populate form when transaction changes
   useEffect(() => {
     if (transaction && isOpen) {
-      // Suggest domain
-      const suggested = suggestDomain(transaction.description);
-      setSelectedDomain(suggested);
+      // Only auto-populate if pattern didn't already populate
+      if (!transaction.patternMatched || (transaction.patternConfidence && transaction.patternConfidence < 0.75)) {
+        // Suggest domain
+        const suggested = suggestDomain(transaction.description);
+        setSelectedDomain(suggested);
 
-      // Extract provider from description
-      const cleanDesc = transaction.description
-        .replace(/PAYMENT|DD|DIRECT DEBIT|CARD|ONLINE|TO /gi, '')
-        .trim();
-      const words = cleanDesc.split(' ');
-      const extractedProvider = words.length >= 2 ? words.slice(0, 2).join(' ') : words[0];
+        // Extract provider from description
+        const cleanDesc = transaction.description
+          .replace(/PAYMENT|DD|DIRECT DEBIT|CARD|ONLINE|TO /gi, '')
+          .trim();
+        const words = cleanDesc.split(' ');
+        const extractedProvider = words.length >= 2 ? words.slice(0, 2).join(' ') : words[0];
 
-      setProvider(extractedProvider || cleanDesc);
-      setName(`${extractedProvider || cleanDesc} Payment`);
-      setMonthlyAmount(Math.abs(transaction.amount).toFixed(2));
+        setProvider(extractedProvider || cleanDesc);
+        setName(`${extractedProvider || cleanDesc} Payment`);
+        setMonthlyAmount(Math.abs(transaction.amount).toFixed(2));
+      }
+
+      // Always set notes
       setNotes(`Auto-generated from bank transaction:\n${transaction.originalText}\nDate: ${transaction.date}`);
     }
   }, [transaction, isOpen]);
@@ -322,6 +374,27 @@ export default function CreateEntryFromTransactionModal({
         }
       }
 
+      // Update pattern if rememberPattern is checked
+      if (rememberPattern && patternData && transaction.patternId) {
+        try {
+          await fetch(`/api/patterns/${transaction.patternId}`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              autoSuggest: true,
+              userConfirmed: true,
+              suggestionAccepted: true,
+              suggestedDomain: selectedDomain.toLowerCase(),
+              suggestedRecordType: selectedRecordType,
+            }),
+          });
+        } catch (patternError) {
+          console.error('Failed to update pattern:', patternError);
+          // Don't fail the whole operation if pattern update fails
+        }
+      }
+
       // Invalidate domain stats cache to refresh home page counts
       queryClient.invalidateQueries({ queryKey: ['domain-stats'] });
 
@@ -429,6 +502,34 @@ export default function CreateEntryFromTransactionModal({
               <X size={24} strokeWidth={1.5} />
             </button>
           </div>
+
+          {/* Pattern Indicator Banner */}
+          {transaction.patternMatched && transaction.patternConfidence && transaction.patternConfidence >= 0.75 && patternData && (
+            <div
+              style={{
+                backgroundColor: transaction.patternConfidence >= 0.85 ? '#dcfce7' : '#fef3c7',
+                border: `1px solid ${transaction.patternConfidence >= 0.85 ? '#bbf7d0' : '#fde68a'}`,
+                borderRadius: '12px',
+                padding: '12px 16px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+              }}
+            >
+              <Sparkles size={18} color={transaction.patternConfidence >= 0.85 ? '#15803d' : '#d97706'} strokeWidth={2} style={{ marginTop: '2px', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
+                  🔄 Recurring Pattern Detected - {Math.round(transaction.patternConfidence * 100)}% confidence
+                </div>
+                <div style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
+                  Found {patternData.occurrences} similar transactions.
+                  {patternData.frequency && ` Frequency: ${patternData.frequency}.`}
+                  {patternData.suggestedDomain && patternData.suggestedRecordType && ` Suggested: ${patternData.suggestedDomain} > ${patternData.suggestedRecordType}.`}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Transaction Preview */}
           <div
@@ -812,6 +913,46 @@ export default function CreateEntryFromTransactionModal({
               }}
             />
           </div>
+
+          {/* Remember Pattern Checkbox */}
+          {transaction.patternMatched && transaction.patternConfidence && transaction.patternConfidence >= 0.75 && patternData && (
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '16px',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #f1f5f9',
+                borderRadius: '12px',
+              }}
+            >
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={rememberPattern}
+                  onChange={(e) => setRememberPattern(e.target.checked)}
+                  style={{
+                    marginTop: '2px',
+                    cursor: 'pointer',
+                  }}
+                />
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: '500', color: '#0f172a', marginBottom: '4px' }}>
+                    Remember this pattern for future imports
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.4' }}>
+                    Future transactions from "{patternData.payee}" will be auto-suggested with these settings
+                  </div>
+                </div>
+              </label>
+            </div>
+          )}
 
           {/* Buttons */}
           <div

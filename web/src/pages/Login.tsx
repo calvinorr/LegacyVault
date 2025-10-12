@@ -1,4 +1,5 @@
 import React from "react";
+import { Shield, Lock } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Login(): JSX.Element {
@@ -6,197 +7,405 @@ export default function Login(): JSX.Element {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
-        <div className="text-foreground">Loading...</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          backgroundColor: "#fefefe",
+          fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+        }}
+      >
+        <div style={{ fontSize: "16px", fontWeight: "500", color: "#0f172a" }}>
+          Loading...
+        </div>
       </div>
     );
   }
 
   return (
     <div
-      className="relative flex size-full min-h-screen flex-col bg-background text-foreground"
-      style={{ fontFamily: 'Inter, "Noto Sans", sans-serif' }}
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f8fafc 0%, #fefefe 100%)",
+        fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
     >
-      {/* Mobile header - visible on mobile only */}
-      <div className="block md:hidden bg-card border-b border-border px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="text-primary-500" style={{ fontSize: "24px" }}>
-            🛡️
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "480px",
+        }}
+      >
+        {/* Logo and Brand */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "48px",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "80px",
+              height: "80px",
+              backgroundColor: "#0f172a",
+              borderRadius: "20px",
+              marginBottom: "24px",
+              boxShadow: "0 10px 30px rgba(15, 23, 42, 0.15)",
+            }}
+          >
+            <Shield size={40} color="#ffffff" strokeWidth={1.5} />
           </div>
-          <h1 className="text-base font-bold text-foreground">LegacyLock</h1>
+          <h1
+            style={{
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#0f172a",
+              margin: "0 0 8px 0",
+              letterSpacing: "-0.025em",
+            }}
+          >
+            LegacyLock
+          </h1>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "#64748b",
+              margin: 0,
+              lineHeight: "1.5",
+            }}
+          >
+            Secure household finance management for couples
+          </p>
         </div>
-      </div>
 
-      <div className="flex flex-1">
-        {/* Sidebar - hidden on mobile */}
-        <aside className="hidden md:flex h-screen flex-col justify-between border-r border-border bg-card p-4">
-          <div className="flex flex-col gap-4">
-            {/* Logo and Brand */}
-            <div className="flex items-center gap-2 p-2">
-              <div className="text-primary-500" style={{ fontSize: "32px" }}>
-                🛡️
-              </div>
-              <h1 className="text-lg font-bold text-foreground">LegacyLock</h1>
+        {/* Login Card */}
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "20px",
+            padding: "40px",
+            border: "1px solid #f1f5f9",
+            boxShadow:
+              "0 25px 50px -12px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.05)",
+            marginBottom: "32px",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "64px",
+                height: "64px",
+                backgroundColor: "#f8fafc",
+                borderRadius: "16px",
+                marginBottom: "16px",
+                border: "1px solid #f1f5f9",
+              }}
+            >
+              <Lock size={28} color="#0f172a" strokeWidth={1.5} />
             </div>
-
-            {/* Navigation Menu */}
-            <nav className="flex flex-col gap-2">
-              <div className="flex items-center gap-3 rounded-md bg-primary-500/10 px-3 py-2 text-primary-500">
-                <span style={{ fontSize: "20px" }}>📊</span>
-                <p className="text-sm font-medium">Dashboard</p>
-              </div>
-              <div className="flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground">
-                <span style={{ fontSize: "20px" }}>💳</span>
-                <p className="text-sm font-medium">Accounts</p>
-              </div>
-              <div className="flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground">
-                <span style={{ fontSize: "20px" }}>👥</span>
-                <p className="text-sm font-medium">Contacts</p>
-              </div>
-              <div className="flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground">
-                <span style={{ fontSize: "20px" }}>📄</span>
-                <p className="text-sm font-medium">Documents</p>
-              </div>
-            </nav>
-          </div>
-
-          {/* Settings at bottom */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground">
-              <span style={{ fontSize: "20px" }}>⚙️</span>
-              <p className="text-sm font-medium">Settings</p>
-            </div>
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          {/* Header */}
-          <div className="border-b border-border p-6">
-            <h1 className="text-3xl font-bold">Welcome to LegacyLock</h1>
-            <p className="text-muted-foreground">
-              Secure household finance management for couples
+            <h2
+              style={{
+                fontSize: "24px",
+                fontWeight: "600",
+                color: "#0f172a",
+                margin: "0 0 8px 0",
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Sign In
+            </h2>
+            <p
+              style={{
+                fontSize: "14px",
+                color: "#64748b",
+                margin: 0,
+                lineHeight: "1.5",
+              }}
+            >
+              Access your secure household finance vault
             </p>
           </div>
 
-          {/* Login Content */}
-          <div className="p-6">
-            <div className="mx-auto max-w-md">
-              <div className="rounded-md border border-border bg-card p-8 text-center">
-                <div className="mb-6">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary-500/10">
-                    <span className="text-2xl text-primary-500">🛡️</span>
-                  </div>
-                  <h2 className="text-2xl font-bold text-card-foreground">
-                    Sign In
-                  </h2>
-                  <p className="mt-2 text-muted-foreground">
-                    Access your secure household finance vault
-                  </p>
-                </div>
+          <button
+            onClick={signIn}
+            disabled={loading}
+            style={{
+              width: "100%",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "12px",
+              padding: "14px 24px",
+              borderRadius: "12px",
+              border: "1px solid #e2e8f0",
+              backgroundColor: "#ffffff",
+              color: "#0f172a",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: loading ? "not-allowed" : "pointer",
+              fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
+              opacity: loading ? 0.5 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = "#f8fafc";
+                e.currentTarget.style.borderColor = "#cbd5e1";
+                e.currentTarget.style.boxShadow = "0 4px 12px 0 rgba(15, 23, 42, 0.12)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = "#ffffff";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "0 1px 3px 0 rgba(15, 23, 42, 0.08)";
+              }
+            }}
+          >
+            <svg style={{ width: "20px", height: "20px" }} viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
+            {loading ? "Signing in..." : "Continue with Google"}
+          </button>
 
-                <button
-                  onClick={signIn}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                  disabled={loading}
-                >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="currentColor"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Continue with Google
-                </button>
+          <div
+            style={{
+              marginTop: "24px",
+              padding: "16px",
+              backgroundColor: "#f8fafc",
+              borderRadius: "12px",
+              border: "1px solid #f1f5f9",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "12px",
+                color: "#64748b",
+                margin: "0 0 4px 0",
+                textAlign: "center",
+                lineHeight: "1.5",
+              }}
+            >
+              🔒 Secure authentication via Google OAuth
+            </p>
+            <p
+              style={{
+                fontSize: "12px",
+                color: "#64748b",
+                margin: 0,
+                textAlign: "center",
+                lineHeight: "1.5",
+              }}
+            >
+              New users require admin approval
+            </p>
+          </div>
+        </div>
 
-                <div className="mt-6 text-xs text-muted-foreground">
-                  <p>Secure authentication via Google OAuth</p>
-                  <p className="mt-1">New users require admin approval</p>
-                </div>
-              </div>
-
-              {/* Feature Preview Cards */}
-              <div className="mt-8 grid gap-4">
-                <div className="flex items-center gap-4 rounded-md border border-border bg-card p-4">
-                  <span
-                    className="text-primary-500"
-                    style={{ fontSize: "24px" }}
-                  >
-                    💰
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground">
-                      Bank Accounts
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Securely store account details
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-md border border-border bg-card p-4">
-                  <span
-                    className="text-primary-500"
-                    style={{ fontSize: "24px" }}
-                  >
-                    📈
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground">
-                      Investments
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Track investment accounts
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-md border border-border bg-card p-4">
-                  <span
-                    className="text-primary-500"
-                    style={{ fontSize: "24px" }}
-                  >
-                    🏠
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground">
-                      Property
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Manage property information
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-md border border-border bg-card p-4">
-                  <span
-                    className="text-primary-500"
-                    style={{ fontSize: "24px" }}
-                  >
-                    ⚡
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium text-card-foreground">
-                      Bills
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Store bill and service details
-                    </p>
-                  </div>
-                </div>
-              </div>
+        {/* Feature Highlights */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "12px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "16px",
+              border: "1px solid #f1f5f9",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                flexShrink: 0,
+              }}
+            >
+              🏦
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#0f172a",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                Bank Accounts
+              </p>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#64748b",
+                  margin: 0,
+                }}
+              >
+                Secure storage
+              </p>
             </div>
           </div>
-        </main>
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "16px",
+              border: "1px solid #f1f5f9",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                flexShrink: 0,
+              }}
+            >
+              🏠
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#0f172a",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                Property
+              </p>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#64748b",
+                  margin: 0,
+                }}
+              >
+                Utilities & bills
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "16px",
+              border: "1px solid #f1f5f9",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                flexShrink: 0,
+              }}
+            >
+              🚗
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#0f172a",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                Vehicles
+              </p>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#64748b",
+                  margin: 0,
+                }}
+              >
+                Insurance & tax
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "16px",
+              border: "1px solid #f1f5f9",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                flexShrink: 0,
+              }}
+            >
+              💼
+            </div>
+            <div>
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#0f172a",
+                  margin: "0 0 2px 0",
+                }}
+              >
+                Insurance
+              </p>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#64748b",
+                  margin: 0,
+                }}
+              >
+                Policies & cover
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
