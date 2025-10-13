@@ -68,7 +68,7 @@ const getSearchFields = (domain) => {
     insurance: ['name', 'provider', 'policyType', 'policyNumber'],
     government: ['name', 'benefitType', 'licenceNumber'],
     legal: ['name', 'documentType', 'solicitorName'],
-    services: ['name', 'serviceName', 'serviceType', 'tradesperson']
+    services: ['name', 'serviceName', 'recordType', 'serviceProvider']
   };
 
   return fieldMap[domain] || ['name'];

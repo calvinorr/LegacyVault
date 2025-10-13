@@ -13,8 +13,8 @@ const servicesRecordSchema = new Schema({
 
   // Services-specific fields
   name: { type: String, required: true }, // e.g., "Plumber - Smith & Sons", "Gardener"
-  serviceType: { type: String, required: true }, // e.g., "plumber", "electrician", "cleaner", "gardener"
-  tradesperson: { type: String }, // Name of person/company
+  recordType: { type: String, required: true }, // User-defined type from Settings (e.g., "Streaming", "Plumbing", "Broadband")
+  serviceProvider: { type: String }, // Name of person/company (formerly tradesperson)
   contactPhone: { type: String },
   contactEmail: { type: String },
   qualityRating: { type: Number, min: 1, max: 5 }, // 1-5 star rating
@@ -33,7 +33,7 @@ const servicesRecordSchema = new Schema({
 }, { timestamps: true });
 
 // Indexes for common queries
-servicesRecordSchema.index({ user: 1, serviceType: 1 });
+servicesRecordSchema.index({ user: 1, recordType: 1 });
 servicesRecordSchema.index({ renewalDate: 1 });
 
 // Middleware to track modifications

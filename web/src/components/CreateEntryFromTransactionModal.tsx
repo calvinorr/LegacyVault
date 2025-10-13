@@ -291,9 +291,9 @@ export default function CreateEntryFromTransactionModal({
           break;
 
         case 'Services':
-          // ServicesRecord requires serviceType (not recordType)
-          payload.serviceType = selectedRecordType || 'subscription';
-          payload.tradesperson = provider;
+          // ServicesRecord requires recordType (user-defined type from Settings)
+          payload.recordType = selectedRecordType || 'Subscription';
+          payload.serviceProvider = provider;
           if (monthlyAmount) {
             payload.monthlyFee = parseFloat(monthlyAmount);
           }
@@ -397,6 +397,12 @@ export default function CreateEntryFromTransactionModal({
 
       // Invalidate domain stats cache to refresh home page counts
       queryClient.invalidateQueries({ queryKey: ['domain-stats'] });
+
+      // Invalidate import session cache to refresh transaction list badges
+      if (sessionId) {
+        queryClient.invalidateQueries({ queryKey: ['import-session', sessionId] });
+        queryClient.invalidateQueries({ queryKey: ['import-session-transactions', sessionId] });
+      }
 
       // Reset form and close modal
       resetForm();
