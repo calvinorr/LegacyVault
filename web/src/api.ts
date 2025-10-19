@@ -47,11 +47,20 @@ async function handleResponse(res: Response) {
   }
   if (!res.ok) {
     try {
-      const json = await res.json();
-      throw new Error(json.error || `API error ${res.status}`);
-    } catch (jsonError) {
-      const txt = await res.text();
-      throw new Error(txt || `API error ${res.status}`);
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const json = await res.json();
+        throw new Error(json.error || `API error ${res.status}`);
+      } else {
+        const txt = await res.text();
+        throw new Error(txt || `API error ${res.status}`);
+      }
+    } catch (err) {
+      // If error parsing, just throw with status
+      if (err instanceof Error && err.message) {
+        throw err;
+      }
+      throw new Error(`API error ${res.status}`);
     }
   }
   return res.json();
