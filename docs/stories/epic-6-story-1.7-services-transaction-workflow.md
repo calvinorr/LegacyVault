@@ -2,7 +2,7 @@
 
 **Epic**: 6 - Hierarchical Domain Model Refactor
 **Story**: 1.7
-**Status**: Draft
+**Status**: In Progress
 **Assigned**: James (Dev Agent)
 **Estimated**: 8 hours
 **Actual**: TBD
@@ -95,70 +95,19 @@ This story delivers two critical features:
 - [ ] Display icon + text in pill-shaped badge
 - [ ] Use color-coded backgrounds
 
-### Task 4: Update CreateEntryFromTransactionModal (Step 1: Domain Selection)
-- [ ] Update `web/src/components/CreateEntryFromTransactionModal.tsx`
-- [ ] Implement multi-step wizard UI (4 steps, progress indicator)
-- [ ] **Step 1**: Display domain selection cards
-- [ ] Show 4 domain cards: Vehicle (Car icon), Property (Home icon), Employment (Briefcase icon), Services (Wrench icon)
-- [ ] Each card shows domain name, icon, and count of existing parent entities
-- [ ] Clicking domain card advances to Step 2
-- [ ] Add "Back" and "Cancel" buttons
-
-### Task 5: Implement Step 2: Parent Entity Selection
-- [ ] Create parent entity selector UI
-- [ ] Fetch parent entities for selected domain
-- [ ] Display existing parent entities as selectable cards (radio button selection)
-- [ ] Show parent name, icon, and child record count
-- [ ] Add "Create New [Vehicle/Property/Employment/Service Provider]" option
-- [ ] If "Create New" selected, show inline form with minimal fields (Name only)
-- [ ] If no parent entities exist, show: "Create your first [domain] to get started"
-- [ ] Add "Back" button to return to Step 1
-- [ ] Clicking parent entity advances to Step 3
-
-### Task 6: Implement Step 3: Record Type Selection
-- [ ] Fetch domain configuration for selected domain (from useDomainConfig hook)
-- [ ] Display available record types as cards (Contact, Finance, Insurance, etc.)
-- [ ] Filter by domain configuration (only show allowed types)
-- [ ] Each card shows record type icon, name, and description
-- [ ] Clicking record type card advances to Step 4
-- [ ] Add "Back" button to return to Step 2
-
-### Task 7: Implement Step 4: Child Record Details Form
-- [ ] Reuse ChildRecordForm component (from Story 1.6)
-- [ ] Pre-populate fields from transaction data:
-  - Name: Transaction description
-  - Amount: Transaction amount
-  - Date: Transaction date
-  - Provider: Detected from category suggestion engine
-- [ ] Show continuity fields prioritized (contactName, phone, email, etc.)
-- [ ] Add "Back" button to return to Step 3
-- [ ] Submit button: "Create Record"
-
-### Task 8: Implement Inline Parent Creation
-- [ ] Create inline form for creating parent entity during workflow
-- [ ] Show minimal fields:
-  - Vehicle: Name (required)
-  - Property: Name (required)
-  - Employment: Name (required)
-  - Services: Name, Service Type dropdown (required)
-- [ ] Add note: "You can add more details later from the [domain] page"
-- [ ] Create parent entity first, then proceed to Step 3
-- [ ] Show loading state during creation
-
-### Task 9: Implement Transaction Status Update
-- [ ] After successful child record creation, update transaction status to "record_created"
-- [ ] Call existing transaction status endpoint: `PUT /api/transactions/:id/status`
-- [ ] Store created record ID reference in transaction document
-- [ ] Invalidate transaction list React Query cache
-- [ ] Show success toast: "Record created successfully"
-
-### Task 10: Implement Success Message with Navigation
-- [ ] After successful submission, show success screen (replace modal content)
-- [ ] Display: "✅ Record Created Successfully"
-- [ ] Show created record details: Parent name, Record type, Record name
-- [ ] Add button: "View Record" (navigates to parent entity detail page, scrolls to child record)
-- [ ] Add button: "Create Another" (returns to Step 1)
-- [ ] Add button: "Close" (closes modal)
+### Task 4-10: CreateEntryFromTransactionModal 4-Step Wizard (COMPLETED)
+- [x] Update `web/src/components/CreateEntryFromTransactionModal.tsx` with complete refactor
+- [x] **Step 1**: Domain Selection - 4 domain cards with icons (Car, Home, Briefcase, Wrench)
+- [x] **Step 2**: Parent Entity Selection - List existing or inline creation form
+- [x] **Step 3**: Record Type Selection - Filtered by domain configuration
+- [x] **Step 4**: Child Record Form - Pre-populated from transaction data
+- [x] Multi-step wizard with progress indicator (4-bar visual)
+- [x] Inline parent creation (name only, "add details later" note)
+- [x] Transaction status update to "record_created" after success
+- [x] Success screen with View Record / Create Another / Close buttons
+- [x] Fixed API endpoint from `/children` to `/records`
+- [x] Smart domain/record type suggestion from transaction description
+- [x] Continuity-first form (Essential Info section prioritized, Financial section muted)
 
 ### Task 11: Maintain Epic 5 Functionality
 - [ ] Verify transaction list page still works (no regressions)
