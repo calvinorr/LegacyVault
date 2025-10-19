@@ -305,7 +305,156 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
     );
   }
 
-  // List view with grid
+  // List view with grid (data exists and has entities)
+  if (!data?.entities || data.entities.length === 0) {
+    // Should not reach here, but fallback to empty state
+    return (
+      <>
+        <style>{`
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '48px 24px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '16px',
+            border: '2px dashed #cbd5e1'
+          }}
+        >
+          <div style={{ margin: '0 auto 24px' }}>{displayInfo.icon}</div>
+          <h3
+            style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#334155',
+              marginBottom: '8px',
+              fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+            }}
+          >
+            No {displayInfo.title.toLowerCase()} yet
+          </h3>
+          <p
+            style={{
+              fontSize: '14px',
+              color: '#64748b',
+              marginBottom: '32px',
+              fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+              maxWidth: '400px',
+              margin: '0 auto 32px'
+            }}
+          >
+            {displayInfo.emptyMessage}
+          </p>
+
+          {/* Image Preview Section */}
+          <div
+            style={{
+              margin: '32px auto',
+              padding: '24px',
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+              border: '1px solid #e2e8f0',
+              maxWidth: '300px'
+            }}
+          >
+            {previewImage ? (
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{
+                    width: '100%',
+                    height: '200px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    marginBottom: '12px'
+                  }}
+                />
+                <button
+                  onClick={() => setPreviewImage(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    background: 'rgba(0, 0, 0, 0.6)',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '4px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff'
+                  }}
+                >
+                  <X size={16} />
+                </button>
+                <p
+                  style={{
+                    fontSize: '12px',
+                    color: '#94a3b8',
+                    margin: '8px 0 0 0',
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                  }}
+                >
+                  This image will be attached to your new {displayInfo.title.slice(0, -1).toLowerCase()}
+                </p>
+              </div>
+            ) : (
+              <label
+                style={{
+                  display: 'block',
+                  cursor: 'pointer',
+                  padding: '32px 16px',
+                  textAlign: 'center'
+                }}
+              >
+                <Upload size={32} color="#cbd5e1" style={{ margin: '0 auto 12px', display: 'block' }} />
+                <p
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#334155',
+                    margin: '8px 0 4px 0',
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                  }}
+                >
+                  Upload an image
+                </p>
+                <p
+                  style={{
+                    fontSize: '12px',
+                    color: '#94a3b8',
+                    margin: 0,
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+                  }}
+                >
+                  Click to add a photo of your {displayInfo.title.slice(0, -1).toLowerCase()}
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            )}
+          </div>
+
+          <button onClick={onCreateNew} style={buttonStyle}>
+            <Plus size={20} strokeWidth={2} />
+            Add First {displayInfo.title.slice(0, -1)}
+          </button>
+        </div>
+      </>
+    );
+  }
+
   return (
     <div
       style={{
