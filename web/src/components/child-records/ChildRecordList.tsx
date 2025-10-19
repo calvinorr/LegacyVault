@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { ChevronDown, Plus } from 'lucide-react';
 import { ChildRecord } from '../../services/api/childRecords';
 import { calculateRenewalUrgency, hasUrgentRenewals, shouldExpandSection } from '../../utils/renewalUrgency';
+import { ChildRecordForm } from './ChildRecordForm';
 
 interface ChildRecordListProps {
   domain: string;
@@ -33,6 +34,12 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
     });
     return initial;
   });
+
+  const [formState, setFormState] = useState<{
+    isOpen: boolean;
+    record?: ChildRecord;
+    recordType?: string;
+  }>({ isOpen: false });
 
   const toggleSection = (recordType: string) => {
     setExpandedSections((prev) => ({
@@ -198,7 +205,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                       No {getRecordTypeLabel(recordType).toLowerCase()} yet
                     </p>
                     <button
-                      onClick={() => onAddRecord?.(recordType)}
+                      onClick={() => setFormState({ isOpen: true, recordType })}
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -321,7 +328,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                             flexShrink: 0
                           }}>
                             <button
-                              onClick={() => onEditRecord?.(recordType, record)}
+                              onClick={() => setFormState({ isOpen: true, record, recordType })}
                               style={{
                                 padding: '6px 10px',
                                 backgroundColor: 'rgba(59, 130, 246, 0.2)',
@@ -374,7 +381,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                 {/* Add Record Button (if has records) */}
                 {records.length > 0 && (
                   <button
-                    onClick={() => onAddRecord?.(recordType)}
+                    onClick={() => setFormState({ isOpen: true, recordType })}
                     style={{
                       padding: '10px 16px',
                       backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -402,6 +409,21 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
           </div>
         );
       })}
+
+      {/* Form Modal */}
+      {formState.isOpen && (
+        <ChildRecordForm
+          domain={domain}
+          parentId={parentId}
+          record={formState.record}
+          recordType={formState.recordType}
+          onClose={() => setFormState({ isOpen: false })}
+          onSuccess={() => {
+            setFormState({ isOpen: false });
+            onAddRecord?.(formState.recordType || 'Contact');
+          }}
+        />
+      )}
     </div>
   );
 };
