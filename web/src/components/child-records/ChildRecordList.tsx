@@ -6,6 +6,7 @@ import { ChevronDown, Plus } from 'lucide-react';
 import { ChildRecord } from '../../services/api/childRecords';
 import { calculateRenewalUrgency, hasUrgentRenewals, shouldExpandSection } from '../../utils/renewalUrgency';
 import { ChildRecordForm } from './ChildRecordForm';
+import { DeleteChildRecordModal } from './DeleteChildRecordModal';
 
 interface ChildRecordListProps {
   domain: string;
@@ -39,6 +40,12 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
     isOpen: boolean;
     record?: ChildRecord;
     recordType?: string;
+  }>({ isOpen: false });
+
+  const [deleteState, setDeleteState] = useState<{
+    isOpen: boolean;
+    record?: ChildRecord;
+    isLoading?: boolean;
   }>({ isOpen: false });
 
   const toggleSection = (recordType: string) => {
@@ -350,7 +357,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                               Edit
                             </button>
                             <button
-                              onClick={() => onDeleteRecord?.(recordType, record._id)}
+                              onClick={() => setDeleteState({ isOpen: true, record })}
                               style={{
                                 padding: '6px 10px',
                                 backgroundColor: 'rgba(239, 68, 68, 0.2)',
@@ -422,6 +429,24 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
             setFormState({ isOpen: false });
             onAddRecord?.(formState.recordType || 'Contact');
           }}
+        />
+      )}
+
+      {/* Delete Modal */}
+      {deleteState.isOpen && deleteState.record && (
+        <DeleteChildRecordModal
+          record={deleteState.record}
+          isLoading={deleteState.isLoading}
+          onConfirm={async () => {
+            setDeleteState({ ...deleteState, isLoading: true });
+            try {
+              onDeleteRecord?.(deleteState.record!.recordType, deleteState.record!._id);
+              setDeleteState({ isOpen: false });
+            } finally {
+              setDeleteState({ ...deleteState, isLoading: false });
+            }
+          }}
+          onCancel={() => setDeleteState({ isOpen: false })}
         />
       )}
     </div>
