@@ -126,8 +126,8 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
         createdEntity = await createMutation.mutateAsync(payload);
       }
 
-      // Upload image if pending
-      if (pendingImage && createdEntity) {
+      // Upload image if pending and file exists
+      if (pendingImage && createdEntity && pendingImage instanceof File) {
         try {
           setIsUploadingImage(true);
           await uploadEntityImage(domain, createdEntity._id, pendingImage);
@@ -138,6 +138,9 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
         } finally {
           setIsUploadingImage(false);
         }
+      } else if (onImageProcessed && !pendingImage) {
+        // Clear the pending image even if no upload
+        onImageProcessed?.();
       }
 
       onSuccess();
