@@ -62,38 +62,27 @@ This story delivers two critical features:
 
 ## Tasks
 
-### Task 1: Create Services Directory Component
-- [ ] Create `web/src/components/services/ServicesDirectory.tsx`
-- [ ] Display service providers in responsive grid (1/2/3 columns)
-- [ ] Add search bar (filter by business name, service type)
-- [ ] Add filter dropdown for service types
-- [ ] Show empty state: "No service providers yet. Add tradespeople and contacts for emergencies."
-- [ ] Add "Add Service Provider" button (opens ParentEntityForm for Services domain)
-- [ ] Implement loading skeleton states
-
-### Task 2: Create Service Provider Card Component
-- [ ] Create `web/src/components/services/ServiceProviderCard.tsx`
-- [ ] Display business name as header
-- [ ] Show service type badge (colored, icon-based)
-- [ ] Display primary contact info prominently (phone, email)
-- [ ] Show "Last service" date if ServiceHistory child records exist
-- [ ] Add "Call" and "Email" quick action buttons
-- [ ] Add hover effect with elevated shadow
-- [ ] Click card to navigate to service provider detail page
-- [ ] Style with Swiss spa aesthetic
-
-### Task 3: Implement Service Type Badge Component
-- [ ] Create `web/src/components/services/ServiceTypeBadge.tsx`
-- [ ] Define service type taxonomy with icons and colors:
-  - Plumber (Droplet, Blue)
-  - Electrician (Zap, Yellow)
-  - Oil Supplier (Fuel, Orange)
-  - Cleaner (Sparkles, Purple)
-  - Gardener (Leaf, Green)
-  - Handyman (Hammer, Gray)
-  - Other (Wrench, Slate)
-- [ ] Display icon + text in pill-shaped badge
-- [ ] Use color-coded backgrounds
+### Task 1-3: Services Directory Components (COMPLETED)
+- [x] `web/src/components/services/ServiceTypeBadge.tsx` (130 lines)
+  - 7 service types with Lucide icons and colors
+  - Pill-shaped badges with 3 sizes (sm, md, lg)
+  - Plumber/Electrician/Oil Supplier/Cleaner/Gardener/Handyman/Other
+- [x] `web/src/components/services/ServiceProviderCard.tsx` (200 lines)
+  - Business name header with service type badge
+  - Prominent contact info (phone/email) with quick action buttons
+  - Last service date display
+  - Hover effects with elevated shadow
+  - Swiss spa aesthetic maintained
+- [x] `web/src/components/services/ServicesDirectory.tsx` (330 lines)
+  - Responsive grid layout (auto-fill, minmax 320px)
+  - Search bar (filters by name/service type)
+  - Filter dropdown (all types + 7 service types)
+  - "Add Service Provider" button → /services-new
+  - Empty state with onboarding message
+  - Loading states and error handling
+- [x] `web/src/pages/Services.tsx` - Wrapper page component
+- [x] Route already exists: /services-new
+- [x] Navigation menu already has Services link with Wrench icon
 
 ### Task 4-10: CreateEntryFromTransactionModal 4-Step Wizard (COMPLETED)
 - [x] Update `web/src/components/CreateEntryFromTransactionModal.tsx` with complete refactor
