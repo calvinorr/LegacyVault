@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { X } from 'lucide-react';
-import { DomainType, ParentEntity, CreateParentEntityData } from '../../services/api/parentEntities';
+import { DomainType, ParentEntity, CreateParentEntityData, uploadEntityImage } from '../../services/api/parentEntities';
 import { useCreateParentEntity, useUpdateParentEntity } from '../../hooks/useParentEntities';
 
 interface ParentEntityFormProps {
@@ -10,6 +10,8 @@ interface ParentEntityFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  pendingImage?: File | null;
+  onImageProcessed?: () => void;
 }
 
 interface FormData {
@@ -64,11 +66,14 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
   entity,
   isOpen,
   onClose,
-  onSuccess
+  onSuccess,
+  pendingImage,
+  onImageProcessed
 }) => {
   const isEditMode = !!entity;
   const createMutation = useCreateParentEntity(domain);
   const updateMutation = useUpdateParentEntity(domain);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const {
     register,
@@ -110,13 +115,29 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
         fields: cleanFields
       };
 
+      let createdEntity: ParentEntity;
       if (isEditMode && entity) {
         await updateMutation.mutateAsync({
           id: entity._id,
           data: payload
         });
+        createdEntity = entity;
       } else {
-        await createMutation.mutateAsync(payload);
+        createdEntity = await createMutation.mutateAsync(payload);
+      }
+
+      // Upload image if pending
+      if (pendingImage && createdEntity) {
+        try {
+          setIsUploadingImage(true);
+          await uploadEntityImage(domain, createdEntity._id, pendingImage);
+          onImageProcessed?.();
+        } catch (imageError) {
+          console.error('Image upload failed:', imageError);
+          // Don't fail the form submission, image upload is optional
+        } finally {
+          setIsUploadingImage(false);
+        }
       }
 
       onSuccess();
@@ -564,20 +585,20 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploadingImage}
               style={{
                 padding: '10px 20px',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '500',
-                backgroundColor: isSubmitting ? '#94a3b8' : '#0f172a',
+                backgroundColor: isSubmitting || isUploadingImage ? '#94a3b8' : '#0f172a',
                 color: '#ffffff',
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                cursor: isSubmitting || isUploadingImage ? 'not-allowed' : 'pointer',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
               }}
             >
-              {isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create'}
+              {isUploadingImage ? 'Uploading image...' : isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create'}
             </button>
           </div>
         </form>

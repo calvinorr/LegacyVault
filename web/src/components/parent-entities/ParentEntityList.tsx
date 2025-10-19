@@ -376,7 +376,10 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
                   }}
                 />
                 <button
-                  onClick={() => setPreviewImage(null)}
+                  onClick={() => {
+                    setPreviewImage(null);
+                    setUploadedFile(null);
+                  }}
                   style={{
                     position: 'absolute',
                     top: '8px',
@@ -446,7 +449,17 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
             )}
           </div>
 
-          <button onClick={onCreateNew} style={buttonStyle}>
+          <button
+            onClick={() => {
+              if (uploadedFile) {
+                // Pass the file to the handler
+                (onCreateNew as any)(uploadedFile);
+              } else {
+                onCreateNew();
+              }
+            }}
+            style={buttonStyle}
+          >
             <Plus size={20} strokeWidth={2} />
             Add First {displayInfo.title.slice(0, -1)}
           </button>

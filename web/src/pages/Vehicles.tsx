@@ -9,9 +9,11 @@ const Vehicles: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState<ParentEntity | null>(null);
+  const [pendingImage, setPendingImage] = useState<File | null>(null);
 
-  const handleCreateNew = () => {
+  const handleCreateNew = (imageFile?: File) => {
     setSelectedEntity(null);
+    setPendingImage(imageFile || null);
     setIsFormOpen(true);
   };
 
@@ -129,6 +131,8 @@ const Vehicles: React.FC = () => {
         isOpen={isFormOpen}
         onClose={handleFormClose}
         onSuccess={handleFormClose}
+        pendingImage={pendingImage}
+        onImageProcessed={() => setPendingImage(null)}
       />
 
       {/* Delete Confirmation Modal */}
