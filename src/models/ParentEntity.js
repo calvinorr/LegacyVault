@@ -48,6 +48,14 @@ const ParentEntitySchema = new Schema({
 
   notes: { type: String },
 
+  // Image field for entity thumbnail
+  image: {
+    filename: String,
+    data: Buffer,
+    contentType: String,
+    uploadedAt: Date
+  },
+
   // Audit fields
   lastUpdatedBy: {
     type: Schema.Types.ObjectId,

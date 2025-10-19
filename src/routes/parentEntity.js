@@ -4,10 +4,23 @@
 
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const { requireAuth } = require('../middleware/auth');
 const ParentEntity = require('../models/ParentEntity');
 const ChildRecord = require('../models/ChildRecord');
 const mongoose = require('mongoose');
+
+// Configure multer for image uploads (max 5MB, images only)
+const upload = multer({
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
 
 /**
  * Domain mapping from URL parameter to model enum
@@ -281,6 +294,93 @@ router.delete('/:domain/:id', requireAuth, validateDomain, async (req, res) => {
     await ParentEntity.findByIdAndDelete(req.params.id);
 
     res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * UPLOAD IMAGE - POST /api/v2/:domain/:id/image
+ * Upload or update image for a parent entity
+ */
+router.post('/:domain/:id/image', requireAuth, validateDomain, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid entity ID' });
+    }
+
+    const entity = await ParentEntity.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.user._id,
+        domainType: req.domainType
+      },
+      {
+        image: {
+          filename: req.file.originalname,
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+          uploadedAt: new Date()
+        }
+      },
+      { new: true }
+    );
+
+    if (!entity) {
+      return res.status(404).json({ error: 'Entity not found' });
+    }
+
+    // Return image data as base64 for frontend
+    const imageData = entity.image ? {
+      filename: entity.image.filename,
+      contentType: entity.image.contentType,
+      data: entity.image.data.toString('base64')
+    } : null;
+
+    res.json({
+      success: true,
+      image: imageData
+    });
+  } catch (error) {
+    if (error.message === 'Only image files are allowed') {
+      return res.status(400).json({ error: 'Only image files are allowed' });
+    }
+    if (error.message.includes('File too large')) {
+      return res.status(413).json({ error: 'Image file too large (max 5MB)' });
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET IMAGE - GET /api/v2/:domain/:id/image
+ * Retrieve image for a parent entity
+ */
+router.get('/:domain/:id/image', requireAuth, validateDomain, async (req, res) => {
+  try {
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid entity ID' });
+    }
+
+    const entity = await ParentEntity.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+      domainType: req.domainType
+    });
+
+    if (!entity || !entity.image) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    // Return image with proper content type
+    res.set('Content-Type', entity.image.contentType);
+    res.send(entity.image.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

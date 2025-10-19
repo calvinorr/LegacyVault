@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MoreVertical, Edit, Trash2, Car, Home, Briefcase, Wrench, DollarSign } from 'lucide-react';
-import { ParentEntity } from '../../services/api/parentEntities';
+import { ParentEntity, getEntityImageUrl } from '../../services/api/parentEntities';
 import { formatDistanceToNow } from 'date-fns';
 
 interface ParentEntityCardProps {
@@ -71,6 +71,16 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
 
   const timeAgo = formatDistanceToNow(new Date(entity.updatedAt), { addSuffix: true });
 
+  const getDomainMap = (): Record<string, string> => {
+    return {
+      'Vehicle': 'vehicles',
+      'Property': 'properties',
+      'Employment': 'employments',
+      'Services': 'services',
+      'Finance': 'finance'
+    };
+  };
+
   return (
     <div
       onClick={handleCardClick}
@@ -80,10 +90,13 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: '16px',
-        padding: '20px',
+        overflow: 'hidden',
         cursor: 'pointer',
         transition: 'all 0.3s ease',
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -96,8 +109,24 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
-      {/* Action Menu */}
-      <div className="action-menu" style={{ position: 'absolute', top: '16px', right: '16px' }}>
+      {/* Image */}
+      {entity.image && (
+        <img
+          src={getEntityImageUrl(getDomainMap()[entity.domainType] as any, entity._id)}
+          alt={entity.name}
+          style={{
+            width: '100%',
+            height: '160px',
+            objectFit: 'cover',
+            objectPosition: 'center'
+          }}
+        />
+      )}
+
+      {/* Content Wrapper */}
+      <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        {/* Action Menu */}
+        <div className="action-menu" style={{ position: 'absolute', top: '4px', right: '4px' }}>
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -263,6 +292,8 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
       >
         Updated {timeAgo}
       </p>
+      </div>
+      {/* End Content Wrapper */}
     </div>
   );
 };

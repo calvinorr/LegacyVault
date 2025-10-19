@@ -9,6 +9,12 @@ export interface ParentEntity {
   name: string;
   fields: Record<string, any>;
   status: 'active' | 'archived';
+  image?: {
+    filename: string;
+    data?: Buffer;
+    contentType: string;
+    uploadedAt: string;
+  };
   lastUpdatedBy?: string;
   createdAt: string;
   updatedAt: string;
@@ -160,4 +166,32 @@ export const deleteParentEntity = async (
     const error = await response.json();
     throw new Error(error.error || 'Failed to delete parent entity');
   }
+};
+
+// Upload image for parent entity
+export const uploadEntityImage = async (
+  domain: DomainType,
+  id: string,
+  file: File
+): Promise<{ success: boolean; image: { data: string; contentType: string; filename: string } }> => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(`${API_BASE}/${domain}/${id}/image`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to upload image');
+  }
+
+  return response.json();
+};
+
+// Get image for parent entity (returns URL)
+export const getEntityImageUrl = (domain: DomainType, id: string): string => {
+  return `${API_BASE}/${domain}/${id}/image`;
 };
