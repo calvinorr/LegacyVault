@@ -99,33 +99,6 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
   };
 
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '24px',
-          padding: '24px 0'
-        }}
-      >
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            style={{
-              background: '#e2e8f0',
-              borderRadius: '16px',
-              padding: '20px',
-              height: '200px',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-            }}
-          />
-        ))}
-      </div>
-    );
-  }
-
   // Error state
   if (error) {
     return (
@@ -161,18 +134,44 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
     );
   }
 
-  // Empty state
+  // Empty state (including loading for first time)
   if (!data || data.entities.length === 0) {
     return (
-      <div
-        style={{
-          textAlign: 'center',
-          padding: '48px 24px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '16px',
-          border: '2px dashed #cbd5e1'
-        }}
-      >
+      <>
+        <style>{`
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '48px 24px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '16px',
+            border: '2px dashed #cbd5e1'
+          }}
+        >
+          {/* Loading Indicator */}
+          {isLoading && (
+            <div style={{ marginBottom: '24px' }}>
+              <div
+                style={{
+                  display: 'inline-block',
+                  width: '40px',
+                  height: '40px',
+                  border: '3px solid #e2e8f0',
+                  borderTop: '3px solid #0f172a',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}
+              />
+              <p style={{ color: '#64748b', marginTop: '12px', fontSize: '14px' }}>Loading...</p>
+            </div>
+          )}
+
         {/* Icon and Message */}
         <div style={{ margin: '0 auto 24px' }}>{displayInfo.icon}</div>
         <h3
@@ -302,6 +301,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
           </button>
         </div>
       </div>
+      </>
     );
   }
 
@@ -343,6 +343,11 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
           }
           50% {
             opacity: 0.5;
+          }
+        }
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
           }
         }
       `}</style>
