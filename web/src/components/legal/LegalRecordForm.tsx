@@ -29,7 +29,7 @@ const LegalRecordForm: React.FC<LegalRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('legal');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Legal');
   const {
     register,
     handleSubmit,

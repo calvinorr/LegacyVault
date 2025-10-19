@@ -28,6 +28,13 @@ import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import BankImport from "./pages/BankImport";
 import TransactionHistory from "./pages/TransactionHistory";
+// New parent entity pages
+import Vehicles from "./pages/Vehicles";
+import Properties from "./pages/Properties";
+import Employments from "./pages/Employments";
+import Services from "./pages/Services";
+// Admin pages
+import AdminDomains from "./pages/AdminDomains";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
 
@@ -66,6 +73,40 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
+        {/* New parent entity routes */}
+        <Route
+          path="/vehicles-new"
+          element={
+            <ProtectedRoute>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/properties-new"
+          element={
+            <ProtectedRoute>
+              <Properties />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employments-new"
+          element={
+            <ProtectedRoute>
+              <Employments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/services-new"
+          element={
+            <ProtectedRoute>
+              <Services />
+            </ProtectedRoute>
+          }
+        />
+        {/* Old domain routes (kept for backwards compatibility) */}
         <Route
           path="/property"
           element={
@@ -223,6 +264,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/domains"
+          element={
+            <ProtectedRoute>
+              <AdminDomains />
             </ProtectedRoute>
           }
         />

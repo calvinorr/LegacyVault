@@ -30,7 +30,7 @@ const EmploymentRecordForm: React.FC<EmploymentRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('employment');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Employment');
   const {
     register,
     handleSubmit,

@@ -13,7 +13,7 @@ interface PropertyRecordFormProps {
 }
 
 const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose, onSuccess }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('property');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Property');
   const createMutation = useCreatePropertyRecord();
   const [formData, setFormData] = useState<Partial<PropertyRecord>>({
     name: '',

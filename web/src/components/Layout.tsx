@@ -9,7 +9,11 @@ import {
   User,
   Layers,
   Upload,
-  List
+  List,
+  Car,
+  Home,
+  Briefcase,
+  Wrench
 } from "lucide-react";
 
 interface LayoutProps {
@@ -155,6 +159,35 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             <LayoutDashboard size={18} strokeWidth={1.5} />
             Home
           </Link>
+          {/* Parent Entity Links */}
+          <Link
+            to="/vehicles-new"
+            style={navLinkStyle(isPathActive("/vehicles-new"))}
+          >
+            <Car size={18} strokeWidth={1.5} />
+            Vehicles
+          </Link>
+          <Link
+            to="/properties-new"
+            style={navLinkStyle(isPathActive("/properties-new"))}
+          >
+            <Home size={18} strokeWidth={1.5} />
+            Properties
+          </Link>
+          <Link
+            to="/employments-new"
+            style={navLinkStyle(isPathActive("/employments-new"))}
+          >
+            <Briefcase size={18} strokeWidth={1.5} />
+            Employments
+          </Link>
+          <Link
+            to="/services-new"
+            style={navLinkStyle(isPathActive("/services-new"))}
+          >
+            <Wrench size={18} strokeWidth={1.5} />
+            Services
+          </Link>
           <Link
             to="/domains"
             style={navLinkStyle(isPathActive("/domains"))}
@@ -202,6 +235,15 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             <Settings size={18} strokeWidth={1.5} />
             Settings
           </Link>
+          {user?.role === 'admin' && (
+            <Link
+              to="/admin/domains"
+              style={navLinkStyle(isPathActive("/admin/domains"))}
+            >
+              <Shield size={18} strokeWidth={1.5} />
+              Admin
+            </Link>
+          )}
         </div>
       </div>
 

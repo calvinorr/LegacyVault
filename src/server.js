@@ -21,6 +21,9 @@ const domainsRouter = require('./routes/domains');
 const domainDocumentsRouter = require('./routes/domain-documents');
 const emergencyRouter = require('./routes/emergency');
 const recordTypesRouter = require('./routes/recordTypes');
+const parentEntityRouter = require('./routes/parentEntity'); // Epic 6 - Story 1.2
+const childRecordRouter = require('./routes/childRecord'); // Epic 6 - Story 1.3
+const domainConfigRouter = require('./routes/admin/domainConfig'); // Epic 6 - Story 1.4
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -132,6 +135,15 @@ app.use('/api/emergency', emergencyRouter);
 
 // Record Types API (Story 3.1 - Record Type Management)
 app.use('/api/record-types', recordTypesRouter);
+
+// Parent Entity API v2 (Epic 6 - Story 1.2 - Hierarchical Domain Model)
+app.use('/api/v2', parentEntityRouter);
+
+// Child Record API v2 (Epic 6 - Story 1.3 - Child Record Management)
+app.use('/api/v2', childRecordRouter);
+
+// Admin API (Epic 6 - Story 1.4 - Admin Domain Configuration)
+app.use('/api/admin', domainConfigRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder

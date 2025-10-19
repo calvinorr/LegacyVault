@@ -30,7 +30,7 @@ const InsuranceRecordForm: React.FC<InsuranceRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('insurance');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Insurance');
   const {
     register,
     handleSubmit,

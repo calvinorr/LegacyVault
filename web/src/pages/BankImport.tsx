@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Upload, Building2, TrendingUp, AlertTriangle, CheckCircle, Clock, Calendar, FileText, Trash2, List } from 'lucide-react';
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import CreateEntryFromTransactionModal from "../components/CreateEntryFromTransactionModal";
 import ImportTimeline from "../components/bank-import/ImportTimeline";
 
 interface ImportSession {
@@ -21,27 +20,6 @@ interface ImportSession {
   expires_at: string;
 }
 
-interface TransactionData {
-  session_id: string;
-  filename: string;
-  bank_name?: string;
-  transaction_count: number;
-  transactions: {
-    date: string;
-    description: string;
-    amount: number;
-    balance?: number;
-    originalText: string;
-    recordCreated?: boolean;
-    createdRecordId?: string;
-    createdRecordDomain?: string;
-    // Epic 5 - Story 5.4: Pattern detection fields
-    patternMatched?: boolean;
-    patternConfidence?: number;
-    patternId?: string;
-  }[];
-}
-
 export default function BankImport() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -50,23 +28,6 @@ export default function BankImport() {
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [transactionData, setTransactionData] = useState<{
-    [sessionId: string]: TransactionData;
-  }>({});
-  const [selectedTransactions, setSelectedTransactions] = useState<{
-    [sessionId: string]: Set<number>;
-  }>({});
-  const [createEntryModal, setCreateEntryModal] = useState<{
-    isOpen: boolean;
-    transaction: any | null;
-    sessionId?: string;
-    transactionIndex?: number;
-  }>({
-    isOpen: false,
-    transaction: null,
-    sessionId: undefined,
-    transactionIndex: undefined,
-  });
   const [timelineMonths, setTimelineMonths] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
@@ -167,51 +128,12 @@ export default function BankImport() {
 
       const sessions = data.sessions || [];
       setSessions(sessions);
-
-      // Load transaction data for completed sessions
-      for (const session of sessions) {
-        if (session.status === "completed") {
-          loadSessionTransactions(session._id);
-        }
-      }
     } catch (err: any) {
       console.error("Error loading sessions:", err);
       setError(err.message || "Failed to load import sessions");
       setSessions([]); // Ensure we don't leave sessions in an undefined state
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadSessionTransactions = async (sessionId: string) => {
-    try {
-      console.log(`Loading transactions for session ${sessionId}...`);
-      const response = await fetch(
-        `/api/import/sessions/${sessionId}/transactions`,
-        {
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to load transactions: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log(
-        `Loaded ${data.transaction_count} transactions for session ${sessionId}:`,
-        data
-      );
-
-      setTransactionData((prev) => ({
-        ...prev,
-        [sessionId]: data,
-      }));
-    } catch (err: any) {
-      console.error(
-        `Error loading transactions for session ${sessionId}:`,
-        err
-      );
     }
   };
 
@@ -271,75 +193,6 @@ export default function BankImport() {
     } catch (err: any) {
       setError(err.message || "Failed to delete session");
     }
-  };
-
-  // Transaction selection helpers
-  const toggleTransactionSelection = (sessionId: string, transactionIndex: number) => {
-    setSelectedTransactions(prev => {
-      const sessionSelections = prev[sessionId] || new Set();
-      const newSelections = new Set(sessionSelections);
-      
-      if (newSelections.has(transactionIndex)) {
-        newSelections.delete(transactionIndex);
-      } else {
-        newSelections.add(transactionIndex);
-      }
-      
-      return {
-        ...prev,
-        [sessionId]: newSelections
-      };
-    });
-  };
-
-  const toggleSelectAll = (sessionId: string) => {
-    const sessionData = transactionData[sessionId];
-    if (!sessionData) return;
-
-    setSelectedTransactions(prev => {
-      const sessionSelections = prev[sessionId] || new Set();
-      const allSelected = sessionSelections.size === sessionData.transactions.length;
-      
-      if (allSelected) {
-        // Deselect all
-        return {
-          ...prev,
-          [sessionId]: new Set()
-        };
-      } else {
-        // Select all
-        const allIndices = new Set(sessionData.transactions.map((_, index) => index));
-        return {
-          ...prev,
-          [sessionId]: allIndices
-        };
-      }
-    });
-  };
-
-  const handleCreateEntry = (sessionId: string, transactionIndex: number) => {
-    const sessionData = transactionData[sessionId];
-    if (!sessionData) return;
-
-    const transaction = sessionData.transactions[transactionIndex];
-    console.log('Creating entry for transaction:', transaction);
-
-    setCreateEntryModal({
-      isOpen: true,
-      transaction: transaction,
-      sessionId: sessionId,
-      transactionIndex: transactionIndex,
-    });
-  };
-
-  const handleBulkCreateEntries = (sessionId: string) => {
-    const sessionData = transactionData[sessionId];
-    const selections = selectedTransactions[sessionId];
-    if (!sessionData || !selections || selections.size === 0) return;
-
-    const selectedTransactionData = Array.from(selections).map(index => sessionData.transactions[index]);
-    console.log('Creating bulk entries for transactions:', selectedTransactionData);
-    // TODO: Open bulk creation interface
   };
 
   const handleMonthClick = (month: string) => {
@@ -552,7 +405,7 @@ export default function BankImport() {
             margin: '0',
             lineHeight: '1.5'
           }}>
-            Import bank statements and create entries from transactions
+            Upload and manage your bank statement imports
           </p>
         </div>
         {error && (
@@ -1000,8 +853,7 @@ export default function BankImport() {
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                      gap: '16px',
-                      marginBottom: '20px'
+                      gap: '16px'
                     }}>
                       <div style={{
                         textAlign: 'center',
@@ -1081,276 +933,57 @@ export default function BankImport() {
                     </div>
                   )}
 
-
-                  {/* All Parsed Transactions Table */}
-                  {transactionData[session._id] && (
-                    <div style={{ marginBottom: "20px" }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h5 style={{
-                          fontSize: '16px',
+                  {/* View Transactions Link */}
+                  {session.statistics && session.statistics.total_transactions > 0 && (
+                    <div style={{
+                      marginTop: '20px',
+                      padding: '16px',
+                      backgroundColor: '#f0f9ff',
+                      border: '1px solid #bae6fd',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div>
+                        <div style={{
+                          fontSize: '14px',
                           fontWeight: '600',
                           color: '#0f172a',
-                          margin: '0',
+                          marginBottom: '4px',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                         }}>
-                          All Parsed Transactions ({transactionData[session._id].transaction_count} total)
-                        </h5>
-                        {selectedTransactions[session._id] && selectedTransactions[session._id].size > 0 && (
-                          <button
-                            style={{
-                              ...primaryButtonStyle,
-                              fontSize: '13px',
-                              padding: '8px 16px'
-                            }}
-                            onClick={() => handleBulkCreateEntries(session._id)}
-                          >
-                            Create Entries ({selectedTransactions[session._id].size})
-                          </button>
-                        )}
-                      </div>
-                      <div style={{
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '12px',
-                        overflow: 'hidden',
-                        maxHeight: '500px',
-                        overflowY: 'auto',
-                        backgroundColor: '#ffffff'
-                      }}>
-                        <table style={{
-                          width: '100%',
+                          {session.statistics.total_transactions} transactions imported
+                        </div>
+                        <div style={{
                           fontSize: '13px',
-                          borderCollapse: 'collapse',
+                          color: '#64748b',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                         }}>
-                          <thead>
-                            <tr style={{
-                              backgroundColor: '#f8fafc',
-                              borderBottom: '1px solid #e2e8f0'
-                            }}>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'center',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                width: '48px',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    selectedTransactions[session._id]?.size === 
-                                    transactionData[session._id].transactions.length &&
-                                    transactionData[session._id].transactions.length > 0
-                                  }
-                                  onChange={() => toggleSelectAll(session._id)}
-                                  style={{ cursor: 'pointer' }}
-                                />
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'left',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Date
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'left',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Description
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'center',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                width: '100px',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Pattern
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'right',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Amount
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'left',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                fontSize: '12px',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Original Text
-                              </th>
-                              <th style={{
-                                padding: '12px 16px',
-                                textAlign: 'center',
-                                fontWeight: '600',
-                                color: '#0f172a',
-                                width: '140px',
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                              }}>
-                                Actions
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {transactionData[session._id].transactions
-                              .sort(
-                                (a, b) =>
-                                  new Date(a.date).getTime() -
-                                  new Date(b.date).getTime()
-                              )
-                              .map((transaction, txIndex) => {
-                                const isSelected = selectedTransactions[session._id]?.has(txIndex) || false;
-                                const isProcessed = transaction.recordCreated === true;
-                                
-                                return (
-                                  <tr
-                                    key={txIndex}
-                                    style={{ 
-                                      borderBottom: '1px solid #f1f5f9',
-                                      backgroundColor: isSelected ? '#f0f9ff' : isProcessed ? '#f8fafc' : 'transparent',
-                                      transition: 'background-color 0.2s ease'
-                                    }}
-                                  >
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      textAlign: 'center'
-                                    }}>
-                                      <input
-                                        type="checkbox"
-                                        checked={isSelected}
-                                        onChange={() => toggleTransactionSelection(session._id, txIndex)}
-                                        disabled={isProcessed}
-                                        style={{ cursor: isProcessed ? 'not-allowed' : 'pointer' }}
-                                      />
-                                    </td>
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      color: '#334155',
-                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                    }}>
-                                      {new Date(transaction.date).toLocaleDateString('en-GB')}
-                                    </td>
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      color: '#334155',
-                                      maxWidth: '240px'
-                                    }}>
-                                      <div style={{
-                                        fontSize: '13px',
-                                        color: '#64748b',
-                                        wordWrap: 'break-word',
-                                        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                      }}>
-                                        {transaction.description}
-                                      </div>
-                                    </td>
-                                    {/* Epic 5 - Story 5.4: Pattern detection badge */}
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      textAlign: 'center'
-                                    }}>
-                                      {transaction.patternMatched && transaction.patternConfidence ? (
-                                        <span style={{
-                                          padding: '4px 8px',
-                                          borderRadius: '6px',
-                                          fontSize: '10px',
-                                          fontWeight: '600',
-                                          backgroundColor: transaction.patternConfidence >= 0.85 ? '#dcfce7' : transaction.patternConfidence >= 0.65 ? '#fef3c7' : '#f3f4f6',
-                                          color: transaction.patternConfidence >= 0.85 ? '#16a34a' : transaction.patternConfidence >= 0.65 ? '#d97706' : '#6b7280',
-                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                                          display: 'inline-flex',
-                                          alignItems: 'center',
-                                          gap: '4px'
-                                        }}>
-                                          🔄 {Math.round(transaction.patternConfidence * 100)}%
-                                        </span>
-                                      ) : (
-                                        <span style={{
-                                          fontSize: '10px',
-                                          color: '#cbd5e1',
-                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                        }}>
-                                          -
-                                        </span>
-                                      )}
-                                    </td>
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      textAlign: 'right',
-                                      fontWeight: '600',
-                                      color: transaction.amount < 0 ? '#dc2626' : '#059669',
-                                      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                    }}>
-                                      {formatCurrency(transaction.amount)}
-                                    </td>
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      fontSize: '11px',
-                                      color: '#64748b',
-                                      maxWidth: '180px',
-                                      wordWrap: 'break-word',
-                                      fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace'
-                                    }}>
-                                      {transaction.originalText}
-                                    </td>
-                                    <td style={{
-                                      padding: '12px 16px',
-                                      textAlign: 'center'
-                                    }}>
-                                      {isProcessed ? (
-                                        <span style={{
-                                          padding: '4px 8px',
-                                          borderRadius: '6px',
-                                          fontSize: '11px',
-                                          fontWeight: '500',
-                                          backgroundColor: '#dcfce7',
-                                          color: '#16a34a',
-                                          fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
-                                        }}>
-                                          Entry Created
-                                        </span>
-                                      ) : (
-                                        <button
-                                          style={{
-                                            ...primaryButtonStyle,
-                                            fontSize: '11px',
-                                            padding: '6px 12px',
-                                            marginRight: 0
-                                          }}
-                                          onClick={() => handleCreateEntry(session._id, txIndex)}
-                                          onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#1e293b';
-                                            e.currentTarget.style.borderColor = '#1e293b';
-                                          }}
-                                          onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#0f172a';
-                                            e.currentTarget.style.borderColor = '#0f172a';
-                                          }}
-                                        >
-                                          Create Entry
-                                        </button>
-                                      )}
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
-                        </table>
+                          View and process transactions in the Transaction History page
+                        </div>
                       </div>
+                      <button
+                        style={{
+                          ...primaryButtonStyle,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginRight: 0
+                        }}
+                        onClick={() => navigate('/transactions')}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#1e293b';
+                          e.currentTarget.style.borderColor = '#1e293b';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#0f172a';
+                          e.currentTarget.style.borderColor = '#0f172a';
+                        }}
+                      >
+                        <List size={16} strokeWidth={1.5} />
+                        View Transactions
+                      </button>
                     </div>
                   )}
                 </div>
@@ -1359,19 +992,6 @@ export default function BankImport() {
           )}
         </div>
       </div>
-
-      <CreateEntryFromTransactionModal
-        isOpen={createEntryModal.isOpen}
-        onClose={() => setCreateEntryModal({ isOpen: false, transaction: null, sessionId: undefined, transactionIndex: undefined })}
-        onSuccess={() => {
-          setCreateEntryModal({ isOpen: false, transaction: null, sessionId: undefined, transactionIndex: undefined });
-          // Refresh the page data to reflect the new entry
-          loadSessions();
-        }}
-        transaction={createEntryModal.transaction}
-        sessionId={createEntryModal.sessionId}
-        transactionIndex={createEntryModal.transactionIndex}
-      />
     </div>
   );
 }

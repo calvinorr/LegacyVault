@@ -30,7 +30,7 @@ const GovernmentRecordForm: React.FC<GovernmentRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('government');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Government');
   const {
     register,
     handleSubmit,

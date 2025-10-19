@@ -29,7 +29,7 @@ const ServicesRecordForm: React.FC<ServicesRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('services');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Services');
   const {
     register,
     handleSubmit,

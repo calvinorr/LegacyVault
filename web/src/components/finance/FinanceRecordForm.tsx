@@ -34,7 +34,7 @@ const FinanceRecordForm: React.FC<FinanceRecordFormProps> = ({
   onCancel,
   initialData
 }) => {
-  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('finance');
+  const { recordTypes, loading: recordTypesLoading } = useRecordTypes('Finance');
   const {
     register,
     handleSubmit,

@@ -356,7 +356,27 @@ export default function CreateEntryFromTransactionModal({
 
       const createdRecord = await response.json();
 
-      // Mark transaction as processed if we have session info
+      // Update transaction status to 'record_created'
+      // Use transaction ID directly for universal compatibility (works from both Bank Import and Transaction History)
+      if (transaction._id) {
+        try {
+          await fetch(`/api/transactions/${transaction._id}/status`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              status: 'record_created',
+              recordId: createdRecord._id,
+              domain: selectedDomain,
+            }),
+          });
+        } catch (statusError) {
+          console.error('Failed to update transaction status:', statusError);
+          // Don't fail the whole operation if this fails
+        }
+      }
+
+      // LEGACY: Also mark as processed in import session if we have session info (for backward compatibility)
       if (sessionId && transactionIndex !== undefined) {
         try {
           await fetch(`/api/import/sessions/${sessionId}/transactions/${transactionIndex}/mark-processed`, {
@@ -369,7 +389,7 @@ export default function CreateEntryFromTransactionModal({
             }),
           });
         } catch (markError) {
-          console.error('Failed to mark transaction as processed:', markError);
+          console.error('Failed to mark transaction as processed (legacy):', markError);
           // Don't fail the whole operation if this fails
         }
       }
@@ -395,10 +415,11 @@ export default function CreateEntryFromTransactionModal({
         }
       }
 
-      // Invalidate domain stats cache to refresh home page counts
-      queryClient.invalidateQueries({ queryKey: ['domain-stats'] });
+      // Invalidate caches to refresh UI across the app
+      queryClient.invalidateQueries({ queryKey: ['domain-stats'] }); // Home page counts
+      queryClient.invalidateQueries({ queryKey: ['transactions'] }); // Transaction History page
 
-      // Invalidate import session cache to refresh transaction list badges
+      // Invalidate import session cache to refresh transaction list badges (if from Bank Import)
       if (sessionId) {
         queryClient.invalidateQueries({ queryKey: ['import-session', sessionId] });
         queryClient.invalidateQueries({ queryKey: ['import-session-transactions', sessionId] });

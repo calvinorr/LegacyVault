@@ -61,7 +61,7 @@ Based on the front-end spec, here are the **nice-to-have** features that would c
 **Location**: Transaction History page, right sidebar (320px width)
 
 **Purpose**: Show top 5 detected patterns across all user transactions
-
+Ha
 **Features**:
 - Pattern cards showing:
   - Payee name

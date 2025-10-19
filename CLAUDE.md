@@ -313,3 +313,152 @@ Currently no test framework configured. The `npm run lint` command is a placehol
 2. **Story 1.7**: Services Directory integration with transaction workflow
 3. **Story 1.8**: Continuity planning features (renewals, contact tracking)
 4. Full integration testing across all stories before cleanup phase
+
+---
+
+### Story 1.6 Implementation Progress (Session 2 Continuation)
+
+**Completed Foundation (Session 2):**
+- ✅ Task 11: `useChildRecords` React Query hooks - `/web/src/hooks/useChildRecords.ts`
+  - 5 hooks: list, get, create, update, delete
+  - Optimistic updates, cache invalidation, parent entity invalidation
+  - Ready for all components to use
+
+- ✅ Task 12: Renewal urgency utilities - `/web/src/utils/renewalUrgency.ts`
+  - `calculateRenewalUrgency()` function with 4 urgency levels
+  - Color mapping (critical=red, important=orange, upcoming=blue, none=gray)
+  - Date formatting and section expansion logic
+  - Helper functions: `hasUrgentRenewals()`, `shouldExpandSection()`
+
+- ✅ API Service: `/web/src/services/api/childRecords.ts`
+  - All CRUD operations (list, get, create, update, delete)
+  - Proper error handling and TypeScript types
+  - Endpoints: `/api/v2/:domain/:parentId/children/*`
+
+**Implementation Strategy for Next Session:**
+
+**Phase 1: Display Components (4-5 hours)**
+Build components that render child record data:
+1. Task 2: `ParentEntityDetail.tsx` - Main detail page layout
+   - Parent header with key fields (registration, address, etc.)
+   - Breadcrumbs & back link
+   - Integrates `ChildRecordList`
+   - Edit/delete buttons for parent entity
+   - Total child count badge
+
+2. Task 3: `ChildRecordList.tsx` - Groups records by type
+   - 6 collapsible sections (Contact, ServiceHistory, Finance, Insurance, Government, Pension)
+   - Default expand logic: expanded if has records OR urgent renewals <30 days
+   - Records sorted: renewalDate (asc) then createdAt (desc)
+   - Empty state for each section
+   - Floating "Add Record" button
+
+3. Task 4: `ChildRecordCard.tsx` - Continuity-focused display
+   - **PROMINENCE HIERARCHY** (critical):
+     ```
+     Record Name (Large, Bold)
+     ┌────────────────────────┐
+     │ 📞 Phone (Large)       │ ← PROMINENT
+     │ ✉️  Email (Large)      │ ← PROMINENT
+     │ 🔖 Policy# (Medium)    │ ← PROMINENT
+     │ 📅 Renewal (Large)     │ ← PROMINENT (RED if <30 days)
+     ├────────────────────────┤
+     │ Provider (Medium)      │ ← Secondary
+     │ £850/year (Small, gray)│ ← DE-EMPHASIZED
+     └────────────────────────┘
+     ```
+   - Urgency border color (red/orange/blue)
+   - Hover effects, action menu (Edit, Delete)
+   - Attachment count badge
+
+**Phase 2: Form & Modal Components (5-6 hours)**
+Build components that modify child record data:
+
+4. Task 5-8: `ChildRecordForm.tsx` - Step 1 & 2
+   - Step 1: Record type selector (show only configured types per domain)
+   - Step 2: Dynamic form based on record type
+   - Sections: Continuity (expanded), Financial (collapsed), Attachments
+
+5. Task 6-8: Form fields with proper sections
+   - **Continuity Section** (ALWAYS expanded):
+     * Name, Contact Name, Phone (with "Call" button), Email (with "Email" button)
+     * Account #, Policy #, Renewal Date (with urgency indicator)
+     * Status dropdown (active/expired/cancelled/pending)
+   - **Financial Section** (collapsed by default):
+     * Amount, Frequency, Notes
+     * Styled muted (gray, smaller font)
+   - **Attachments Section**: File upload
+
+6. Task 10: `DeleteChildRecordModal.tsx`
+   - Confirmation with checkbox requirement
+   - Record type and name displayed
+   - Uses `useDeleteChildRecord` hook
+
+**Phase 3: Pages & Routes (1-2 hours)**
+7. Task 1: Create 4 detail pages
+   - `web/src/pages/VehicleDetail.tsx`
+   - `web/src/pages/PropertyDetail.tsx`
+   - `web/src/pages/EmploymentDetail.tsx`
+   - `web/src/pages/ServiceDetail.tsx`
+   - All use `ParentEntityDetail` component with domain prop
+   - Register routes: `/:domain/:id` format in App.tsx
+
+**Phase 4: Testing & Polish (2-3 hours)**
+8. Task 13: Comprehensive tests
+   - Unit: ParentEntityDetail (3), ChildRecordList (5), ChildRecordCard (6), ChildRecordForm (8)
+   - Integration: Create/edit/delete flows
+   - Urgency indicators: Colors, days remaining
+   - Field prioritization: Layout, visibility
+   - Muted financial fields: Styling
+   - Attachment upload: File handling
+   - React Query: Caching, optimistic updates
+   - Delete confirmation: Checkbox requirement
+   - ~44 tests total
+
+**Critical Implementation Notes:**
+
+1. **Continuity-First Design**: Phone/email/renewal MUST be visually prominent. Financial info (amount/frequency) should be noticeably smaller and grayer.
+
+2. **Record Type-Specific Fields**:
+   - Contact: Hide amount/frequency
+   - ServiceHistory: Emphasize provider, phone, service date, next service due
+   - Finance: Show amount/frequency but still prioritize contact info
+   - Insurance: Provider, policyNumber, renewalDate, phone
+   - Government: renewalDate, accountNumber (MOT, Tax, License)
+   - Pension: Provider, accountNumber, contribution amount
+
+3. **Renewal Urgency Colors** (inline styles since using styled components):
+   - Critical (<30 days): border-red-500, bg-red-50, text-red-900
+   - Important (30-90): border-orange-500, bg-orange-50, text-orange-900
+   - Upcoming (>90): border-blue-500, bg-blue-50, text-blue-900
+
+4. **Default Section Expansion**:
+   ```typescript
+   shouldExpandSection(records, hasUrgentRenewals)
+   → if no records: collapsed
+   → if urgent renewals: expanded
+   → else if has records: expanded
+   ```
+
+5. **API Endpoints**:
+   - List: `GET /api/v2/:domain/:parentId/children`
+   - Get: `GET /api/v2/:domain/:parentId/children/:recordId`
+   - Create: `POST /api/v2/:domain/:parentId/children`
+   - Update: `PUT /api/v2/:domain/:parentId/children/:recordId`
+   - Delete: `DELETE /api/v2/:domain/:parentId/children/:recordId`
+
+**Files Already Created:**
+- ✅ `web/src/hooks/useChildRecords.ts` (115 lines)
+- ✅ `web/src/utils/renewalUrgency.ts` (155 lines)
+- ✅ `web/src/services/api/childRecords.ts` (135 lines)
+
+**Files to Create:**
+- `web/src/components/parent-entities/ParentEntityDetail.tsx` (estimated 200 lines)
+- `web/src/components/child-records/ChildRecordList.tsx` (estimated 250 lines)
+- `web/src/components/child-records/ChildRecordCard.tsx` (estimated 350 lines)
+- `web/src/components/child-records/ChildRecordForm.tsx` (estimated 600 lines)
+- `web/src/components/child-records/DeleteChildRecordModal.tsx` (estimated 200 lines)
+- `web/src/pages/{VehicleDetail,PropertyDetail,EmploymentDetail,ServiceDetail}.tsx` (estimated 120 lines each)
+- Tests (estimated 450 lines total)
+
+**Estimated Total Effort**: 8-10 hours (down from 10-hour estimate if phases are clear)
