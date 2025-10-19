@@ -15,6 +15,7 @@ export const EmploymentDetail: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '400px',
+        backgroundColor: '#0f172a',
         color: '#ef4444'
       }}>
         Employment ID not found
@@ -22,5 +23,14 @@ export const EmploymentDetail: React.FC = () => {
     );
   }
 
-  return <ParentEntityDetail domain="employments" parentId={id} />;
+  return (
+    <div style={{
+      backgroundColor: '#0f172a',
+      minHeight: '100vh',
+      color: '#f1f5f9',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+    }}>
+      <ParentEntityDetail domain="employments" parentId={id} />
+    </div>
+  );
 };

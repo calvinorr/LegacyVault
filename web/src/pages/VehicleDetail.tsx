@@ -15,6 +15,7 @@ export const VehicleDetail: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '400px',
+        backgroundColor: '#0f172a',
         color: '#ef4444'
       }}>
         Vehicle ID not found
@@ -22,5 +23,14 @@ export const VehicleDetail: React.FC = () => {
     );
   }
 
-  return <ParentEntityDetail domain="vehicles" parentId={id} />;
+  return (
+    <div style={{
+      backgroundColor: '#0f172a',
+      minHeight: '100vh',
+      color: '#f1f5f9',
+      fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+    }}>
+      <ParentEntityDetail domain="vehicles" parentId={id} />
+    </div>
+  );
 };
