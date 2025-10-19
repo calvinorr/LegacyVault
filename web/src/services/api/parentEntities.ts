@@ -89,7 +89,14 @@ export const getParentEntity = async (
     throw new Error(error.error || 'Failed to fetch parent entity');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // Backend returns { entity, childRecords }
+  // Merge into single object with childRecords nested
+  return {
+    ...data.entity,
+    childRecords: data.childRecords
+  };
 };
 
 // Create parent entity
