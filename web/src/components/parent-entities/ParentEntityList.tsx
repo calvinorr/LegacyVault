@@ -13,7 +13,7 @@ interface ParentEntityListProps {
 
 const getDomainDisplay = (domain: DomainType): { title: string; icon: JSX.Element; emptyMessage: string } => {
   const iconSize = 48;
-  const iconColor = '#cbd5e1';
+  const iconColor = '#94a3b8';
 
   switch (domain) {
     case 'vehicles':
@@ -99,7 +99,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
           <div
             key={i}
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: '#e2e8f0',
               borderRadius: '16px',
               padding: '20px',
               height: '200px',
@@ -153,9 +153,9 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
         style={{
           textAlign: 'center',
           padding: '64px 24px',
-          backgroundColor: '#fefefe',
+          backgroundColor: '#f8fafc',
           borderRadius: '16px',
-          border: '2px dashed #e2e8f0'
+          border: '2px dashed #cbd5e1'
         }}
       >
         <div style={{ margin: '0 auto 16px' }}>{displayInfo.icon}</div>
