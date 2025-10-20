@@ -80,60 +80,16 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-    watch
+    watch,
+    getValues
   } = useForm<FormData>({
-    defaultValues: entity
-      ? {
-          name: entity.name,
-          ...entity.fields
-        }
-      : {}
+    // Set default values on mount based on whether we have an entity
+    defaultValues: entity ? {
+      name: entity.name,
+      ...entity.fields
+    } : {},
+    mode: 'onChange'
   });
-
-  // Reset form when entity changes (for edit mode) or when modal opens/closes
-  useEffect(() => {
-    if (isOpen) {
-      if (entity) {
-        // Edit mode: populate with entity data
-        reset({
-          name: entity.name,
-          ...entity.fields
-        });
-      } else {
-        // Create mode: clear form
-        reset({
-          name: '',
-          make: '',
-          model: '',
-          year: undefined,
-          registration: '',
-          vin: '',
-          purchaseDate: '',
-          currentOwner: '',
-          location: '',
-          address: '',
-          postcode: '',
-          propertyType: '',
-          ownershipStatus: '',
-          propertyPurchaseDate: '',
-          employerName: '',
-          jobTitle: '',
-          employmentType: '',
-          startDate: '',
-          endDate: '',
-          primaryContact: '',
-          businessName: '',
-          serviceType: '',
-          contactName: '',
-          phone: '',
-          email: '',
-          serviceAddress: '',
-          paymentMethod: '',
-          notes: ''
-        });
-      }
-    }
-  }, [isOpen, entity?._id, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -193,7 +149,9 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
     borderRadius: '8px',
     fontSize: '14px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-    transition: 'all 0.2s ease'
+    transition: 'all 0.2s ease',
+    color: '#0f172a', // Dark text color for visibility
+    backgroundColor: '#ffffff'
   };
 
   const labelStyle: React.CSSProperties = {

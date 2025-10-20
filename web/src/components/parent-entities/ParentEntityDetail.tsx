@@ -341,15 +341,14 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
       />
 
       {/* Modals */}
-      {showEditForm && (
-        <ParentEntityForm
-          domain={domain}
-          entity={parentEntity}
-          isOpen={showEditForm}
-          onClose={() => setShowEditForm(false)}
-          onSuccess={() => setShowEditForm(false)}
-        />
-      )}
+      <ParentEntityForm
+        key={parentEntity._id} // Force remount when editing different entity
+        domain={domain}
+        entity={parentEntity}
+        isOpen={showEditForm}
+        onClose={() => setShowEditForm(false)}
+        onSuccess={() => setShowEditForm(false)}
+      />
 
       {showDeleteModal && (
         <DeleteConfirmModal
