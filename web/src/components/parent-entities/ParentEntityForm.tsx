@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { X } from 'lucide-react';
-import { DomainType, ParentEntity, CreateParentEntityData, uploadEntityImage } from '../../services/api/parentEntities';
+import { X, Upload, Image as ImageIcon } from 'lucide-react';
+import { DomainType, ParentEntity, CreateParentEntityData, uploadEntityImage, getEntityImageUrl } from '../../services/api/parentEntities';
 import { useCreateParentEntity, useUpdateParentEntity } from '../../hooks/useParentEntities';
 
 interface ParentEntityFormProps {
@@ -46,6 +46,13 @@ interface FormData {
   email?: string;
   serviceAddress?: string;
   paymentMethod?: string;
+  // Finance fields
+  institution?: string;
+  accountType?: string;
+  accountNumber?: string;
+  sortCode?: string;
+  accountHolder?: string;
+  openedDate?: string;
   // Common
   notes?: string;
 }
@@ -74,6 +81,8 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
   const createMutation = useCreateParentEntity(domain);
   const updateMutation = useUpdateParentEntity(domain);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -90,6 +99,25 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
     } : {},
     mode: 'onChange'
   });
+
+  // Handle image file selection
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImageFile(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageRemove = () => {
+    setSelectedImageFile(null);
+    setImagePreview(null);
+  };
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -116,11 +144,12 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
         createdEntity = await createMutation.mutateAsync(payload);
       }
 
-      // Upload image if pending and file exists
-      if (pendingImage && createdEntity && pendingImage instanceof File) {
+      // Upload image if pendingImage or selectedImageFile exists
+      const imageToUpload = pendingImage || selectedImageFile;
+      if (imageToUpload && createdEntity && imageToUpload instanceof File) {
         try {
           setIsUploadingImage(true);
-          await uploadEntityImage(domain, createdEntity._id, pendingImage);
+          await uploadEntityImage(domain, createdEntity._id, imageToUpload);
           onImageProcessed?.();
         } catch (imageError) {
           console.error('Image upload failed:', imageError);
@@ -128,7 +157,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
         } finally {
           setIsUploadingImage(false);
         }
-      } else if (onImageProcessed && !pendingImage) {
+      } else if (onImageProcessed && !pendingImage && !selectedImageFile) {
         // Clear the pending image even if no upload
         onImageProcessed?.();
       }
@@ -265,10 +294,111 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                     ? 'Acme Corp - Software Engineer'
                     : domain === 'services'
                     ? 'McGrath Plumbing'
+                    : domain === 'finance'
+                    ? 'HSBC Current Account'
                     : 'Name'
                 }
               />
               {errors.name && <p style={errorStyle}>{errors.name.message}</p>}
+            </div>
+
+            {/* Image Upload Section */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Image (Optional)</label>
+              {!imagePreview && !entity?.image && (
+                <div
+                  style={{
+                    border: '2px dashed #e2e8f0',
+                    borderRadius: '12px',
+                    padding: '24px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    backgroundColor: '#f8fafc'
+                  }}
+                  onClick={() => document.getElementById('image-upload')?.click()}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#cbd5e1';
+                    e.currentTarget.style.backgroundColor = '#f1f5f9';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.backgroundColor = '#f8fafc';
+                  }}
+                >
+                  <Upload size={40} color="#94a3b8" style={{ margin: '0 auto 12px' }} />
+                  <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 4px 0', fontWeight: '500' }}>
+                    Click to upload image
+                  </p>
+                  <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0 }}>
+                    PNG, JPG, GIF up to 5MB
+                  </p>
+                </div>
+              )}
+              {(imagePreview || entity?.image) && (
+                <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                  <img
+                    src={imagePreview || (entity ? getEntityImageUrl(domain, entity._id) : '')}
+                    alt="Preview"
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                      display: 'block'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleImageRemove}
+                    style={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px',
+                      cursor: 'pointer',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <X size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('image-upload')?.click()}
+                    style={{
+                      position: 'absolute',
+                      bottom: '8px',
+                      right: '8px',
+                      background: 'rgba(15, 23, 42, 0.8)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontSize: '13px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    <ImageIcon size={16} />
+                    Change
+                  </button>
+                </div>
+              )}
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                style={{ display: 'none' }}
+              />
             </div>
 
             {/* Vehicle-specific fields */}
@@ -532,6 +662,76 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                     placeholder="Business address (optional)"
                     rows={2}
                   />
+                </div>
+              </>
+            )}
+
+            {/* Finance-specific fields */}
+            {domain === 'finance' && (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={labelStyle}>Financial Institution</label>
+                    <input type="text" {...register('institution')} style={inputStyle} placeholder="HSBC UK" />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Account Type</label>
+                    <select {...register('accountType')} style={inputStyle}>
+                      <option value="">Select type</option>
+                      <option value="Current Account">Current Account</option>
+                      <option value="Savings Account">Savings Account</option>
+                      <option value="ISA">ISA</option>
+                      <option value="Credit Card">Credit Card</option>
+                      <option value="Pension">Pension</option>
+                      <option value="Investment">Investment</option>
+                      <option value="Mortgage">Mortgage</option>
+                      <option value="Loan">Loan</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={labelStyle}>Account Number</label>
+                    <input
+                      type="text"
+                      {...register('accountNumber', {
+                        pattern: {
+                          value: /^\d{8}$/,
+                          message: 'Account number must be 8 digits'
+                        }
+                      })}
+                      style={inputStyle}
+                      placeholder="12345678"
+                    />
+                    {errors.accountNumber && <p style={errorStyle}>{errors.accountNumber.message}</p>}
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Sort Code</label>
+                    <input
+                      type="text"
+                      {...register('sortCode', {
+                        pattern: {
+                          value: /^\d{2}-\d{2}-\d{2}$/,
+                          message: 'Sort code must be in format XX-XX-XX'
+                        }
+                      })}
+                      style={inputStyle}
+                      placeholder="12-34-56"
+                    />
+                    {errors.sortCode && <p style={errorStyle}>{errors.sortCode.message}</p>}
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={labelStyle}>Account Holder</label>
+                    <input type="text" {...register('accountHolder')} style={inputStyle} placeholder="John Doe" />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Opened Date</label>
+                    <input type="date" {...register('openedDate')} style={inputStyle} />
+                  </div>
                 </div>
               </>
             )}

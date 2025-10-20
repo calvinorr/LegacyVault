@@ -33,11 +33,13 @@ import Vehicles from "./pages/Vehicles";
 import Properties from "./pages/Properties";
 import Employments from "./pages/Employments";
 import Services from "./pages/Services";
+import Finance from "./pages/Finance";
 // Parent entity detail pages
 import { VehicleDetail } from "./pages/VehicleDetail";
 import { PropertyDetail } from "./pages/PropertyDetail";
 import { EmploymentDetail } from "./pages/EmploymentDetail";
 import { ServiceDetail } from "./pages/ServiceDetail";
+import { FinanceDetail } from "./pages/FinanceDetail";
 // Admin pages
 import AdminDomains from "./pages/AdminDomains";
 import AdminSystemStatus from "./pages/AdminSystemStatus";
@@ -112,6 +114,14 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/finance-new"
+          element={
+            <ProtectedRoute>
+              <Finance />
+            </ProtectedRoute>
+          }
+        />
         {/* Parent entity detail routes */}
         <Route
           path="/vehicles/:id"
@@ -142,6 +152,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <ServiceDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/finance/:id"
+          element={
+            <ProtectedRoute>
+              <FinanceDetail />
             </ProtectedRoute>
           }
         />

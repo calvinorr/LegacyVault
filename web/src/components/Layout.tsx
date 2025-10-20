@@ -13,7 +13,8 @@ import {
   Car,
   Home,
   Briefcase,
-  Wrench
+  Wrench,
+  DollarSign
 } from "lucide-react";
 
 interface LayoutProps {
@@ -187,6 +188,13 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           >
             <Wrench size={18} strokeWidth={1.5} />
             Services
+          </Link>
+          <Link
+            to="/finance-new"
+            style={navLinkStyle(isPathActive("/finance-new"))}
+          >
+            <DollarSign size={18} strokeWidth={1.5} />
+            Finance
           </Link>
           <Link
             to="/domains"
