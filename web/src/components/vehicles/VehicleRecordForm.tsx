@@ -98,6 +98,8 @@ const VehicleRecordForm: React.FC<VehicleRecordFormProps> = ({ isOpen, onClose, 
     border: '1px solid #e5e7eb',
     fontSize: '15px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+    color: '#0f172a', // Dark text color for visibility
+    backgroundColor: '#ffffff'
   };
 
   const labelStyle: React.CSSProperties = {

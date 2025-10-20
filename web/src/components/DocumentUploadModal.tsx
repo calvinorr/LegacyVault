@@ -203,7 +203,9 @@ export default function DocumentUploadModal({
     fontSize: '15px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
     transition: 'border-color 0.2s',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    color: '#0f172a', // Dark text color for visibility
+    backgroundColor: '#ffffff'
   };
 
   const selectStyle: React.CSSProperties = {
