@@ -86,9 +86,8 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
       onClick={handleCardClick}
       style={{
         position: 'relative',
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '16px',
         overflow: 'hidden',
         cursor: 'pointer',
@@ -96,17 +95,18 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
         fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.12)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.08)';
         e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.borderColor = '#cbd5e1';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
         e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderColor = '#e2e8f0';
       }}
     >
       {/* Image */}
@@ -141,13 +141,15 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#94a3b8'
+            color: '#64748b'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+            e.currentTarget.style.background = '#f1f5f9';
+            e.currentTarget.style.color = '#0f172a';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = '#64748b';
           }}
         >
           <MoreVertical size={20} />
@@ -228,9 +230,9 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           padding: '12px',
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: '#f1f5f9',
           borderRadius: '12px',
-          color: '#ffffff',
+          color: '#0f172a',
           marginBottom: '16px'
         }}
       >
@@ -242,14 +244,93 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
         style={{
           fontSize: '18px',
           fontWeight: '600',
-          color: '#ffffff',
-          margin: '0 0 8px 0',
+          color: '#0f172a',
+          margin: '0 0 12px 0',
           lineHeight: '1.4',
           letterSpacing: '-0.01em'
         }}
       >
         {entity.name}
       </h3>
+
+      {/* Domain-Specific Fields */}
+      <div style={{ marginBottom: '16px', flex: 1 }}>
+        {entity.domainType === 'Vehicle' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {entity.fields?.make && entity.fields?.model && (
+              <p style={{ fontSize: '14px', color: '#475569', margin: 0, fontWeight: '500' }}>
+                {entity.fields.make} {entity.fields.model}
+              </p>
+            )}
+            {entity.fields?.year && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                Year: {entity.fields.year}
+              </p>
+            )}
+            {entity.fields?.registration && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                Reg: {entity.fields.registration}
+              </p>
+            )}
+          </div>
+        )}
+        {entity.domainType === 'Property' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {entity.fields?.address && (
+              <p style={{ fontSize: '14px', color: '#475569', margin: 0, fontWeight: '500' }}>
+                {entity.fields.address}
+              </p>
+            )}
+            {entity.fields?.type && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                {entity.fields.type}
+              </p>
+            )}
+          </div>
+        )}
+        {entity.domainType === 'Employment' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {entity.fields?.employer && (
+              <p style={{ fontSize: '14px', color: '#475569', margin: 0, fontWeight: '500' }}>
+                {entity.fields.employer}
+              </p>
+            )}
+            {entity.fields?.jobTitle && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                {entity.fields.jobTitle}
+              </p>
+            )}
+          </div>
+        )}
+        {entity.domainType === 'Services' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {entity.fields?.businessName && (
+              <p style={{ fontSize: '14px', color: '#475569', margin: 0, fontWeight: '500' }}>
+                {entity.fields.businessName}
+              </p>
+            )}
+            {entity.fields?.serviceType && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                {entity.fields.serviceType}
+              </p>
+            )}
+          </div>
+        )}
+        {entity.domainType === 'Finance' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {entity.fields?.institution && (
+              <p style={{ fontSize: '14px', color: '#475569', margin: 0, fontWeight: '500' }}>
+                {entity.fields.institution}
+              </p>
+            )}
+            {entity.fields?.accountType && (
+              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+                {entity.fields.accountType}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Child Record Count Badge */}
       <div

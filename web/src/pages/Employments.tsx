@@ -137,6 +137,7 @@ const Employments: React.FC = () => {
         domain="employments"
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteClose}
+        childRecordCount={selectedEntity?.childRecordCount || 0}
       />
     </div>
   );

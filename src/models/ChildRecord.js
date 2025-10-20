@@ -81,12 +81,13 @@ const ChildRecordSchema = new Schema({
 
   notes: { type: String },
 
-  // Document attachments
-  attachments: [{
+  // Primary document attachment (similar to ParentEntity image field)
+  attachment: {
     filename: { type: String },
-    url: { type: String },
-    provider: { type: String } // e.g., 's3', 'local'
-  }],
+    data: { type: Buffer },
+    contentType: { type: String },
+    uploadedAt: { type: Date }
+  },
 
   // Metadata for flexible storage of record-type-specific fields
   metadata: {

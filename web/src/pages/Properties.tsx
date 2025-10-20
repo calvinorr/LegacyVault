@@ -137,6 +137,7 @@ const Properties: React.FC = () => {
         domain="properties"
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteClose}
+        childRecordCount={selectedEntity?.childRecordCount || 0}
       />
     </div>
   );

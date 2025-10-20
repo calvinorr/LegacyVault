@@ -2,10 +2,10 @@
 // 2-step form for creating/editing child records with continuity-focused fields
 // Step 1: Select record type | Step 2: Fill dynamic fields (Continuity prominent, Financial collapsed)
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { X, ChevronRight, ChevronLeft } from 'lucide-react';
-import { ChildRecord, CreateChildRecordData, UpdateChildRecordData } from '../../services/api/childRecords';
+import { X, ChevronRight, ChevronLeft, Upload, FileText, Trash2, Download, ExternalLink } from 'lucide-react';
+import { ChildRecord, CreateChildRecordData, UpdateChildRecordData, uploadAttachment, deleteAttachment, getAttachmentUrl } from '../../services/api/childRecords';
 import { useCreateChildRecord, useUpdateChildRecord } from '../../hooks/useChildRecords';
 
 interface ChildRecordFormProps {
@@ -86,6 +86,10 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
   const [selectedType, setSelectedType] = useState<RecordType>(
     (initialRecordType as RecordType) || 'Contact'
   );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormData>({
     defaultValues: record ? {
@@ -129,6 +133,47 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
       onSuccess();
     } catch (error) {
       console.error('Form submission error:', error);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (10MB max)
+      if (file.size > 10 * 1024 * 1024) {
+        setUploadError('File size must be less than 10MB');
+        return;
+      }
+      setSelectedFile(file);
+      setUploadError(null);
+    }
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile || !record) return;
+
+    setUploadingFile(true);
+    setUploadError(null);
+
+    try {
+      await uploadAttachment(domain, parentId, record._id, selectedFile);
+      setSelectedFile(null);
+      onSuccess(); // Refresh to show uploaded file
+    } catch (error: any) {
+      setUploadError(error.message || 'Failed to upload file');
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
+  const handleDeleteAttachment = async () => {
+    if (!record || !record.attachment) return;
+
+    try {
+      await deleteAttachment(domain, parentId, record._id);
+      onSuccess(); // Refresh to remove attachment
+    } catch (error: any) {
+      setUploadError(error.message || 'Failed to delete attachment');
     }
   };
 
@@ -540,6 +585,256 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 />
               </div>
             </div>
+
+            {/* Attachment Section - Only show when editing existing record */}
+            {record && (
+              <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <h3 style={{
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  color: '#cbd5e1',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  marginBottom: '12px',
+                  margin: '0 0 12px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <FileText size={14} />
+                  Document Attachment
+                </h3>
+
+                {/* Existing Attachment */}
+                {record.attachment && (
+                  <div style={{
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
+                      <FileText size={18} color="#3b82f6" style={{ flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '13px', fontWeight: '500', color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {record.attachment.filename}
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                          Uploaded {new Date(record.attachment.uploadedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                      <a
+                        href={getAttachmentUrl(domain, parentId, record._id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          padding: '6px 10px',
+                          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                          color: '#3b82f6',
+                          border: '1px solid rgba(59, 130, 246, 0.2)',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.2)';
+                        }}
+                      >
+                        <ExternalLink size={12} />
+                        View
+                      </a>
+                      <a
+                        href={`${getAttachmentUrl(domain, parentId, record._id)}?download=true`}
+                        style={{
+                          padding: '6px 10px',
+                          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                          color: '#3b82f6',
+                          border: '1px solid rgba(59, 130, 246, 0.2)',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.2)';
+                        }}
+                      >
+                        <Download size={12} />
+                        Download
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleDeleteAttachment}
+                        style={{
+                          padding: '6px 10px',
+                          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                          color: '#ef4444',
+                          border: '1px solid rgba(239, 68, 68, 0.2)',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+                          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                          e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                        }}
+                      >
+                        <Trash2 size={12} />
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Upload New File */}
+                {!record.attachment && (
+                  <div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      onChange={handleFileSelect}
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.csv,.xls,.xlsx"
+                      style={{ display: 'none' }}
+                    />
+
+                    {selectedFile ? (
+                      <div style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        marginBottom: '12px'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                          <FileText size={18} color="#cbd5e1" />
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '13px', color: '#e2e8f0' }}>{selectedFile.name}</div>
+                            <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                              {(selectedFile.size / 1024).toFixed(1)} KB
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button
+                            type="button"
+                            onClick={handleFileUpload}
+                            disabled={uploadingFile}
+                            style={{
+                              flex: 1,
+                              padding: '8px 12px',
+                              backgroundColor: uploadingFile ? '#64748b' : '#3b82f6',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '6px',
+                              fontSize: '12px',
+                              fontWeight: '500',
+                              cursor: uploadingFile ? 'not-allowed' : 'pointer'
+                            }}
+                          >
+                            {uploadingFile ? 'Uploading...' : 'Upload File'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedFile(null)}
+                            disabled={uploadingFile}
+                            style={{
+                              padding: '8px 12px',
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              color: '#cbd5e1',
+                              border: 'none',
+                              borderRadius: '6px',
+                              fontSize: '12px',
+                              cursor: uploadingFile ? 'not-allowed' : 'pointer'
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                          border: '1px dashed rgba(255, 255, 255, 0.1)',
+                          borderRadius: '8px',
+                          color: '#cbd5e1',
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                        }}
+                      >
+                        <Upload size={16} />
+                        Choose File (PDF, Images, Documents - Max 10MB)
+                      </button>
+                    )}
+
+                    {uploadError && (
+                      <div style={{
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.2)',
+                        borderRadius: '6px',
+                        color: '#ef4444',
+                        fontSize: '12px'
+                      }}>
+                        {uploadError}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Footer */}
             <div style={{

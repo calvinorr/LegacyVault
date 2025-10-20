@@ -141,6 +141,7 @@ const Vehicles: React.FC = () => {
         domain="vehicles"
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteClose}
+        childRecordCount={selectedEntity?.childRecordCount || 0}
       />
     </div>
   );

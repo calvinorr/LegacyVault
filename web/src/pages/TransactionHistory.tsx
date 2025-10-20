@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useSearchParams, Link } from 'react-router-dom';
 import PatternBadge from '../components/bank-import/PatternBadge';
 import TransactionStatusBadge from '../components/bank-import/TransactionStatusBadge';
-import CreateEntryFromTransactionModal from '../components/CreateEntryFromTransactionModal';
+import CreateChildRecordFromTransactionModal from '../components/CreateChildRecordFromTransactionModal';
 import IgnoreTransactionModal from '../components/bank-import/IgnoreTransactionModal';
 import PatternInsightsPanel from '../components/bank-import/PatternInsightsPanel';
 
@@ -799,7 +799,7 @@ export default function TransactionHistory() {
       </div>
 
       {/* Create Entry Modal */}
-      <CreateEntryFromTransactionModal
+      <CreateChildRecordFromTransactionModal
         isOpen={createEntryModal.isOpen}
         onClose={() => setCreateEntryModal({ isOpen: false, transaction: null })}
         onSuccess={() => {

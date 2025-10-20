@@ -18,6 +18,7 @@ export interface ParentEntity {
   lastUpdatedBy?: string;
   createdAt: string;
   updatedAt: string;
+  childRecordCount?: number; // Added by backend for list endpoint
 }
 
 export interface ParentEntityWithChildren extends ParentEntity {

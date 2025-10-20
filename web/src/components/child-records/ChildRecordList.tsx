@@ -2,8 +2,8 @@
 // Display child records grouped by type with collapsible sections and urgency indicators
 
 import React, { useState } from 'react';
-import { ChevronDown, Plus } from 'lucide-react';
-import { ChildRecord } from '../../services/api/childRecords';
+import { ChevronDown, Plus, Paperclip } from 'lucide-react';
+import { ChildRecord, getAttachmentUrl } from '../../services/api/childRecords';
 import { calculateRenewalUrgency, hasUrgentRenewals, shouldExpandSection } from '../../utils/renewalUrgency';
 import { ChildRecordForm } from './ChildRecordForm';
 import { DeleteChildRecordModal } from './DeleteChildRecordModal';
@@ -278,15 +278,54 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                           gap: '12px'
                         }}>
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{
-                              fontSize: '15px',
-                              fontWeight: '600',
-                              color: colors.text,
-                              margin: '0 0 8px 0',
-                              wordBreak: 'break-word'
-                            }}>
-                              {record.name}
-                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                              <p style={{
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                color: colors.text,
+                                margin: 0,
+                                wordBreak: 'break-word'
+                              }}>
+                                {record.name}
+                              </p>
+
+                              {/* Attachment Indicator */}
+                              {record.attachment && (
+                                <a
+                                  href={getAttachmentUrl(domain, parentId, record._id)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    padding: '2px 8px',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                                    borderRadius: '12px',
+                                    fontSize: '11px',
+                                    fontWeight: '500',
+                                    color: '#3b82f6',
+                                    whiteSpace: 'nowrap',
+                                    textDecoration: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                                    e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                                    e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+                                  }}
+                                >
+                                  <Paperclip size={12} />
+                                  File
+                                </a>
+                              )}
+                            </div>
 
                             {/* Show Contact Info if Available */}
                             {(record.fields?.phone || record.fields?.email) && (

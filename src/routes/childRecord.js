@@ -8,6 +8,25 @@ const { requireAuth } = require('../middleware/auth');
 const ParentEntity = require('../models/ParentEntity');
 const ChildRecord = require('../models/ChildRecord');
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+// Configure multer for attachment uploads (max 10MB, common document types)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB max
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /pdf|doc|docx|jpg|jpeg|png|gif|txt|csv|xls|xlsx/;
+    const mimetype = allowedTypes.test(file.mimetype);
+    const extname = allowedTypes.test(file.originalname.toLowerCase().split('.').pop());
+
+    if (mimetype || extname) {
+      return cb(null, true);
+    }
+    cb(new Error('Invalid file type. Only documents and images are allowed.'));
+  }
+});
 
 /**
  * Domain mapping from URL parameter to model enum
@@ -312,6 +331,155 @@ router.delete(
       }
 
       res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+/**
+ * UPLOAD ATTACHMENT - Upload file to child record
+ * POST /api/v2/:domain/:parentId/records/:recordId/attachment
+ */
+router.post(
+  '/:domain/:parentId/records/:recordId/attachment',
+  requireAuth,
+  upload.single('attachment'),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file provided' });
+      }
+
+      // Validate IDs
+      if (!mongoose.Types.ObjectId.isValid(req.params.parentId) ||
+          !mongoose.Types.ObjectId.isValid(req.params.recordId)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
+      }
+
+      const domainType = DOMAIN_MAPPING[req.params.domain];
+      if (!domainType) {
+        return res.status(400).json({ error: 'Invalid domain' });
+      }
+
+      // Verify parent entity exists and belongs to user
+      const parentEntity = await ParentEntity.findOne({
+        _id: req.params.parentId,
+        userId: req.user._id,
+        domainType
+      });
+
+      if (!parentEntity) {
+        return res.status(404).json({ error: 'Parent entity not found' });
+      }
+
+      // Update child record with attachment
+      const record = await ChildRecord.findOneAndUpdate(
+        {
+          _id: req.params.recordId,
+          parentId: req.params.parentId,
+          userId: req.user._id
+        },
+        {
+          attachment: {
+            filename: req.file.originalname,
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+            uploadedAt: new Date()
+          }
+        },
+        { new: true }
+      );
+
+      if (!record) {
+        return res.status(404).json({ error: 'Child record not found' });
+      }
+
+      res.json({
+        success: true,
+        attachment: {
+          filename: record.attachment.filename,
+          contentType: record.attachment.contentType,
+          uploadedAt: record.attachment.uploadedAt
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+/**
+ * GET ATTACHMENT - View or download attachment from child record
+ * GET /api/v2/:domain/:parentId/records/:recordId/attachment?download=true (optional)
+ */
+router.get(
+  '/:domain/:parentId/records/:recordId/attachment',
+  requireAuth,
+  async (req, res) => {
+    try {
+      // Validate IDs
+      if (!mongoose.Types.ObjectId.isValid(req.params.parentId) ||
+          !mongoose.Types.ObjectId.isValid(req.params.recordId)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
+      }
+
+      const record = await ChildRecord.findOne({
+        _id: req.params.recordId,
+        parentId: req.params.parentId,
+        userId: req.user._id
+      });
+
+      if (!record || !record.attachment) {
+        return res.status(404).json({ error: 'Attachment not found' });
+      }
+
+      // Return file with proper content type
+      res.set('Content-Type', record.attachment.contentType);
+
+      // Use 'inline' for viewing in browser, 'attachment' for forcing download
+      const disposition = req.query.download === 'true' ? 'attachment' : 'inline';
+      res.set('Content-Disposition', `${disposition}; filename="${record.attachment.filename}"`);
+
+      res.send(record.attachment.data);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+/**
+ * DELETE ATTACHMENT - Remove attachment from child record
+ * DELETE /api/v2/:domain/:parentId/records/:recordId/attachment
+ */
+router.delete(
+  '/:domain/:parentId/records/:recordId/attachment',
+  requireAuth,
+  async (req, res) => {
+    try {
+      // Validate IDs
+      if (!mongoose.Types.ObjectId.isValid(req.params.parentId) ||
+          !mongoose.Types.ObjectId.isValid(req.params.recordId)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
+      }
+
+      const record = await ChildRecord.findOneAndUpdate(
+        {
+          _id: req.params.recordId,
+          parentId: req.params.parentId,
+          userId: req.user._id
+        },
+        {
+          $unset: { attachment: '' }
+        },
+        { new: true }
+      );
+
+      if (!record) {
+        return res.status(404).json({ error: 'Child record not found' });
+      }
+
+      res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

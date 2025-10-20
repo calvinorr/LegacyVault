@@ -13,12 +13,11 @@ export interface ChildRecord {
   fields: Record<string, any>;
   renewalDate?: string;
   status: 'active' | 'expired' | 'cancelled' | 'pending';
-  attachments: Array<{
-    fileId: string;
-    fileName: string;
-    mimeType: string;
+  attachment?: {
+    filename: string;
+    contentType: string;
     uploadedAt: string;
-  }>;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -46,7 +45,7 @@ export const listChildRecords = async (
   domain: string,
   parentId: string
 ): Promise<ChildRecordsResponse> => {
-  const response = await fetch(`${API_BASE}/${domain}/${parentId}/children`, {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records`, {
     credentials: 'include'
   });
 
@@ -64,7 +63,7 @@ export const getChildRecord = async (
   parentId: string,
   recordId: string
 ): Promise<ChildRecord> => {
-  const response = await fetch(`${API_BASE}/${domain}/${parentId}/children/${recordId}`, {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records/${recordId}`, {
     credentials: 'include'
   });
 
@@ -85,7 +84,7 @@ export const createChildRecord = async (
   parentId: string,
   data: CreateChildRecordData
 ): Promise<ChildRecord> => {
-  const response = await fetch(`${API_BASE}/${domain}/${parentId}/children`, {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -107,7 +106,7 @@ export const updateChildRecord = async (
   recordId: string,
   data: UpdateChildRecordData
 ): Promise<ChildRecord> => {
-  const response = await fetch(`${API_BASE}/${domain}/${parentId}/children/${recordId}`, {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records/${recordId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -131,7 +130,7 @@ export const deleteChildRecord = async (
   parentId: string,
   recordId: string
 ): Promise<void> => {
-  const response = await fetch(`${API_BASE}/${domain}/${parentId}/children/${recordId}`, {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records/${recordId}`, {
     method: 'DELETE',
     credentials: 'include'
   });
@@ -142,5 +141,55 @@ export const deleteChildRecord = async (
     }
     const error = await response.json();
     throw new Error(error.error || 'Failed to delete child record');
+  }
+};
+
+// Upload attachment to child record
+export const uploadAttachment = async (
+  domain: string,
+  parentId: string,
+  recordId: string,
+  file: File
+): Promise<{ success: boolean; attachment: { filename: string; contentType: string; uploadedAt: string } }> => {
+  const formData = new FormData();
+  formData.append('attachment', file);
+
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records/${recordId}/attachment`, {
+    method: 'POST',
+    credentials: 'include',
+    body: formData
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to upload attachment');
+  }
+
+  return response.json();
+};
+
+// Get attachment URL for download/display
+export const getAttachmentUrl = (
+  domain: string,
+  parentId: string,
+  recordId: string
+): string => {
+  return `${API_BASE}/${domain}/${parentId}/records/${recordId}/attachment`;
+};
+
+// Delete attachment from child record
+export const deleteAttachment = async (
+  domain: string,
+  parentId: string,
+  recordId: string
+): Promise<void> => {
+  const response = await fetch(`${API_BASE}/${domain}/${parentId}/records/${recordId}/attachment`, {
+    method: 'DELETE',
+    credentials: 'include'
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to delete attachment');
   }
 };

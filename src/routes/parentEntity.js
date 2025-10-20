@@ -103,8 +103,22 @@ router.get('/:domain', requireAuth, validateDomain, async (req, res) => {
       ParentEntity.countDocuments(filter)
     ]);
 
+    // Add child record counts to each entity
+    const entitiesWithCounts = await Promise.all(
+      entities.map(async (entity) => {
+        const childCount = await ChildRecord.countDocuments({
+          parentId: entity._id,
+          userId: req.user._id
+        });
+        return {
+          ...entity,
+          childRecordCount: childCount
+        };
+      })
+    );
+
     res.json({
-      entities,
+      entities: entitiesWithCounts,
       page: pageNum,
       limit: limitNum,
       total

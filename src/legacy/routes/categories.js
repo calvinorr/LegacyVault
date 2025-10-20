@@ -1,7 +1,7 @@
 // src/routes/categories.js
 const express = require('express');
 const router = express.Router();
-const CategoryController = require('../controllers/categoryController');
+const CategoryController = require('../../controllers/categoryController');
 
 // Middleware for authentication and authorization
 function requireAuth(req, res, next) {
