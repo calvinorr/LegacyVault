@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PropertyDomainPage from "./pages/PropertyDomainPage";
 import PropertyRecordDetailPage from "./pages/PropertyRecordDetailPage";
@@ -144,28 +144,19 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
-        {/* Old domain routes (kept for backwards compatibility) */}
-        <Route
-          path="/property"
-          element={
-            <ProtectedRoute>
-              <PropertyDomainPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* Redirects from old routes to new hierarchical structure (Epic 6 migration) */}
+        <Route path="/vehicles" element={<Navigate to="/vehicles-new" replace />} />
+        <Route path="/property" element={<Navigate to="/properties-new" replace />} />
+        <Route path="/employment" element={<Navigate to="/employments-new" replace />} />
+        <Route path="/services" element={<Navigate to="/services-new" replace />} />
+
+        {/* Legacy domain routes (deprecated - redirects added above for main views) */}
+        {/* Keeping detail routes temporarily for any existing bookmarks */}
         <Route
           path="/property/:recordId"
           element={
             <ProtectedRoute>
               <PropertyRecordDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vehicles"
-          element={
-            <ProtectedRoute>
-              <VehiclesDomainPage />
             </ProtectedRoute>
           }
         />
@@ -190,22 +181,6 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <FinanceRecordDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/employment"
-          element={
-            <ProtectedRoute>
-              <EmploymentDomainPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/employment/:recordId"
-          element={
-            <ProtectedRoute>
-              <EmploymentRecordDetailPage />
             </ProtectedRoute>
           }
         />
@@ -254,14 +229,6 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <LegalRecordDetailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            <ProtectedRoute>
-              <ServicesDomainPage />
             </ProtectedRoute>
           }
         />

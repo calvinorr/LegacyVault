@@ -60,6 +60,29 @@ const validateDomain = (req, res, next) => {
 };
 
 /**
+ * STATS - Get parent entity counts for all domains
+ * GET /api/v2/stats
+ */
+router.get('/stats', requireAuth, async (req, res) => {
+  try {
+    const stats = {};
+
+    // Query each domain for parent entity count
+    for (const [domain, domainType] of Object.entries(DOMAIN_MAPPING)) {
+      const count = await ParentEntity.countDocuments({
+        userId: req.user._id,
+        domainType
+      });
+      stats[domain] = count;
+    }
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * LIST - Get all parent entities for a domain
  * GET /api/v2/:domain?page=1&limit=50&search=name&sort=createdAt&order=desc
  */

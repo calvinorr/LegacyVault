@@ -5,7 +5,8 @@ interface DomainStats {
 }
 
 const fetchDomainStats = async (): Promise<DomainStats> => {
-  const response = await fetch('/api/domains/stats', {
+  // Use new parent entity stats endpoint (Epic 6)
+  const response = await fetch('/api/v2/stats', {
     credentials: 'include',
   });
 

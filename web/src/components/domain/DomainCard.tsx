@@ -26,7 +26,8 @@ const DomainCard: React.FC<DomainCardProps> = ({
 
   const handleClick = () => {
     if (domain.enabled) {
-      navigate(`/${domain.id}`);
+      // Route to new parent entity pages (Epic 6)
+      navigate(`/${domain.id}-new`);
     }
   };
 
