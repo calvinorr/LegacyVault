@@ -38,13 +38,9 @@ const RenewalFilters: React.FC<RenewalFiltersProps> = ({ filters, onChange }) =>
           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 bg-white"
         >
           <option value="all">All Domains</option>
-          <option value="property">Property</option>
           <option value="vehicles">Vehicles</option>
-          <option value="finance">Finance</option>
-          <option value="employment">Employment</option>
-          <option value="government">Government</option>
-          <option value="insurance">Insurance</option>
-          <option value="legal">Legal</option>
+          <option value="properties">Properties</option>
+          <option value="employments">Employments</option>
           <option value="services">Services</option>
         </select>
       </div>

@@ -16,58 +16,30 @@ import {
 
 const DOMAINS = [
   {
-    id: 'property',
-    name: 'Property',
-    description: 'Mortgage, utilities, home insurance, rates',
-    icon: Home,
-    enabled: true
-  },
-  {
     id: 'vehicles',
     name: 'Vehicles',
-    description: 'Car finance, MOT, insurance, road tax',
+    description: 'Manage vehicles and track insurance, finance, MOT, and service history',
     icon: Car,
     enabled: true
   },
   {
-    id: 'employment',
-    name: 'Employment',
-    description: 'Payroll, pension, workplace benefits',
+    id: 'properties',
+    name: 'Properties',
+    description: 'Manage properties and track insurance, utilities, and maintenance',
+    icon: Home,
+    enabled: true
+  },
+  {
+    id: 'employments',
+    name: 'Employments',
+    description: 'Manage employment details and track pensions, benefits, and contacts',
     icon: Briefcase,
     enabled: true
   },
   {
-    id: 'government',
-    name: 'Government',
-    description: 'NI number, tax, licences, passports',
-    icon: FileText,
-    enabled: true
-  },
-  {
-    id: 'finance',
-    name: 'Finance',
-    description: 'Bank accounts, savings, ISAs, loans',
-    icon: Banknote,
-    enabled: true
-  },
-  {
-    id: 'insurance',
-    name: 'Insurance & Protection',
-    description: 'Life, income protection, warranties',
-    icon: Shield,
-    enabled: true
-  },
-  {
-    id: 'legal',
-    name: 'Legal & Estate',
-    description: 'Wills, power of attorney, deeds',
-    icon: Scale,
-    enabled: true
-  },
-  {
     id: 'services',
-    name: 'Household Services',
-    description: 'Tradespeople, service providers',
+    name: 'Service Providers',
+    description: 'Manage tradespeople and service providers for easy access in emergencies',
     icon: Wrench,
     enabled: true
   }
