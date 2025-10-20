@@ -1,0 +1,33 @@
+{
+  "startTime": "2025-10-20T19:19:28.443Z",
+  "dryRun": true,
+  "backupPath": null,
+  "collectionsDeleted": [],
+  "collectionsPreserved": [
+    {
+      "name": "users",
+      "count": 2
+    },
+    {
+      "name": "entries",
+      "count": 16
+    },
+    {
+      "name": "categories",
+      "count": 11
+    },
+    {
+      "name": "transactions",
+      "count": 30
+    },
+    {
+      "name": "importsessions",
+      "count": 0
+    }
+  ],
+  "recordsDeleted": 0,
+  "errors": [],
+  "configsSeeded": [],
+  "endTime": "2025-10-20T19:19:29.644Z",
+  "duration": 1201
+}

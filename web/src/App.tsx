@@ -40,6 +40,7 @@ import { EmploymentDetail } from "./pages/EmploymentDetail";
 import { ServiceDetail } from "./pages/ServiceDetail";
 // Admin pages
 import AdminDomains from "./pages/AdminDomains";
+import AdminSystemStatus from "./pages/AdminSystemStatus";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
 
@@ -277,6 +278,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <AdminDomains />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/system-status"
+          element={
+            <ProtectedRoute>
+              <AdminSystemStatus />
             </ProtectedRoute>
           }
         />

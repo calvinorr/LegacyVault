@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-20T19:24:27.811Z",
+  "collections": {
+    "insurances": {
+      "count": 0,
+      "documents": [],
+      "note": "Collection did not exist at backup time"
+    },
+    "finances": {
+      "count": 0,
+      "documents": [],
+      "note": "Collection did not exist at backup time"
+    },
+    "services": {
+      "count": 0,
+      "documents": [],
+      "note": "Collection did not exist at backup time"
+    },
+    "governments": {
+      "count": 0,
+      "documents": [],
+      "note": "Collection did not exist at backup time"
+    },
+    "legals": {
+      "count": 0,
+      "documents": [],
+      "note": "Collection did not exist at backup time"
+    }
+  }
+}

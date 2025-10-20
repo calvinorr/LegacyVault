@@ -24,6 +24,7 @@ const recordTypesRouter = require('./routes/recordTypes');
 const parentEntityRouter = require('./routes/parentEntity'); // Epic 6 - Story 1.2
 const childRecordRouter = require('./routes/childRecord'); // Epic 6 - Story 1.3
 const domainConfigRouter = require('./routes/admin/domainConfig'); // Epic 6 - Story 1.4
+const systemStatusRouter = require('./routes/admin/systemStatus'); // Epic 6 - Story 1.9
 const categoriesRouter = require('./legacy/routes/categories'); // Legacy categories for frontend
 
 const app = express();
@@ -143,8 +144,9 @@ app.use('/api/v2', parentEntityRouter);
 // Child Record API v2 (Epic 6 - Story 1.3 - Child Record Management)
 app.use('/api/v2', childRecordRouter);
 
-// Admin API (Epic 6 - Story 1.4 - Admin Domain Configuration)
-app.use('/api/admin', domainConfigRouter);
+// Admin API (Epic 6)
+app.use('/api/admin', domainConfigRouter); // Story 1.4 - Admin Domain Configuration
+app.use('/api/admin', systemStatusRouter); // Story 1.9 - System Status & Health
 
 // Legacy Categories API (for frontend CategoriesProvider)
 app.use('/api/categories', categoriesRouter);

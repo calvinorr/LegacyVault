@@ -1,0 +1,77 @@
+{
+  "startTime": "2025-10-20T19:24:26.029Z",
+  "dryRun": false,
+  "backupPath": "backups/legacy-collections-2025-10-20T19-24-27-811Z.json",
+  "collectionsDeleted": [],
+  "collectionsPreserved": [
+    {
+      "name": "users",
+      "count": 2
+    },
+    {
+      "name": "entries",
+      "count": 16
+    },
+    {
+      "name": "categories",
+      "count": 11
+    },
+    {
+      "name": "transactions",
+      "count": 30
+    },
+    {
+      "name": "importsessions",
+      "count": 0
+    }
+  ],
+  "recordsDeleted": 0,
+  "errors": [],
+  "configsSeeded": [
+    {
+      "domainType": "Vehicle",
+      "allowedRecordTypes": [
+        "Contact",
+        "Finance",
+        "Insurance",
+        "ServiceHistory",
+        "Government"
+      ]
+    },
+    {
+      "domainType": "Property",
+      "allowedRecordTypes": [
+        "Contact",
+        "Finance",
+        "Insurance",
+        "ServiceHistory",
+        "Government"
+      ]
+    },
+    {
+      "domainType": "Employment",
+      "allowedRecordTypes": [
+        "Contact",
+        "Finance",
+        "Pension"
+      ]
+    },
+    {
+      "domainType": "Services",
+      "allowedRecordTypes": [
+        "Contact",
+        "ServiceHistory"
+      ]
+    },
+    {
+      "domainType": "Finance",
+      "allowedRecordTypes": [
+        "Contact",
+        "Finance",
+        "Insurance"
+      ]
+    }
+  ],
+  "endTime": "2025-10-20T19:24:28.392Z",
+  "duration": 2363
+}
