@@ -111,16 +111,26 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
     >
       {/* Image */}
       {entity.image && (
-        <img
-          src={getEntityImageUrl(getDomainMap()[entity.domainType] as any, entity._id)}
-          alt={entity.name}
-          style={{
-            width: '100%',
-            height: '160px',
-            objectFit: 'cover',
-            objectPosition: 'center'
-          }}
-        />
+        <div style={{
+          width: '100%',
+          height: '160px',
+          backgroundColor: '#f8fafc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <img
+            src={getEntityImageUrl(getDomainMap()[entity.domainType] as any, entity._id)}
+            alt={entity.name}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '160px',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain'
+            }}
+          />
+        </div>
       )}
 
       {/* Content Wrapper */}
