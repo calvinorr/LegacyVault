@@ -11,7 +11,8 @@ import {
   Banknote,
   Shield,
   Scale,
-  Wrench
+  Wrench,
+  DollarSign
 } from 'lucide-react';
 
 const DOMAINS = [
@@ -41,6 +42,13 @@ const DOMAINS = [
     name: 'Service Providers',
     description: 'Manage tradespeople and service providers for easy access in emergencies',
     icon: Wrench,
+    enabled: true
+  },
+  {
+    id: 'finance',
+    name: 'Finance',
+    description: 'Manage bank accounts, credit cards, investments, pensions, and loans',
+    icon: DollarSign,
     enabled: true
   }
 ];
