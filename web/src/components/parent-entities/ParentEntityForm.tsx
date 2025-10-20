@@ -90,16 +90,50 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
       : {}
   });
 
+  // Reset form when entity changes (for edit mode) or when modal opens/closes
   useEffect(() => {
-    if (entity) {
-      reset({
-        name: entity.name,
-        ...entity.fields
-      });
-    } else {
-      reset({});
+    if (isOpen) {
+      if (entity) {
+        // Edit mode: populate with entity data
+        reset({
+          name: entity.name,
+          ...entity.fields
+        });
+      } else {
+        // Create mode: clear form
+        reset({
+          name: '',
+          make: '',
+          model: '',
+          year: undefined,
+          registration: '',
+          vin: '',
+          purchaseDate: '',
+          currentOwner: '',
+          location: '',
+          address: '',
+          postcode: '',
+          propertyType: '',
+          ownershipStatus: '',
+          propertyPurchaseDate: '',
+          employerName: '',
+          jobTitle: '',
+          employmentType: '',
+          startDate: '',
+          endDate: '',
+          primaryContact: '',
+          businessName: '',
+          serviceType: '',
+          contactName: '',
+          phone: '',
+          email: '',
+          serviceAddress: '',
+          paymentMethod: '',
+          notes: ''
+        });
+      }
     }
-  }, [entity, reset]);
+  }, [isOpen, entity?._id, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -197,7 +231,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
           backgroundColor: '#ffffff',
           borderRadius: '16px',
           width: '100%',
-          maxWidth: '600px',
+          maxWidth: '700px',
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',

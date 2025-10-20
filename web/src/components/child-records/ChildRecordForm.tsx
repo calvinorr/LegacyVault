@@ -197,7 +197,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
         border: '1px solid rgba(255, 255, 255, 0.1)',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
         width: '100%',
-        maxWidth: '500px',
+        maxWidth: '650px',
         maxHeight: '90vh',
         overflow: 'auto'
       }}>
