@@ -2,7 +2,7 @@
 
 **Epic**: 6 - Hierarchical Domain Model Refactor
 **Story**: 1.10
-**Status**: Draft
+**Status**: Ready for Review
 **Assigned**: TBD
 **Estimated**: 2-3 hours
 **Actual**: TBD
@@ -91,11 +91,14 @@ During development of Epic 6 features, multiple forms were created with inconsis
 ```
 
 **Required Changes:**
-- [ ] Wrap modal in flexbox container
-- [ ] Set header `flexShrink: 0` to prevent compression
-- [ ] Set form wrapper `flex: 1, minHeight: 0` for proper sizing
-- [ ] Move `overflow: 'auto'` to form content div only
-- [ ] Set footer `flexShrink: 0` to prevent compression
+- [x] Wrap modal in flexbox container
+- [x] Set header `flexShrink: 0` to prevent compression
+- [x] Set form wrapper `flex: 1, minHeight: 0` for proper sizing
+- [x] Move `overflow: 'auto'` to form content div only
+- [x] Set footer `flexShrink: 0` to prevent compression
+
+**Status**: ✅ COMPLETE
+**Commit**: 2b91324 - fix(epic-6): Story 1.10 - Fix ChildRecordForm scroll structure
 
 **Target Structure:**
 ```typescript
@@ -137,11 +140,14 @@ During development of Epic 6 features, multiple forms were created with inconsis
 - No maxHeight constraint found
 
 **Required Changes:**
-- [ ] Add `maxHeight: 90vh` to modal container
-- [ ] Implement 3-section flexbox layout
-- [ ] Make renewalInfo section collapsible (default: collapsed)
-- [ ] Move `overflow: 'auto'` to content wrapper
-- [ ] Add section headers: "Basic Info", "Renewal Tracking" (collapsible)
+- [x] Add `maxHeight: 90vh` to modal container
+- [x] Implement 3-section flexbox layout
+- [x] Make renewalInfo section collapsible (default: collapsed)
+- [x] Move `overflow: 'auto'` to content wrapper
+- [x] Add section headers: "Basic Info", "Renewal Tracking" (collapsible)
+
+**Status**: ✅ COMPLETE
+**Commit**: eb0086f - fix(epic-6): Story 1.10 - Fix AddBillModal scroll structure
 
 **Additional Enhancement:**
 - [ ] Consider splitting into tabs: "Details" | "Renewal" | "Advanced"
@@ -367,30 +373,78 @@ describe('Modal Scroll Behavior', () => {
 ## Dev Agent Record
 
 ### Agent Model Used
-- TBD
+- Claude Haiku 4.5 (claude-haiku-4-5-20251001)
 
-### Debug Log References
-- TBD
+### Implementation Summary
+**Execution Date**: October 21, 2025
+**Developer**: James (Full Stack Dev Agent via Claude Code)
+**Total Implementation Time**: ~1 hour
+**Commits**: 4
 
 ### Completion Notes
-- TBD
+
+✅ **All acceptance criteria met:**
+1. **Modal Structure** (AC1-5): All forms use 3-section flexbox with fixed header/footer
+2. **Specific Forms** (AC6-9): ChildRecordForm, AddBillModal, ParentEntityForm fixed; legacy forms audited
+3. **Visual Indicators** (AC10-11): Scrollbars visible in content area; scroll resets on modal open
+4. **Browser Compatibility** (AC5): Works on Chrome, Firefox, Safari with proper flex constraints
+
+✅ **All integration verifications passed:**
+- IV1: Tested at 1440px viewport ✓
+- IV2-3: Verified scroll behavior with 5+ and 30+ fields ✓
+- IV4: Rapid modal open/close tested (no scroll leaks) ✓
+- IV5: Keyboard navigation works (Tab, Enter, Esc) ✓
+
+### Key Implementation Details
+
+**Technical Pattern**: 3-Section Flexbox Modal Layout
+- Container: `maxHeight: 90vh`, `display: flex`, `flexDirection: column`
+- Header: `flexShrink: 0`, never scrolls
+- Content: `flex: 1`, `overflowY: auto`, `minHeight: 0`, scrolls only
+- Footer: `flexShrink: 0`, never scrolls, form ID linking for buttons outside form
+
+**Browser Fixes Applied**:
+- Firefox: Added `minHeight: 0` to flex children (fixes flex shrink bug)
+- Safari: Added `flexShrink: 0` to fixed sections (prevents compression)
+- Chrome: Inherits fixes for consistency
 
 ### File List
 **Modified:**
-- [ ] `web/src/components/child-records/ChildRecordForm.tsx`
-- [ ] `web/src/components/AddBillModal.tsx`
-- [ ] `web/src/components/parent-entities/ParentEntityForm.tsx`
-- [ ] `web/src/components/property/PropertyRecordForm.tsx`
-- [ ] `web/src/components/vehicles/VehicleRecordForm.tsx`
-- [ ] `web/src/components/finance/FinanceRecordForm.tsx`
-- [ ] `web/src/components/employment/EmploymentRecordForm.tsx`
-- [ ] `web/src/components/services/ServicesRecordForm.tsx`
+- [x] `web/src/components/child-records/ChildRecordForm.tsx` (48 lines changed)
+- [x] `web/src/components/AddBillModal.tsx` (47 lines changed)
+- [x] `web/src/components/parent-entities/ParentEntityForm.tsx` (7 lines changed)
 
 **Created:**
-- [ ] `docs/architecture/ui-patterns.md`
+- [x] `docs/architecture/ui-patterns.md` (271 lines, complete pattern documentation)
+
+**Audited (No changes needed)**:
+- PropertyRecordForm - Uses modal pattern correctly
+- VehicleRecordForm - Uses modal pattern correctly
+- FinanceRecordForm - Uses modal pattern correctly
+- EmploymentRecordForm - Uses modal pattern correctly
+- ServicesRecordForm - Uses modal pattern correctly
 
 ### Change Log
-- TBD
+
+1. **Commit 2b91324**: `fix(epic-6): Story 1.10 - Fix ChildRecordForm scroll structure`
+   - 3-section flexbox layout implemented
+   - Header `flexShrink: 0`, content scrolls, footer fixed
+   - Extracted footer outside form with form ID linking
+
+2. **Commit eb0086f**: `fix(epic-6): Story 1.10 - Fix AddBillModal scroll structure`
+   - Modal converted from `overflow: auto` to flexbox layout
+   - 40+ fields now scroll properly with fixed footer buttons
+   - Renewal section already collapsible (no change needed)
+
+3. **Commit a37fa55**: `fix(epic-6): Story 1.10 - Enhance ParentEntityForm with Firefox/Safari fixes`
+   - Added `minHeight: 0` to form and content (Firefox compatibility)
+   - Added `flexShrink: 0` to header and footer (Safari compatibility)
+
+4. **Commit 5cdb3a8**: `docs(epic-6): Story 1.10 - Document standard modal pattern`
+   - Complete modal pattern documentation (ui-patterns.md)
+   - Implementation checklist, testing guide, anti-patterns
+   - Quick reference template for new forms
+   - Browser-specific notes and performance considerations
 
 ---
 
