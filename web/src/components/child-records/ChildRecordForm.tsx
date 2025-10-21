@@ -78,6 +78,11 @@ const getContinuityFields = (recordType: RecordType, domain?: string): string[] 
     return ['name', 'institution', 'accountType', 'accountNumber', 'sortCode', 'balance', 'phone'];
   }
 
+  // Services domain has specific provider fields
+  if (domain === 'services' && recordType === 'Contact') {
+    return ['serviceType', 'name', 'businessName', 'phone', 'email', 'address'];
+  }
+
   const continuityFields: Record<RecordType, string[]> = {
     Contact: ['name', 'phone', 'email', 'relationship'],
     ServiceHistory: ['name', 'serviceDate', 'nextServiceDue', 'provider', 'phone'],
@@ -98,6 +103,10 @@ interface FormData {
   sortCode?: string; // XX-XX-XX format
   balance?: string; // Current balance
   interestRate?: string; // Interest rate for savings
+  // Services fields
+  serviceType?: string; // What they do (Aga Service, Roof Maintenance, etc.)
+  businessName?: string; // Business or person name (John Smith Roofing)
+  address?: string; // Service address
   // Contact fields
   phone?: string;
   email?: string;
@@ -391,6 +400,8 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                       placeholder={`e.g., ${
                         domain === 'finance' && selectedType === 'Finance'
                           ? 'HSBC Calvin Current Account'
+                          : domain === 'services' && selectedType === 'Contact'
+                          ? 'Emergency Contact - John Smith'
                           : selectedType === 'Contact'
                           ? 'John Smith'
                           : selectedType === 'Insurance'
@@ -614,6 +625,92 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 </div>
               )}
 
+              {/* Services Fields - Service Type */}
+              {continuityFields.includes('serviceType') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    🔧 Service Type *
+                  </label>
+                  <Controller
+                    name="serviceType"
+                    control={control}
+                    rules={{ required: 'Service type is required' }}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="e.g., Aga Service, Roof Maintenance, Plumbing"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: errors.serviceType ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                  {errors.serviceType && (
+                    <p style={{ color: '#ef4444', fontSize: '12px', margin: '4px 0 0 0' }}>
+                      {errors.serviceType.message}
+                    </p>
+                  )}
+                  <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px', fontStyle: 'italic' }}>
+                    What service do they provide?
+                  </p>
+                </div>
+              )}
+
+              {/* Services Fields - Business Name */}
+              {continuityFields.includes('businessName') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    👤 Business/Person Name
+                  </label>
+                  <Controller
+                    name="businessName"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="e.g., John Smith Roofing, AGA Services Ltd"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                  <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px', fontStyle: 'italic' }}>
+                    Trading name or person's name
+                  </p>
+                </div>
+              )}
+
               {/* Phone Field */}
               {continuityFields.includes('phone') && (
                 <div style={{ marginBottom: '12px' }}>
@@ -681,6 +778,44 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* Services Fields - Address */}
+              {continuityFields.includes('address') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    📍 Address
+                  </label>
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        placeholder="Service address or location"
+                        rows={2}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box',
+                          resize: 'vertical'
                         }}
                       />
                     )}
