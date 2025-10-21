@@ -193,13 +193,18 @@ router.post(
       }
 
       // Create new child record
-      const childRecord = new ChildRecord({
-        ...req.body,
+      // Flatten fields object if present (frontend may send nested structure)
+      const { fields, ...directFields } = req.body;
+      const flattenedData = {
+        ...directFields,
+        ...(fields && typeof fields === 'object' ? fields : {}),
         userId: req.user._id,
         parentId: req.params.parentId,
         recordType,
         name: name.trim()
-      });
+      };
+
+      const childRecord = new ChildRecord(flattenedData);
 
       await childRecord.save();
 
@@ -265,14 +270,20 @@ router.put(
       }
 
       // Extract update data (prevent changing userId, parentId, recordType)
-      const { userId, parentId, recordType, ...updateData } = req.body;
+      const { userId, parentId, recordType, fields, ...directUpdateData } = req.body;
+
+      // Flatten fields object if present (frontend may send nested structure)
+      const flattenedUpdateData = {
+        ...directUpdateData,
+        ...(fields && typeof fields === 'object' ? fields : {})
+      };
 
       // Validate name if provided
-      if (updateData.name !== undefined) {
-        if (!updateData.name || !updateData.name.trim()) {
+      if (flattenedUpdateData.name !== undefined) {
+        if (!flattenedUpdateData.name || !flattenedUpdateData.name.trim()) {
           return res.status(400).json({ error: 'Name cannot be empty' });
         }
-        updateData.name = updateData.name.trim();
+        flattenedUpdateData.name = flattenedUpdateData.name.trim();
       }
 
       // Update child record
@@ -282,7 +293,7 @@ router.put(
           parentId: req.params.parentId,
           userId: req.user._id
         },
-        updateData,
+        flattenedUpdateData,
         {
           new: true,
           runValidators: true
