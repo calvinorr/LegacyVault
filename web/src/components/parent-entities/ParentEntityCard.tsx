@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoreVertical, Edit, Trash2, Car, Home, Briefcase, Wrench, DollarSign } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, Car, Home, Briefcase, Wrench, Landmark } from 'lucide-react';
 import { ParentEntity, getEntityImageUrl } from '../../services/api/parentEntities';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -22,7 +22,7 @@ const getDomainIcon = (domainType: string) => {
     case 'Services':
       return <Wrench size={24} strokeWidth={1.5} />;
     case 'Finance':
-      return <DollarSign size={24} strokeWidth={1.5} />;
+      return <Landmark size={24} strokeWidth={1.5} />;
     default:
       return <Car size={24} strokeWidth={1.5} />;
   }

@@ -779,7 +779,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 letterSpacing: '0.5px',
                 margin: '0 0 8px 0'
               }}>
-                💰 Additional Details
+                💷 Additional Details
               </p>
 
               {/* Amount Field */}

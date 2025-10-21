@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Car, Home, Briefcase, Wrench, DollarSign, Upload, X } from 'lucide-react';
+import { Plus, Car, Home, Briefcase, Wrench, Landmark, Upload, X } from 'lucide-react';
 import ParentEntityCard from './ParentEntityCard';
 import { useParentEntities } from '../../hooks/useParentEntities';
 import { ParentEntity, DomainType, uploadEntityImage } from '../../services/api/parentEntities';
@@ -43,7 +43,7 @@ const getDomainDisplay = (domain: DomainType): { title: string; icon: JSX.Elemen
     case 'finance':
       return {
         title: 'Finance',
-        icon: <DollarSign size={iconSize} color={iconColor} />,
+        icon: <Landmark size={iconSize} color={iconColor} />,
         emptyMessage: 'No financial accounts yet. Add bank accounts, savings, investments, and other financial products.'
       };
     default:

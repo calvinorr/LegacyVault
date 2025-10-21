@@ -12,7 +12,7 @@ import {
   Shield,
   Scale,
   Wrench,
-  DollarSign
+  Landmark
 } from 'lucide-react';
 
 const DOMAINS = [
@@ -48,7 +48,7 @@ const DOMAINS = [
     id: 'finance',
     name: 'Finance',
     description: 'Manage bank accounts, credit cards, investments, pensions, and loans',
-    icon: DollarSign,
+    icon: Landmark,
     enabled: true
   }
 ];

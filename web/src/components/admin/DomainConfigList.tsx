@@ -9,7 +9,7 @@ const DOMAIN_ICONS: Record<string, React.ReactNode> = {
   Property: '🏠',
   Employment: '💼',
   Services: '🔧',
-  Finance: '💰',
+  Finance: '🏦',
 };
 
 const DOMAIN_DESCRIPTIONS: Record<string, string> = {

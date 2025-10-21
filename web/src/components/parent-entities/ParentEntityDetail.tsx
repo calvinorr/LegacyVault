@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, Car, Home, Briefcase, Wrench, DollarSign, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Car, Home, Briefcase, Wrench, Landmark, Loader2, AlertCircle } from 'lucide-react';
 import { useParentEntity, useDeleteParentEntity } from '../../hooks/useParentEntities';
 import { DomainType } from '../../services/api/parentEntities';
 import ParentEntityForm from './ParentEntityForm';
@@ -26,7 +26,7 @@ const getDomainIcon = (domainType: string) => {
     case 'Services':
       return <Wrench size={32} strokeWidth={1.5} />;
     case 'Finance':
-      return <DollarSign size={32} strokeWidth={1.5} />;
+      return <Landmark size={32} strokeWidth={1.5} />;
     default:
       return <Car size={32} strokeWidth={1.5} />;
   }
