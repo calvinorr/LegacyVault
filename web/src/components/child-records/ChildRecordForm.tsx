@@ -19,13 +19,33 @@ interface ChildRecordFormProps {
 
 type RecordType = 'Contact' | 'ServiceHistory' | 'Finance' | 'Insurance' | 'Government' | 'Pension';
 
-const RECORD_TYPES: RecordType[] = ['Contact', 'ServiceHistory', 'Finance', 'Insurance', 'Government', 'Pension'];
+// Domain-specific record types - only show relevant types per domain
+const getDomainRecordTypes = (domain: string): RecordType[] => {
+  switch (domain) {
+    case 'finance':
+      return ['Finance']; // Finance domain only shows Finance records
+    case 'services':
+      return ['Contact', 'ServiceHistory'];
+    case 'vehicles':
+      return ['ServiceHistory', 'Finance', 'Insurance', 'Government'];
+    case 'properties':
+      return ['ServiceHistory', 'Finance', 'Insurance', 'Government'];
+    case 'employments':
+      return ['Contact', 'Finance', 'Pension'];
+    default:
+      return ['Contact', 'ServiceHistory', 'Finance', 'Insurance', 'Government', 'Pension'];
+  }
+};
 
-const getRecordTypeIcon = (recordType: RecordType): string => {
+const getRecordTypeIcon = (recordType: RecordType, domain: string): string => {
+  // UK-friendly icons
+  if (domain === 'finance' && recordType === 'Finance') {
+    return '🏦'; // Bank building
+  }
   const icons: Record<RecordType, string> = {
     Contact: '📞',
     ServiceHistory: '🔧',
-    Finance: '💰',
+    Finance: '💷', // UK pound note
     Insurance: '🛡️',
     Government: '📋',
     Pension: '💼'
@@ -33,7 +53,14 @@ const getRecordTypeIcon = (recordType: RecordType): string => {
   return icons[recordType] || '📄';
 };
 
-const getRecordTypeLabel = (recordType: RecordType): string => {
+const getRecordTypeLabel = (recordType: RecordType, domain: string): string => {
+  // Domain-specific labels
+  if (domain === 'finance' && recordType === 'Finance') {
+    return 'Bank Account';
+  }
+  if (domain === 'services' && recordType === 'Contact') {
+    return 'Service Provider';
+  }
   const labels: Record<RecordType, string> = {
     Contact: 'Contact',
     ServiceHistory: 'Service History',
@@ -45,11 +72,16 @@ const getRecordTypeLabel = (recordType: RecordType): string => {
   return labels[recordType] || recordType;
 };
 
-const getContinuityFields = (recordType: RecordType): string[] => {
+const getContinuityFields = (recordType: RecordType, domain?: string): string[] => {
+  // Finance domain has specific UK banking fields
+  if (domain === 'finance' && recordType === 'Finance') {
+    return ['name', 'institution', 'accountType', 'accountNumber', 'sortCode', 'balance', 'phone'];
+  }
+
   const continuityFields: Record<RecordType, string[]> = {
     Contact: ['name', 'phone', 'email', 'relationship'],
     ServiceHistory: ['name', 'serviceDate', 'nextServiceDue', 'provider', 'phone'],
-    Finance: ['name', 'accountNumber', 'policyNumber', 'phone', 'renewalDate'],
+    Finance: ['name', 'institution', 'accountNumber', 'sortCode', 'phone', 'renewalDate'],
     Insurance: ['name', 'policyNumber', 'provider', 'phone', 'renewalDate'],
     Government: ['name', 'accountNumber', 'renewalDate', 'phone'],
     Pension: ['name', 'provider', 'accountNumber', 'phone']
@@ -59,16 +91,25 @@ const getContinuityFields = (recordType: RecordType): string[] => {
 
 interface FormData {
   name: string;
+  // UK Finance fields
+  institution?: string; // Bank name (HSBC, Barclays, etc.)
+  accountType?: string; // Current, Savings, ISA, etc.
+  accountNumber?: string; // 8-digit account number
+  sortCode?: string; // XX-XX-XX format
+  balance?: string; // Current balance
+  interestRate?: string; // Interest rate for savings
+  // Contact fields
   phone?: string;
   email?: string;
   relationship?: string;
+  // Service/Provider fields
   provider?: string;
-  accountNumber?: string;
   policyNumber?: string;
   renewalDate?: string;
   status?: 'active' | 'expired' | 'cancelled' | 'pending';
   serviceDate?: string;
   nextServiceDue?: string;
+  // Financial fields (de-emphasized)
   amount?: string;
   frequency?: string;
   notes?: string;
@@ -82,9 +123,10 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
   onClose,
   onSuccess
 }) => {
+  const domainRecordTypes = getDomainRecordTypes(domain);
   const [step, setStep] = useState<1 | 2>(record ? 2 : initialRecordType ? 2 : 1);
   const [selectedType, setSelectedType] = useState<RecordType>(
-    (initialRecordType as RecordType) || 'Contact'
+    (initialRecordType as RecordType) || domainRecordTypes[0] || 'Contact'
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
@@ -101,7 +143,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
   const createMutation = useCreateChildRecord(domain, parentId);
   const updateMutation = useUpdateChildRecord(domain, parentId);
 
-  const continuityFields = useMemo(() => getContinuityFields(selectedType), [selectedType]);
+  const continuityFields = useMemo(() => getContinuityFields(selectedType, domain), [selectedType, domain]);
 
   const handleStepOne = (type: RecordType) => {
     setSelectedType(type);
@@ -217,7 +259,12 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
             color: '#f1f5f9',
             margin: 0
           }}>
-            {record ? 'Edit Record' : 'Add Record'}
+            {record
+              ? `Edit ${getRecordTypeLabel(selectedType, domain)}`
+              : domain === 'finance'
+                ? 'Add Bank Account'
+                : `Add ${getRecordTypeLabel(selectedType, domain)}`
+            }
           </h2>
           <button
             onClick={onClose}
@@ -258,7 +305,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
               gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
               gap: '12px'
             }}>
-              {RECORD_TYPES.map((type) => (
+              {domainRecordTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => handleStepOne(type)}
@@ -286,8 +333,8 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                   }}
                 >
-                  <span style={{ fontSize: '24px' }}>{getRecordTypeIcon(type)}</span>
-                  {getRecordTypeLabel(type)}
+                  <span style={{ fontSize: '24px' }}>{getRecordTypeIcon(type, domain)}</span>
+                  {getRecordTypeLabel(type, domain)}
                 </button>
               ))}
             </div>
@@ -341,7 +388,15 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     <input
                       {...field}
                       type="text"
-                      placeholder={`e.g., ${selectedType === 'Contact' ? 'John Smith' : selectedType === 'Insurance' ? 'Car Insurance' : 'Enter name'}`}
+                      placeholder={`e.g., ${
+                        domain === 'finance' && selectedType === 'Finance'
+                          ? 'HSBC Calvin Current Account'
+                          : selectedType === 'Contact'
+                          ? 'John Smith'
+                          : selectedType === 'Insurance'
+                          ? 'Car Insurance'
+                          : 'Enter name'
+                      }`}
                       style={{
                         width: '100%',
                         padding: '10px 12px',
@@ -364,6 +419,200 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                   </p>
                 )}
               </div>
+
+              {/* UK Finance Fields - Institution */}
+              {continuityFields.includes('institution') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    🏦 Bank/Institution
+                  </label>
+                  <Controller
+                    name="institution"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="e.g., HSBC, Barclays, NatWest"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* UK Finance Fields - Account Type */}
+              {continuityFields.includes('accountType') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    Account Type
+                  </label>
+                  <Controller
+                    name="accountType"
+                    control={control}
+                    render={({ field }) => (
+                      <select
+                        {...field}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      >
+                        <option value="">Select type</option>
+                        <option value="Current Account">Current Account</option>
+                        <option value="Savings Account">Savings Account</option>
+                        <option value="ISA">ISA</option>
+                        <option value="Junior ISA">Junior ISA</option>
+                        <option value="Business Account">Business Account</option>
+                        <option value="Joint Account">Joint Account</option>
+                      </select>
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* UK Finance Fields - Account Number */}
+              {continuityFields.includes('accountNumber') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    🔢 Account Number
+                  </label>
+                  <Controller
+                    name="accountNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="8-digit account number"
+                        maxLength={8}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* UK Finance Fields - Sort Code */}
+              {continuityFields.includes('sortCode') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    🔐 Sort Code
+                  </label>
+                  <Controller
+                    name="sortCode"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="XX-XX-XX"
+                        maxLength={8}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {/* UK Finance Fields - Balance */}
+              {continuityFields.includes('balance') && (
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '13px',
+                    fontWeight: '500',
+                    color: '#f1f5f9',
+                    marginBottom: '4px'
+                  }}>
+                    💷 Current Balance
+                  </label>
+                  <Controller
+                    name="balance"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: '6px',
+                          color: '#f1f5f9',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              )}
 
               {/* Phone Field */}
               {continuityFields.includes('phone') && (

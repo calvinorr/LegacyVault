@@ -14,7 +14,7 @@ import {
   Home,
   Briefcase,
   Wrench,
-  DollarSign
+  Landmark
 } from "lucide-react";
 
 interface LayoutProps {
@@ -193,7 +193,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             to="/finance-new"
             style={navLinkStyle(isPathActive("/finance-new"))}
           >
-            <DollarSign size={18} strokeWidth={1.5} />
+            <Landmark size={18} strokeWidth={1.5} />
             Finance
           </Link>
           <Link

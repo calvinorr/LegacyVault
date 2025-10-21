@@ -25,7 +25,25 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
   onEditRecord,
   onDeleteRecord
 }) => {
-  const recordTypes = ['Contact', 'ServiceHistory', 'Finance', 'Insurance', 'Government', 'Pension'];
+  // Domain-specific record types - only show relevant sections per domain
+  const getDomainRecordTypes = (): string[] => {
+    switch (domain) {
+      case 'finance':
+        return ['Finance']; // Only finance-related records
+      case 'services':
+        return ['Contact', 'ServiceHistory']; // Service provider contacts and history
+      case 'vehicles':
+        return ['ServiceHistory', 'Finance', 'Insurance', 'Government']; // MOT, servicing, finance, insurance, tax
+      case 'properties':
+        return ['ServiceHistory', 'Finance', 'Insurance', 'Government']; // Maintenance, mortgage, insurance, council tax
+      case 'employments':
+        return ['Contact', 'Finance', 'Pension']; // HR contacts, payroll, pension
+      default:
+        return ['Contact', 'ServiceHistory', 'Finance', 'Insurance', 'Government', 'Pension'];
+    }
+  };
+
+  const recordTypes = getDomainRecordTypes();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     recordTypes.forEach((type) => {
@@ -56,6 +74,20 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
   };
 
   const getRecordTypeLabel = (recordType: string): string => {
+    // Domain-specific labels for better UX
+    if (domain === 'finance' && recordType === 'Finance') {
+      return 'Bank Accounts'; // Finance domain: Finance section = Bank Accounts
+    }
+    if (domain === 'services' && recordType === 'Contact') {
+      return 'Service Providers'; // Services domain: Contact section = Service Providers
+    }
+    if (domain === 'vehicles' && recordType === 'ServiceHistory') {
+      return 'Servicing & MOT'; // Vehicles domain: Service History = Servicing & MOT
+    }
+    if (domain === 'properties' && recordType === 'ServiceHistory') {
+      return 'Maintenance History'; // Properties domain: Service History = Maintenance
+    }
+
     const labels: Record<string, string> = {
       Contact: 'Contacts',
       ServiceHistory: 'Service History',
@@ -68,10 +100,14 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
   };
 
   const getRecordTypeIcon = (recordType: string): string => {
+    // UK-friendly icons (£ for finance instead of $)
+    if (domain === 'finance' && recordType === 'Finance') {
+      return '🏦'; // Bank building for bank accounts
+    }
     const icons: Record<string, string> = {
       Contact: '📞',
       ServiceHistory: '🔧',
-      Finance: '💰',
+      Finance: '💷', // UK pound note emoji instead of dollar bag
       Insurance: '🛡️',
       Government: '📋',
       Pension: '💼'

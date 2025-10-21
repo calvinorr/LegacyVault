@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, DollarSign } from 'lucide-react';
+import { Plus, Landmark } from 'lucide-react';
 import ParentEntityList from '../components/parent-entities/ParentEntityList';
 import ParentEntityForm from '../components/parent-entities/ParentEntityForm';
 import DeleteConfirmModal from '../components/parent-entities/DeleteConfirmModal';
@@ -84,7 +84,7 @@ const Finance: React.FC = () => {
                   justifyContent: 'center'
                 }}
               >
-                <DollarSign size={28} color="#0f172a" strokeWidth={1.5} />
+                <Landmark size={28} color="#0f172a" strokeWidth={1.5} />
               </div>
               <h1
                 style={{
