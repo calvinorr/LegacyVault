@@ -5,8 +5,9 @@ import PropertyDomainPage from "./pages/PropertyDomainPage";
 import PropertyRecordDetailPage from "./pages/PropertyRecordDetailPage";
 import VehiclesDomainPage from "./pages/VehiclesDomainPage";
 import VehicleRecordDetailPage from "./pages/VehicleRecordDetailPage";
-import FinanceDomainPage from "./pages/FinanceDomainPage";
-import FinanceRecordDetailPage from "./pages/FinanceRecordDetailPage";
+// Legacy Finance pages removed - using new hierarchical system (Finance.tsx, FinanceDetail.tsx)
+// import FinanceDomainPage from "./pages/FinanceDomainPage";
+// import FinanceRecordDetailPage from "./pages/FinanceRecordDetailPage";
 import EmploymentDomainPage from "./pages/EmploymentDomainPage";
 import EmploymentRecordDetailPage from "./pages/EmploymentRecordDetailPage";
 import GovernmentDomainPage from "./pages/GovernmentDomainPage";
@@ -187,22 +188,9 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/finance"
-          element={
-            <ProtectedRoute>
-              <FinanceDomainPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/finance/:recordId"
-          element={
-            <ProtectedRoute>
-              <FinanceRecordDetailPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* Legacy Finance routes - redirect to new hierarchical system */}
+        <Route path="/finance" element={<Navigate to="/finance-new" replace />} />
+        <Route path="/finance/:recordId" element={<Navigate to="/finance-new" replace />} />
         <Route
           path="/government"
           element={
