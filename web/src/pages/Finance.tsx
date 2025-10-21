@@ -105,7 +105,7 @@ const Finance: React.FC = () => {
                 margin: 0
               }}
             >
-              Manage your financial accounts including banks, credit cards, investments, and pensions
+              Organize your financial accounts by type (Current Accounts, Savings, ISAs, Credit Cards, etc.)
             </p>
           </div>
 

@@ -295,9 +295,9 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                     : domain === 'employments'
                     ? 'Acme Corp - Software Engineer'
                     : domain === 'services'
-                    ? 'McGrath Plumbing'
+                    ? 'Tradespeople'
                     : domain === 'finance'
-                    ? 'HSBC Current Account'
+                    ? 'Current Accounts'
                     : 'Name'
                 }
               />
@@ -583,87 +583,26 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
             {/* Services-specific fields */}
             {domain === 'services' && (
               <>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Business Name</label>
-                    <input type="text" {...register('businessName')} style={inputStyle} placeholder="McGrath Plumbing Ltd" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Service Type</label>
-                    <select {...register('serviceType')} style={inputStyle}>
-                      <option value="">Select type</option>
-                      <option value="Plumber">Plumber</option>
-                      <option value="Electrician">Electrician</option>
-                      <option value="Oil Supplier">Oil Supplier</option>
-                      <option value="Cleaner">Cleaner</option>
-                      <option value="Gardener">Gardener</option>
-                      <option value="Handyman">Handyman</option>
-                      <option value="Builder">Builder</option>
-                      <option value="Roofer">Roofer</option>
-                      <option value="Painter">Painter</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Contact Name</label>
-                    <input type="text" {...register('contactName')} style={inputStyle} placeholder="John McGrath" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Phone</label>
-                    <input
-                      type="tel"
-                      {...register('phone', {
-                        pattern: {
-                          value: /^(028|07)\d{3}[-\s]?\d{3,6}$/,
-                          message: 'Invalid NI phone format (028-XXXX-XXXX or 07XXX-XXXXXX)'
-                        }
-                      })}
-                      style={inputStyle}
-                      placeholder="028-1234-5678"
-                    />
-                    {errors.phone && <p style={errorStyle}>{errors.phone.message}</p>}
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Email</label>
-                    <input
-                      type="email"
-                      {...register('email', {
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Invalid email address'
-                        }
-                      })}
-                      style={inputStyle}
-                      placeholder="john@mcgrathplumbing.com"
-                    />
-                    {errors.email && <p style={errorStyle}>{errors.email.message}</p>}
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Preferred Payment Method</label>
-                    <select {...register('paymentMethod')} style={inputStyle}>
-                      <option value="">Select method</option>
-                      <option value="Cash">Cash</option>
-                      <option value="Bank Transfer">Bank Transfer</option>
-                      <option value="Card">Card</option>
-                      <option value="Invoice">Invoice</option>
-                    </select>
-                  </div>
-                </div>
-
                 <div style={{ marginBottom: '20px' }}>
-                  <label style={labelStyle}>Business Address</label>
-                  <textarea
-                    {...register('serviceAddress')}
-                    style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }}
-                    placeholder="Business address (optional)"
-                    rows={2}
-                  />
+                  <label style={labelStyle}>Service Category</label>
+                  <select {...register('serviceCategory')} style={inputStyle}>
+                    <option value="">Select category</option>
+                    <option value="Tradespeople">Tradespeople</option>
+                    <option value="Home Services">Home Services</option>
+                    <option value="Professional Services">Professional Services</option>
+                    <option value="Garden & Outdoor">Garden & Outdoor</option>
+                    <option value="Automotive Services">Automotive Services</option>
+                    <option value="Health & Wellness">Health & Wellness</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#64748b',
+                    marginTop: '6px',
+                    fontStyle: 'italic'
+                  }}>
+                    Choose the category for the services you'll track (e.g., "Tradespeople" will contain all your plumbers, electricians, etc.)
+                  </p>
                 </div>
               </>
             )}
@@ -671,69 +610,28 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
             {/* Finance-specific fields */}
             {domain === 'finance' && (
               <>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Financial Institution</label>
-                    <input type="text" {...register('institution')} style={inputStyle} placeholder="HSBC UK" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Account Type</label>
-                    <select {...register('accountType')} style={inputStyle}>
-                      <option value="">Select type</option>
-                      <option value="Current Account">Current Account</option>
-                      <option value="Savings Account">Savings Account</option>
-                      <option value="ISA">ISA</option>
-                      <option value="Credit Card">Credit Card</option>
-                      <option value="Pension">Pension</option>
-                      <option value="Investment">Investment</option>
-                      <option value="Mortgage">Mortgage</option>
-                      <option value="Loan">Loan</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Account Number</label>
-                    <input
-                      type="text"
-                      {...register('accountNumber', {
-                        pattern: {
-                          value: /^\d{8}$/,
-                          message: 'Account number must be 8 digits'
-                        }
-                      })}
-                      style={inputStyle}
-                      placeholder="12345678"
-                    />
-                    {errors.accountNumber && <p style={errorStyle}>{errors.accountNumber.message}</p>}
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Sort Code</label>
-                    <input
-                      type="text"
-                      {...register('sortCode', {
-                        pattern: {
-                          value: /^\d{2}-\d{2}-\d{2}$/,
-                          message: 'Sort code must be in format XX-XX-XX'
-                        }
-                      })}
-                      style={inputStyle}
-                      placeholder="12-34-56"
-                    />
-                    {errors.sortCode && <p style={errorStyle}>{errors.sortCode.message}</p>}
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                  <div>
-                    <label style={labelStyle}>Account Holder</label>
-                    <input type="text" {...register('accountHolder')} style={inputStyle} placeholder="John Doe" />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Opened Date</label>
-                    <input type="date" {...register('openedDate')} style={inputStyle} />
-                  </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={labelStyle}>Account Type Category</label>
+                  <select {...register('accountType')} style={inputStyle}>
+                    <option value="">Select type</option>
+                    <option value="Current Accounts">Current Accounts</option>
+                    <option value="Savings Accounts">Savings Accounts</option>
+                    <option value="ISAs">ISAs</option>
+                    <option value="Credit Cards">Credit Cards</option>
+                    <option value="Pensions">Pensions</option>
+                    <option value="Investments">Investments</option>
+                    <option value="Mortgages">Mortgages</option>
+                    <option value="Loans">Loans</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#64748b',
+                    marginTop: '6px',
+                    fontStyle: 'italic'
+                  }}>
+                    Choose the type of accounts you'll track in this category (e.g., "Current Accounts" will contain all your current accounts from different banks)
+                  </p>
                 </div>
               </>
             )}

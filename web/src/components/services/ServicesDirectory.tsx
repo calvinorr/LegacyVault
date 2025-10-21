@@ -57,8 +57,7 @@ export default function ServicesDirectory() {
           Services Directory
         </h1>
         <p style={{ fontSize: '16px', color: '#64748b' }}>
-          Manage tradespeople and service providers for emergencies and regular
-          maintenance
+          Organize service providers by category (Tradespeople, Home Services, Professional Services, etc.)
         </p>
       </div>
 
