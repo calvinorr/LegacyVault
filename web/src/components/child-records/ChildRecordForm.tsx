@@ -199,15 +199,17 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
         width: '100%',
         maxWidth: '650px',
         maxHeight: '90vh',
-        overflow: 'auto'
+        display: 'flex',
+        flexDirection: 'column'
       }}>
-        {/* Header */}
+        {/* Fixed Header */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '20px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          flexShrink: 0
         }}>
           <h2 style={{
             fontSize: '20px',
@@ -233,9 +235,15 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
           </button>
         </div>
 
-        {/* Step 1: Record Type Selection */}
-        {step === 1 && !record && (
-          <div style={{ padding: '24px' }}>
+        {/* Scrollable Content */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          minHeight: 0
+        }}>
+          {/* Step 1: Record Type Selection */}
+          {step === 1 && !record && (
+            <div style={{ padding: '24px' }}>
             <p style={{
               fontSize: '14px',
               color: '#94a3b8',
@@ -283,13 +291,24 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 </button>
               ))}
             </div>
-          </div>
-        )}
+            </div>
+          )}
 
-        {/* Step 2: Form Fields */}
-        {step === 2 && (
-          <form onSubmit={handleSubmit(onSubmit)} style={{ padding: '24px' }}>
-            {/* Continuity Section (Always Expanded) */}
+          {/* Step 2: Form Fields */}
+          {step === 2 && (
+            <form onSubmit={handleSubmit(onSubmit)} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+              minHeight: 0
+            }}>
+              <div style={{
+                flex: 1,
+                overflowY: 'auto',
+                minHeight: 0,
+                padding: '24px'
+              }}>
+                {/* Continuity Section (Always Expanded) */}
             <div style={{ marginBottom: '24px' }}>
               <h3 style={{
                 fontSize: '13px',
@@ -833,16 +852,24 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     )}
                   </div>
                 )}
+                </div>
+              )}
               </div>
-            )}
+            </form>
+          )}
+        </div>
 
-            {/* Footer */}
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              justifyContent: 'flex-end'
-            }}>
-              {!record && step === 2 && (
+        {/* Fixed Footer */}
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          justifyContent: 'flex-end',
+          padding: '20px 24px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          flexShrink: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.1)'
+        }}>
+          {step === 2 && !record && (
                 <button
                   type="button"
                   onClick={() => setStep(1)}
@@ -921,9 +948,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 {isLoading ? 'Saving...' : record ? 'Save Changes' : 'Create Record'}
                 {!isLoading && <ChevronRight size={16} />}
               </button>
-            </div>
-          </form>
-        )}
+        </div>
       </div>
     </div>
   );
