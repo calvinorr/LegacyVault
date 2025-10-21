@@ -273,19 +273,23 @@ export default function AddBillModal({
     maxWidth: "1200px",
     minWidth: "80vw",
     maxHeight: "90vh",
-    overflow: "auto",
+    display: "flex",
+    flexDirection: "column" as const,
     boxShadow:
       "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
   };
 
   const headerStyle = {
-    padding: "24px 24px 0 24px",
+    padding: "24px 24px 16px 24px",
     borderBottom: "1px solid #e5e7eb",
-    marginBottom: "24px",
+    flexShrink: 0,
   };
 
   const contentStyle = {
-    padding: "0 24px 24px 24px",
+    flex: 1,
+    overflowY: "auto" as const,
+    minHeight: 0,
+    padding: "24px 24px 0 24px",
   };
 
   const inputStyle = {
@@ -347,6 +351,16 @@ export default function AddBillModal({
     marginBottom: "24px",
   };
 
+  const footerStyle = {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "8px",
+    padding: "16px 24px 24px 24px",
+    borderTop: "1px solid #e5e7eb",
+    flexShrink: 0,
+    backgroundColor: "white",
+  };
+
   return (
     <div style={overlayStyle} onClick={onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
@@ -386,7 +400,7 @@ export default function AddBillModal({
         </div>
 
         <div style={contentStyle}>
-          <form onSubmit={handleSubmit}>
+          <form id="bill-form" onSubmit={handleSubmit}>
             {error && (
               <div
                 style={{
@@ -1072,39 +1086,35 @@ export default function AddBillModal({
               </label>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingTop: "16px",
-                borderTop: "1px solid #e5e7eb",
-              }}
-            >
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={loading}
-                style={secondaryButtonStyle}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading || !formData.title || !formData.provider}
-                style={{
-                  ...primaryButtonStyle,
-                  opacity:
-                    loading || !formData.title || !formData.provider ? 0.5 : 1,
-                  cursor:
-                    loading || !formData.title || !formData.provider
-                      ? "not-allowed"
-                      : "pointer",
-                }}
-              >
-                {loading ? "Creating..." : "Create Bill Account"}
-              </button>
-            </div>
           </form>
+        </div>
+
+        {/* Fixed Footer */}
+        <div style={footerStyle}>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            style={secondaryButtonStyle}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="bill-form"
+            disabled={loading || !formData.title || !formData.provider}
+            style={{
+              ...primaryButtonStyle,
+              opacity:
+                loading || !formData.title || !formData.provider ? 0.5 : 1,
+              cursor:
+                loading || !formData.title || !formData.provider
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
+            {loading ? "Creating..." : "Create Bill Account"}
+          </button>
         </div>
       </div>
     </div>
