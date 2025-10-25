@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Shield,
@@ -7,14 +7,16 @@ import {
   AlertCircle,
   Settings,
   User,
-  Layers,
-  Upload,
-  List,
   Car,
   Home,
   Briefcase,
   Wrench,
-  Landmark
+  Landmark,
+  ChevronDown,
+  Upload,
+  List,
+  Database,
+  Activity
 } from "lucide-react";
 
 interface LayoutProps {
@@ -30,6 +32,20 @@ interface TopNavigationProps {
 
 function TopNavigation({ user, onSignOut }: TopNavigationProps) {
   const location = useLocation();
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const adminDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (adminDropdownRef.current && !adminDropdownRef.current.contains(event.target as Node)) {
+        setIsAdminDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Helper function to check if a nav item is active
   const isPathActive = (path: string): boolean => {
@@ -40,6 +56,14 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     }
     // For other paths, check if current path starts with the nav path
     return location.pathname.startsWith(path);
+  };
+
+  // Check if any admin path is active
+  const isAdminSectionActive = (): boolean => {
+    return location.pathname.startsWith('/bank-import') ||
+           location.pathname.startsWith('/transactions') ||
+           location.pathname.startsWith('/admin') ||
+           location.pathname.startsWith('/domains');
   };
 
   const navStyle = {
@@ -160,70 +184,37 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             <LayoutDashboard size={18} strokeWidth={1.5} />
             Home
           </Link>
-          {/* Parent Entity Links */}
-          <Link
-            to="/vehicles-new"
-            style={navLinkStyle(isPathActive("/vehicles-new"))}
-          >
+
+          <Link to="/vehicles-new" style={navLinkStyle(isPathActive("/vehicles-new"))}>
             <Car size={18} strokeWidth={1.5} />
             Vehicles
           </Link>
-          <Link
-            to="/properties-new"
-            style={navLinkStyle(isPathActive("/properties-new"))}
-          >
+
+          <Link to="/properties-new" style={navLinkStyle(isPathActive("/properties-new"))}>
             <Home size={18} strokeWidth={1.5} />
             Properties
           </Link>
-          <Link
-            to="/employments-new"
-            style={navLinkStyle(isPathActive("/employments-new"))}
-          >
+
+          <Link to="/employments-new" style={navLinkStyle(isPathActive("/employments-new"))}>
             <Briefcase size={18} strokeWidth={1.5} />
             Employments
           </Link>
-          <Link
-            to="/services-new"
-            style={navLinkStyle(isPathActive("/services-new"))}
-          >
+
+          <Link to="/services-new" style={navLinkStyle(isPathActive("/services-new"))}>
             <Wrench size={18} strokeWidth={1.5} />
             Services
           </Link>
-          <Link
-            to="/finance-new"
-            style={navLinkStyle(isPathActive("/finance-new"))}
-          >
+
+          <Link to="/finance-new" style={navLinkStyle(isPathActive("/finance-new"))}>
             <Landmark size={18} strokeWidth={1.5} />
             Finance
           </Link>
-          <Link
-            to="/domains"
-            style={navLinkStyle(isPathActive("/domains"))}
-          >
-            <Layers size={18} strokeWidth={1.5} />
-            Admin
-          </Link>
-          <Link
-            to="/bank-import"
-            style={navLinkStyle(isPathActive("/bank-import"))}
-          >
-            <Upload size={18} strokeWidth={1.5} />
-            Bank Import
-          </Link>
-          <Link
-            to="/transactions"
-            style={navLinkStyle(isPathActive("/transactions"))}
-          >
-            <List size={18} strokeWidth={1.5} />
-            Transactions
-          </Link>
-          <Link
-            to="/renewals"
-            style={navLinkStyle(isPathActive("/renewals"))}
-          >
+
+          <Link to="/renewals" style={navLinkStyle(isPathActive("/renewals"))}>
             <Calendar size={18} strokeWidth={1.5} />
             Renewals
           </Link>
+
           <Link
             to="/emergency"
             style={{
@@ -236,21 +227,145 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             <AlertCircle size={18} strokeWidth={1.5} />
             Emergency
           </Link>
-          <Link
-            to="/settings"
-            style={navLinkStyle(isPathActive("/settings"))}
-          >
+
+          <Link to="/settings" style={navLinkStyle(isPathActive("/settings"))}>
             <Settings size={18} strokeWidth={1.5} />
             Settings
           </Link>
+
+          {/* Admin Dropdown - Only visible for admin users */}
           {user?.role === 'admin' && (
-            <Link
-              to="/admin/domains"
-              style={navLinkStyle(isPathActive("/admin/domains"))}
-            >
-              <Shield size={18} strokeWidth={1.5} />
-              Admin
-            </Link>
+            <div style={{ position: "relative" }} ref={adminDropdownRef}>
+              <button
+                onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+                style={{
+                  ...navLinkStyle(isAdminSectionActive()),
+                  cursor: "pointer",
+                  border: `1px solid ${isAdminSectionActive() ? "#0f172a" : "transparent"}`,
+                }}
+              >
+                <Shield size={18} strokeWidth={1.5} />
+                Admin
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.5}
+                  style={{
+                    transition: "transform 0.3s ease",
+                    transform: isAdminDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  }}
+                />
+              </button>
+
+              {/* Admin Dropdown Menu */}
+              {isAdminDropdownOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    right: "0",
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: "12px",
+                    boxShadow: "0 10px 25px rgba(15, 23, 42, 0.1)",
+                    minWidth: "220px",
+                    padding: "8px",
+                    zIndex: 1000,
+                  }}
+                >
+                  <Link
+                    to="/bank-import"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/bank-import") ? "#0f172a" : "#64748b",
+                      backgroundColor: isPathActive("/bank-import") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <Upload size={18} strokeWidth={1.5} />
+                    Bank Import
+                  </Link>
+
+                  <Link
+                    to="/transactions"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/transactions") ? "#0f172a" : "#64748b",
+                      backgroundColor: isPathActive("/transactions") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <List size={18} strokeWidth={1.5} />
+                    Transactions
+                  </Link>
+
+                  <div
+                    style={{
+                      height: "1px",
+                      backgroundColor: "#e2e8f0",
+                      margin: "8px 0",
+                    }}
+                  />
+
+                  <Link
+                    to="/domains"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/domains") ? "#0f172a" : "#64748b",
+                      backgroundColor: isPathActive("/domains") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <Database size={18} strokeWidth={1.5} />
+                    Domain Management
+                  </Link>
+
+                  <Link
+                    to="/admin/system-status"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/admin/system-status") ? "#0f172a" : "#64748b",
+                      backgroundColor: isPathActive("/admin/system-status") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <Activity size={18} strokeWidth={1.5} />
+                    System Status
+                  </Link>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
