@@ -3,6 +3,7 @@
 // Uses different limits for different types of endpoints
 
 const rateLimit = require('express-rate-limit');
+const { authLogger } = require('../utils/logger');
 
 /**
  * Strict rate limiter for authentication endpoints
@@ -21,6 +22,8 @@ const authLimiter = rateLimit({
   // Skip rate limiting in test environment
   skip: (req) => process.env.NODE_ENV === 'test',
   handler: (req, res) => {
+    // Log security event
+    authLogger.rateLimitExceeded(req, 'auth');
     console.warn(`⚠️  Rate limit exceeded for auth endpoint from IP: ${req.ip}`);
     res.status(429).json({
       error: 'Too many authentication attempts. Please try again later.',
@@ -45,6 +48,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
   skip: (req) => process.env.NODE_ENV === 'test',
   handler: (req, res) => {
+    authLogger.rateLimitExceeded(req, 'api');
     console.warn(`⚠️  Rate limit exceeded for API from IP: ${req.ip}`);
     res.status(429).json({
       error: 'Too many requests. Please slow down and try again later.',
@@ -69,6 +73,7 @@ const uploadLimiter = rateLimit({
   legacyHeaders: false,
   skip: (req) => process.env.NODE_ENV === 'test',
   handler: (req, res) => {
+    authLogger.rateLimitExceeded(req, 'upload');
     console.warn(`⚠️  Rate limit exceeded for uploads from IP: ${req.ip}`);
     res.status(429).json({
       error: 'Too many file uploads. Please try again in an hour.',

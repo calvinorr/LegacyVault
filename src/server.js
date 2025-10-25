@@ -35,8 +35,14 @@ const categoriesRouter = require('./legacy/routes/categories'); // Legacy catego
 // Rate limiting middleware
 const { authLimiter, apiLimiter, uploadLimiter, generalLimiter } = require('./middleware/rateLimiter');
 
+// Logging
+const { logger, httpLoggerMiddleware } = require('./utils/logger');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// HTTP request logging (before other middleware)
+app.use(httpLoggerMiddleware);
 
 // Apply global rate limiter to all requests (generous limits)
 app.use(generalLimiter);
@@ -129,9 +135,11 @@ app.use(passport.session());
 
 // Connect to MongoDB using helper
 db.connect().then(() => {
+  logger.info('MongoDB connected successfully');
   console.log('MongoDB connected');
   initGridFS();
 }).catch((err) => {
+  logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
   console.error('MongoDB connection error:', err.message);
 });
 
@@ -225,5 +233,10 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  logger.info(`Server started on port ${PORT}`, {
+    port: PORT,
+    environment: process.env.NODE_ENV || 'development',
+    nodeVersion: process.version
+  });
   console.log(`Server listening on port ${PORT}`);
 });

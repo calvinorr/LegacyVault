@@ -5,6 +5,7 @@
 const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const { authLogger } = require('../utils/logger');
 
 const router = express.Router();
 
@@ -82,17 +83,26 @@ router.get('/google/callback',
   (req, res) => {
     // Successful authentication
     if (!req.user.approved) {
-      // User exists but not approved - redirect with message
+      // User exists but not approved - log and redirect with message
+      authLogger.loginFailure(req.user.email, 'User not approved', req);
       const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
       return res.redirect(`${frontend}?message=pending-approval`);
     }
-    
+
+    // Log successful login
+    authLogger.loginSuccess(req.user, req);
+
     // Redirect to the frontend dashboard
     const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
     res.redirect(frontend);
   });
 
 router.get('/logout', (req, res, next) => {
+  // Log logout event before clearing session
+  if (req.user) {
+    authLogger.logout(req.user, req);
+  }
+
   // Passport 0.6 requires a callback for logout
   req.logout(function(err) {
     if (err) { return next(err); }
