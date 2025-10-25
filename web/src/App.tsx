@@ -20,8 +20,6 @@ import ServicesDomainPage from "./pages/ServicesDomainPage";
 import ServicesRecordDetailPage from "./pages/ServicesRecordDetailPage";
 import RenewalDashboardPage from "./pages/RenewalDashboardPage";
 import EmergencyViewPage from "./pages/EmergencyViewPage";
-import Dashboard from "./pages/Dashboard";
-import ModernDashboard from "./pages/ModernDashboard";
 import DomainsPage from "./pages/DomainsPage";
 import EntryDetail from "./pages/EntryDetail";
 import AuthRedirect from "./pages/AuthRedirect";
@@ -74,14 +72,8 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <ModernDashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* /dashboard redirects to home - using HomePage as unified dashboard */}
+        <Route path="/dashboard" element={<Navigate to="/" replace />} />
         {/* New parent entity routes */}
         <Route
           path="/vehicles-new"
@@ -316,15 +308,6 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <EntryDetail />
-            </ProtectedRoute>
-          }
-        />
-        {/* Keep old dashboard available for comparison */}
-        <Route
-          path="/old-dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
             </ProtectedRoute>
           }
         />
