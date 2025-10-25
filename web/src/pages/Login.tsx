@@ -169,7 +169,7 @@ export default function Login(): JSX.Element {
               style={{
                 fontSize: "56px",
                 fontWeight: "700",
-                background: "linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%)",
+                background: "linear-gradient(135deg, #ffffff 0%, #0f172a 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -184,7 +184,7 @@ export default function Login(): JSX.Element {
             <p
               style={{
                 fontSize: "20px",
-                color: "#cbd5e1",
+                color: "#1e293b",
                 margin: "0 0 8px 0",
                 lineHeight: "1.6",
                 fontWeight: "400",
@@ -255,7 +255,7 @@ export default function Login(): JSX.Element {
                 <p
                   style={{
                     fontSize: "15px",
-                    color: "#cbd5e1",
+                    color: "#1e293b",
                     margin: 0,
                     lineHeight: "1.6",
                   }}
@@ -340,7 +340,7 @@ export default function Login(): JSX.Element {
                   <p
                     style={{
                       fontSize: "13px",
-                      color: "#cbd5e1",
+                      color: "#1e293b",
                       margin: 0,
                       fontWeight: "500",
                     }}

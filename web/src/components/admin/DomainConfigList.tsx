@@ -105,7 +105,7 @@ const DomainConfigList: React.FC = () => {
             style={{
               padding: '20px',
               backgroundColor: '#ffffff',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #0f172a',
               borderRadius: '12px',
               boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -138,7 +138,7 @@ const DomainConfigList: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: '#f1f5f9',
+                  backgroundColor: '#0f172a',
                   borderRadius: '8px',
                 }}
               >

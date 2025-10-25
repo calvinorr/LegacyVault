@@ -39,7 +39,7 @@ export default function ServiceProviderCard({
       onClick={onClick}
       style={{
         backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
+        border: '1px solid #0f172a',
         borderRadius: '16px',
         padding: '24px',
         cursor: onClick ? 'pointer' : 'default',
@@ -106,7 +106,7 @@ export default function ServiceProviderCard({
                   marginLeft: 'auto',
                   padding: '6px 14px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   backgroundColor: '#ffffff',
                   color: '#0f172a',
                   fontSize: '13px',
@@ -117,11 +117,11 @@ export default function ServiceProviderCard({
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f8fafc';
-                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.borderColor = '#1e293b';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = '#0f172a';
                 }}
               >
                 Call
@@ -156,7 +156,7 @@ export default function ServiceProviderCard({
                   marginLeft: 'auto',
                   padding: '6px 14px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   backgroundColor: '#ffffff',
                   color: '#0f172a',
                   fontSize: '13px',
@@ -168,11 +168,11 @@ export default function ServiceProviderCard({
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f8fafc';
-                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.borderColor = '#1e293b';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = '#0f172a';
                 }}
               >
                 Email
@@ -192,7 +192,7 @@ export default function ServiceProviderCard({
             padding: '12px',
             backgroundColor: '#f8fafc',
             borderRadius: '10px',
-            border: '1px solid #f1f5f9',
+            border: '1px solid #0f172a',
           }}
         >
           <Calendar size={14} strokeWidth={1.5} style={{ color: '#1e293b' }} />

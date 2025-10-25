@@ -179,7 +179,7 @@ export default function AdminSystemStatus() {
       {/* Header */}
       <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#f1f5f9', margin: '0 0 8px 0' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#0f172a', margin: '0 0 8px 0' }}>
             System Status
           </h1>
           <p style={{ fontSize: '14px', color: '#334155', margin: 0 }}>
@@ -213,7 +213,7 @@ export default function AdminSystemStatus() {
       <div style={{ ...cardStyle, marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
           <Database size={24} color="#3b82f6" strokeWidth={1.5} />
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f1f5f9', margin: 0 }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', margin: 0 }}>
             Database Connection
           </h2>
           {status.database.connected ? (
@@ -235,7 +235,7 @@ export default function AdminSystemStatus() {
             <div style={{ fontSize: '12px', color: '#334155', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Database
             </div>
-            <div style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9' }}>
+            <div style={{ fontSize: '18px', fontWeight: '600', color: '#0f172a' }}>
               {status.database.name}
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function AdminSystemStatus() {
             <div style={{ fontSize: '12px', color: '#334155', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Host
             </div>
-            <div style={{ fontSize: '14px', fontWeight: '500', color: '#f1f5f9' }}>
+            <div style={{ fontSize: '14px', fontWeight: '500', color: '#0f172a' }}>
               {status.database.host || 'localhost'}
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function AdminSystemStatus() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Activity size={24} color={configsHealthy ? '#10b981' : '#ef4444'} strokeWidth={1.5} />
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#f1f5f9', margin: 0 }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', margin: 0 }}>
               Domain Configurations
             </h2>
             {configsHealthy ? (
@@ -294,7 +294,7 @@ export default function AdminSystemStatus() {
             <div style={{ fontSize: '12px', color: '#334155', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Configured
             </div>
-            <div style={{ fontSize: '28px', fontWeight: '600', color: '#f1f5f9' }}>
+            <div style={{ fontSize: '28px', fontWeight: '600', color: '#0f172a' }}>
               {status.domainConfigs.total} / {status.domainConfigs.expected}
             </div>
           </div>
@@ -319,7 +319,7 @@ export default function AdminSystemStatus() {
             <div style={{ fontSize: '14px', color: '#fca5a5', fontWeight: '500', marginBottom: '8px' }}>
               Missing Configurations:
             </div>
-            <div style={{ fontSize: '14px', color: '#f1f5f9' }}>
+            <div style={{ fontSize: '14px', color: '#0f172a' }}>
               {status.domainConfigs.missing.join(', ')}
             </div>
           </div>
@@ -345,7 +345,7 @@ export default function AdminSystemStatus() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '4px' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a', marginBottom: '4px' }}>
                       {config.domainType}
                     </div>
                     <div style={{ fontSize: '13px', color: '#334155' }}>
@@ -367,7 +367,7 @@ export default function AdminSystemStatus() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
         {/* Parent Entities */}
         <div style={cardStyle}>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>
             Parent Entities
           </h3>
           <div style={{ ...statBoxStyle, marginBottom: '16px' }}>
@@ -392,7 +392,7 @@ export default function AdminSystemStatus() {
                   }}
                 >
                   <span style={{ color: '#334155' }}>{domain}</span>
-                  <span style={{ color: '#f1f5f9', fontWeight: '500' }}>{count}</span>
+                  <span style={{ color: '#0f172a', fontWeight: '500' }}>{count}</span>
                 </div>
               ))}
             </div>
@@ -401,7 +401,7 @@ export default function AdminSystemStatus() {
 
         {/* Child Records */}
         <div style={cardStyle}>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>
             Child Records
           </h3>
           <div style={{ ...statBoxStyle, marginBottom: '16px' }}>
@@ -426,7 +426,7 @@ export default function AdminSystemStatus() {
                   }}
                 >
                   <span style={{ color: '#334155' }}>{type}</span>
-                  <span style={{ color: '#f1f5f9', fontWeight: '500' }}>{count}</span>
+                  <span style={{ color: '#0f172a', fontWeight: '500' }}>{count}</span>
                 </div>
               ))}
             </div>
@@ -435,7 +435,7 @@ export default function AdminSystemStatus() {
 
         {/* Users */}
         <div style={cardStyle}>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>
             Users
           </h3>
           <div style={{ ...statBoxStyle, marginBottom: '16px' }}>
@@ -449,11 +449,11 @@ export default function AdminSystemStatus() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '14px' }}>
               <span style={{ color: '#334155' }}>Admins</span>
-              <span style={{ color: '#f1f5f9', fontWeight: '500' }}>{status.users.admins}</span>
+              <span style={{ color: '#0f172a', fontWeight: '500' }}>{status.users.admins}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '14px' }}>
               <span style={{ color: '#334155' }}>Approved</span>
-              <span style={{ color: '#f1f5f9', fontWeight: '500' }}>{status.users.approved}</span>
+              <span style={{ color: '#0f172a', fontWeight: '500' }}>{status.users.approved}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', fontSize: '14px' }}>
               <span style={{ color: '#334155' }}>Pending</span>
@@ -465,7 +465,7 @@ export default function AdminSystemStatus() {
 
       {/* Collections Overview */}
       <div style={{ ...cardStyle, marginTop: '24px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#f1f5f9', marginBottom: '16px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0f172a', marginBottom: '16px' }}>
           Database Collections
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
@@ -480,7 +480,7 @@ export default function AdminSystemStatus() {
               <div style={{ fontSize: '12px', color: '#334155', marginBottom: '4px', fontFamily: 'monospace' }}>
                 {name}
               </div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#f1f5f9' }}>
+              <div style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a' }}>
                 {count}
               </div>
             </div>

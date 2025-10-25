@@ -201,7 +201,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
             <h1 style={{
               fontSize: '28px',
               fontWeight: '600',
-              color: '#f1f5f9',
+              color: '#0f172a',
               margin: '0 0 8px 0'
             }}>
               {parentEntity.name}
@@ -310,7 +310,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
               </p>
               <p style={{
                 fontSize: '14px',
-                color: '#f1f5f9',
+                color: '#0f172a',
                 margin: 0,
                 wordBreak: 'break-word'
               }}>

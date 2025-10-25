@@ -156,7 +156,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
               display: 'inline-block',
               width: '40px',
               height: '40px',
-              border: '3px solid #e2e8f0',
+              border: '3px solid #0f172a',
               borderTop: '3px solid #0f172a',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
@@ -178,7 +178,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
             padding: '48px 24px',
             backgroundColor: '#f8fafc',
             borderRadius: '16px',
-            border: '2px dashed #cbd5e1'
+            border: '2px dashed #1e293b'
           }}
         >
         {/* Icon and Message */}
@@ -214,7 +214,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
             padding: '24px',
             backgroundColor: '#ffffff',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid #0f172a',
             maxWidth: '300px'
           }}
         >
@@ -270,7 +270,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
                 textAlign: 'center'
               }}
             >
-              <Upload size={32} color="#cbd5e1" style={{ margin: '0 auto 12px', display: 'block' }} />
+              <Upload size={32} color="#1e293b" style={{ margin: '0 auto 12px', display: 'block' }} />
               <p
                 style={{
                   fontSize: '14px',

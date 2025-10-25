@@ -34,7 +34,7 @@ const PropertyDomainPage: React.FC = () => {
               <div style={{
                 padding: '10px',
                 borderRadius: '12px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -80,9 +80,9 @@ const PropertyDomainPage: React.FC = () => {
           padding: '64px 24px',
           backgroundColor: '#fefefe',
           borderRadius: '16px',
-          border: '2px dashed #e2e8f0'
+          border: '2px dashed #0f172a'
         }}>
-          <HomeIcon size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
+          <HomeIcon size={48} color="#1e293b" style={{ margin: '0 auto 16px' }} />
           <p style={{
             fontSize: '16px',
             color: '#1e293b',

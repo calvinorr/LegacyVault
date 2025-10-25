@@ -235,7 +235,7 @@ export default function TransactionHistory() {
   const buttonStyle = {
     padding: '12px 20px',
     borderRadius: '12px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     backgroundColor: '#ffffff',
     color: '#1e293b',
     cursor: 'pointer',
@@ -333,7 +333,7 @@ export default function TransactionHistory() {
           <div
             style={{
               backgroundColor: '#f8fafc',
-              border: '1px solid #f1f5f9',
+              border: '1px solid #0f172a',
               borderRadius: '16px',
               padding: '24px',
               height: 'fit-content',
@@ -366,7 +366,7 @@ export default function TransactionHistory() {
                   width: '100%',
                   padding: '10px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                   backgroundColor: '#ffffff',
@@ -401,7 +401,7 @@ export default function TransactionHistory() {
                   width: '100%',
                   padding: '10px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                   marginBottom: '8px',
@@ -417,7 +417,7 @@ export default function TransactionHistory() {
                   width: '100%',
                   padding: '10px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                   backgroundColor: '#ffffff',
@@ -453,7 +453,7 @@ export default function TransactionHistory() {
                     width: '100%',
                     padding: '10px 12px 10px 36px',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     fontSize: '14px',
                     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                     backgroundColor: '#ffffff',
@@ -479,7 +479,7 @@ export default function TransactionHistory() {
             <div
               style={{
                 backgroundColor: '#ffffff',
-                border: '1px solid #f1f5f9',
+                border: '1px solid #0f172a',
                 borderRadius: '16px',
                 overflow: 'hidden',
                 boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)',
@@ -487,7 +487,7 @@ export default function TransactionHistory() {
             >
               {transactions.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '80px 20px', color: '#1e293b' }}>
-                  <List size={48} color="#cbd5e1" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
+                  <List size={48} color="#1e293b" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
                   <p style={{ fontSize: '16px', fontWeight: '500', margin: '0' }}>
                     {searchQuery || statusFilter !== 'all' || dateRangeStart || dateRangeEnd
                       ? 'No transactions match your filters. Try adjusting your search criteria.'
@@ -505,7 +505,7 @@ export default function TransactionHistory() {
                     }}
                   >
                     <thead>
-                      <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                      <tr style={{ backgroundColor: '#f8fafc', borderBottom: '1px solid #0f172a' }}>
                         <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: '600', width: '40px' }}></th>
                         <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: '600' }}>Date</th>
                         <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: '600' }}>Description</th>
@@ -526,7 +526,7 @@ export default function TransactionHistory() {
                             <tr
                               onClick={() => toggleRowExpansion(transaction._id)}
                               style={{
-                                borderBottom: '1px solid #f1f5f9',
+                                borderBottom: '1px solid #0f172a',
                                 cursor: 'pointer',
                                 backgroundColor: isExpanded ? '#f8fafc' : 'transparent',
                               }}
@@ -558,7 +558,7 @@ export default function TransactionHistory() {
                                 {transaction.patternMatched && transaction.patternConfidence ? (
                                   <PatternBadge confidence={transaction.patternConfidence} />
                                 ) : (
-                                  <span style={{ fontSize: '10px', color: '#cbd5e1' }}>-</span>
+                                  <span style={{ fontSize: '10px', color: '#1e293b' }}>-</span>
                                 )}
                               </td>
                               <td
@@ -602,7 +602,7 @@ export default function TransactionHistory() {
                                       style={{
                                         marginTop: '12px',
                                         padding: '12px',
-                                        backgroundColor: '#f1f5f9',
+                                        backgroundColor: '#0f172a',
                                         borderRadius: '8px',
                                         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                                         fontSize: '11px',
@@ -675,11 +675,11 @@ export default function TransactionHistory() {
                                             }}
                                             onMouseEnter={(e) => {
                                               e.currentTarget.style.backgroundColor = '#f8fafc';
-                                              e.currentTarget.style.borderColor = '#cbd5e1';
+                                              e.currentTarget.style.borderColor = '#1e293b';
                                             }}
                                             onMouseLeave={(e) => {
                                               e.currentTarget.style.backgroundColor = '#ffffff';
-                                              e.currentTarget.style.borderColor = '#e2e8f0';
+                                              e.currentTarget.style.borderColor = '#0f172a';
                                             }}
                                           >
                                             Ignore
@@ -699,11 +699,11 @@ export default function TransactionHistory() {
                                           }}
                                           onMouseEnter={(e) => {
                                             e.currentTarget.style.backgroundColor = '#f8fafc';
-                                            e.currentTarget.style.borderColor = '#cbd5e1';
+                                            e.currentTarget.style.borderColor = '#1e293b';
                                           }}
                                           onMouseLeave={(e) => {
                                             e.currentTarget.style.backgroundColor = '#ffffff';
-                                            e.currentTarget.style.borderColor = '#e2e8f0';
+                                            e.currentTarget.style.borderColor = '#0f172a';
                                           }}
                                         >
                                           Undo Ignore
@@ -724,11 +724,11 @@ export default function TransactionHistory() {
                                           onClick={(e) => e.stopPropagation()}
                                           onMouseEnter={(e) => {
                                             e.currentTarget.style.backgroundColor = '#f8fafc';
-                                            e.currentTarget.style.borderColor = '#cbd5e1';
+                                            e.currentTarget.style.borderColor = '#1e293b';
                                           }}
                                           onMouseLeave={(e) => {
                                             e.currentTarget.style.backgroundColor = '#ffffff';
-                                            e.currentTarget.style.borderColor = '#e2e8f0';
+                                            e.currentTarget.style.borderColor = '#0f172a';
                                           }}
                                         >
                                           <ExternalLink size={14} strokeWidth={1.5} />
@@ -751,7 +751,7 @@ export default function TransactionHistory() {
                     <div
                       style={{
                         padding: '16px 24px',
-                        borderTop: '1px solid #f1f5f9',
+                        borderTop: '1px solid #0f172a',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',

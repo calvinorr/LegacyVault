@@ -76,7 +76,7 @@ const Employments: React.FC = () => {
                 style={{
                   padding: '10px',
                   borderRadius: '12px',
-                  backgroundColor: '#f1f5f9',
+                  backgroundColor: '#0f172a',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'

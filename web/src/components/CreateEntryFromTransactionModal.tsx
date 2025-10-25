@@ -487,7 +487,7 @@ export default function CreateEntryFromTransactionModal({
           overflow: 'auto',
           boxShadow:
             '0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.05)',
-          border: '1px solid #f1f5f9',
+          border: '1px solid #0f172a',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -495,7 +495,7 @@ export default function CreateEntryFromTransactionModal({
         <div
           style={{
             padding: '32px 32px 24px 32px',
-            borderBottom: '1px solid #f1f5f9',
+            borderBottom: '1px solid #0f172a',
           }}
         >
           <div
@@ -554,7 +554,7 @@ export default function CreateEntryFromTransactionModal({
                     height: '4px',
                     borderRadius: '2px',
                     backgroundColor:
-                      step <= currentStep ? '#0f172a' : '#e2e8f0',
+                      step <= currentStep ? '#0f172a' : '#0f172a',
                     transition: 'background-color 0.3s ease',
                   }}
                 />
@@ -568,7 +568,7 @@ export default function CreateEntryFromTransactionModal({
               backgroundColor: '#f8fafc',
               padding: '16px',
               borderRadius: '12px',
-              border: '1px solid #f1f5f9',
+              border: '1px solid #0f172a',
             }}
           >
             <div
@@ -657,7 +657,7 @@ export default function CreateEntryFromTransactionModal({
                         borderRadius: '12px',
                         border: isSelected
                           ? `2px solid ${domain.color}`
-                          : '2px solid #e2e8f0',
+                          : '2px solid #0f172a',
                         backgroundColor: isSelected ? '#f8fafc' : '#ffffff',
                         cursor: 'pointer',
                         textAlign: 'left',
@@ -695,7 +695,7 @@ export default function CreateEntryFromTransactionModal({
                   gap: '12px',
                   marginTop: '32px',
                   paddingTop: '24px',
-                  borderTop: '1px solid #f1f5f9',
+                  borderTop: '1px solid #0f172a',
                 }}
               >
                 <button
@@ -706,7 +706,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -752,7 +752,7 @@ export default function CreateEntryFromTransactionModal({
                     padding: '40px',
                     backgroundColor: '#f8fafc',
                     borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                   }}
                 >
                   <div
@@ -811,7 +811,7 @@ export default function CreateEntryFromTransactionModal({
                             border:
                               selectedParentId === parent._id
                                 ? '2px solid #0f172a'
-                                : '2px solid #e2e8f0',
+                                : '2px solid #0f172a',
                             backgroundColor:
                               selectedParentId === parent._id
                                 ? '#f8fafc'
@@ -841,7 +841,7 @@ export default function CreateEntryFromTransactionModal({
                           width: '100%',
                           padding: '16px',
                           borderRadius: '12px',
-                          border: '2px dashed #cbd5e1',
+                          border: '2px dashed #1e293b',
                           backgroundColor: '#ffffff',
                           cursor: 'pointer',
                           textAlign: 'center',
@@ -870,7 +870,7 @@ export default function CreateEntryFromTransactionModal({
                       style={{
                         padding: '20px',
                         backgroundColor: '#f8fafc',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         borderRadius: '12px',
                         marginBottom: '16px',
                       }}
@@ -899,7 +899,7 @@ export default function CreateEntryFromTransactionModal({
                           width: '100%',
                           padding: '14px 16px',
                           borderRadius: '12px',
-                          border: '1px solid #e2e8f0',
+                          border: '1px solid #0f172a',
                           fontSize: '15px',
                           fontFamily: 'inherit',
                           backgroundColor: '#ffffff',
@@ -934,7 +934,7 @@ export default function CreateEntryFromTransactionModal({
                             fontSize: '14px',
                             fontWeight: '500',
                             cursor: creatingParent ? 'not-allowed' : 'pointer',
-                            border: '1px solid #e2e8f0',
+                            border: '1px solid #0f172a',
                             backgroundColor: '#ffffff',
                             color: '#1e293b',
                             fontFamily: 'inherit',
@@ -977,7 +977,7 @@ export default function CreateEntryFromTransactionModal({
                   gap: '12px',
                   marginTop: '32px',
                   paddingTop: '24px',
-                  borderTop: '1px solid #f1f5f9',
+                  borderTop: '1px solid #0f172a',
                 }}
               >
                 <button
@@ -988,7 +988,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -1008,7 +1008,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -1066,7 +1066,7 @@ export default function CreateEntryFromTransactionModal({
                           borderRadius: '12px',
                           border: isSelected
                             ? '2px solid #0f172a'
-                            : '2px solid #e2e8f0',
+                            : '2px solid #0f172a',
                           backgroundColor: isSelected ? '#f8fafc' : '#ffffff',
                           cursor: 'pointer',
                           textAlign: 'left',
@@ -1100,7 +1100,7 @@ export default function CreateEntryFromTransactionModal({
                   gap: '12px',
                   marginTop: '32px',
                   paddingTop: '24px',
-                  borderTop: '1px solid #f1f5f9',
+                  borderTop: '1px solid #0f172a',
                 }}
               >
                 <button
@@ -1111,7 +1111,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -1131,7 +1131,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -1173,7 +1173,7 @@ export default function CreateEntryFromTransactionModal({
                   padding: '20px',
                   backgroundColor: '#f8fafc',
                   borderRadius: '12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                 }}
               >
                 <h4
@@ -1210,7 +1210,7 @@ export default function CreateEntryFromTransactionModal({
                       width: '100%',
                       padding: '14px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       fontSize: '15px',
                       fontFamily: 'inherit',
                       backgroundColor: '#ffffff',
@@ -1241,7 +1241,7 @@ export default function CreateEntryFromTransactionModal({
                       width: '100%',
                       padding: '14px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       fontSize: '15px',
                       fontFamily: 'inherit',
                       backgroundColor: '#ffffff',
@@ -1272,7 +1272,7 @@ export default function CreateEntryFromTransactionModal({
                       width: '100%',
                       padding: '14px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       fontSize: '15px',
                       fontFamily: 'inherit',
                       backgroundColor: '#ffffff',
@@ -1303,7 +1303,7 @@ export default function CreateEntryFromTransactionModal({
                       width: '100%',
                       padding: '14px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       fontSize: '15px',
                       fontFamily: 'inherit',
                       backgroundColor: '#ffffff',
@@ -1334,7 +1334,7 @@ export default function CreateEntryFromTransactionModal({
                       width: '100%',
                       padding: '14px 16px',
                       borderRadius: '12px',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       fontSize: '15px',
                       fontFamily: 'inherit',
                       backgroundColor: '#ffffff',
@@ -1372,7 +1372,7 @@ export default function CreateEntryFromTransactionModal({
                         width: '100%',
                         padding: '14px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         fontSize: '15px',
                         fontFamily: 'inherit',
                         backgroundColor: '#ffffff',
@@ -1401,7 +1401,7 @@ export default function CreateEntryFromTransactionModal({
                         width: '100%',
                         padding: '14px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         fontSize: '15px',
                         fontFamily: 'inherit',
                         backgroundColor: '#ffffff',
@@ -1433,7 +1433,7 @@ export default function CreateEntryFromTransactionModal({
                         width: '100%',
                         padding: '14px 16px',
                         borderRadius: '12px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         fontSize: '15px',
                         fontFamily: 'inherit',
                         backgroundColor: '#ffffff',
@@ -1486,7 +1486,7 @@ export default function CreateEntryFromTransactionModal({
                         width: '100%',
                         padding: '12px 14px',
                         borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         fontSize: '14px',
                         fontFamily: 'inherit',
                         backgroundColor: '#fefefe',
@@ -1514,7 +1514,7 @@ export default function CreateEntryFromTransactionModal({
                         width: '100%',
                         padding: '12px 14px',
                         borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #0f172a',
                         fontSize: '14px',
                         fontFamily: 'inherit',
                         backgroundColor: '#fefefe',
@@ -1561,7 +1561,7 @@ export default function CreateEntryFromTransactionModal({
                     width: '100%',
                     padding: '14px 16px',
                     borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     fontSize: '15px',
                     fontFamily: 'inherit',
                     backgroundColor: '#fefefe',
@@ -1578,7 +1578,7 @@ export default function CreateEntryFromTransactionModal({
                   justifyContent: 'space-between',
                   gap: '12px',
                   paddingTop: '24px',
-                  borderTop: '1px solid #f1f5f9',
+                  borderTop: '1px solid #0f172a',
                 }}
               >
                 <button
@@ -1591,7 +1591,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: loading ? 'not-allowed' : 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',
@@ -1614,7 +1614,7 @@ export default function CreateEntryFromTransactionModal({
                       fontSize: '15px',
                       fontWeight: '500',
                       cursor: loading ? 'not-allowed' : 'pointer',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #0f172a',
                       backgroundColor: '#ffffff',
                       color: '#1e293b',
                       fontFamily: 'inherit',
@@ -1669,7 +1669,7 @@ export default function CreateEntryFromTransactionModal({
                   backgroundColor: '#f8fafc',
                   padding: '20px',
                   borderRadius: '12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   marginBottom: '32px',
                   textAlign: 'left',
                 }}
@@ -1777,7 +1777,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#0f172a',
                     fontFamily: 'inherit',
@@ -1794,7 +1794,7 @@ export default function CreateEntryFromTransactionModal({
                     fontSize: '15px',
                     fontWeight: '500',
                     cursor: 'pointer',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     backgroundColor: '#ffffff',
                     color: '#1e293b',
                     fontFamily: 'inherit',

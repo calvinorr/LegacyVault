@@ -179,7 +179,7 @@ export default function Bills() {
     width: "100%",
     padding: "12px 16px 12px 44px",
     borderRadius: "12px",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
     fontSize: "14px",
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
     outline: "none",
@@ -210,7 +210,7 @@ export default function Bills() {
     ...buttonStyle,
     backgroundColor: "#ffffff",
     color: "#1e293b",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
   };
 
   const gridStyle = {
@@ -221,7 +221,7 @@ export default function Bills() {
 
   const cardStyle = {
     backgroundColor: "#ffffff",
-    border: "1px solid #f1f5f9",
+    border: "1px solid #0f172a",
     borderRadius: "16px",
     padding: "24px",
     cursor: "pointer",
@@ -251,7 +251,7 @@ export default function Bills() {
             justifyContent: "center",
             width: "64px",
             height: "64px",
-            backgroundColor: "#f1f5f9",
+            backgroundColor: "#0f172a",
             borderRadius: "16px",
             margin: "0 auto 24px",
           }}>
@@ -329,7 +329,7 @@ export default function Bills() {
             onClick={() => setViewMode("grid")}
             style={{
               ...secondaryButtonStyle,
-              backgroundColor: viewMode === "grid" ? "#f1f5f9" : "#ffffff",
+              backgroundColor: viewMode === "grid" ? "#0f172a" : "#ffffff",
             }}
           >
             <Grid3X3 size={16} strokeWidth={1.5} />
@@ -338,7 +338,7 @@ export default function Bills() {
             onClick={() => setViewMode("list")}
             style={{
               ...secondaryButtonStyle,
-              backgroundColor: viewMode === "list" ? "#f1f5f9" : "#ffffff",
+              backgroundColor: viewMode === "list" ? "#0f172a" : "#ffffff",
             }}
           >
             <List size={16} strokeWidth={1.5} />
@@ -367,7 +367,7 @@ export default function Bills() {
             justifyContent: "center",
             width: "64px",
             height: "64px",
-            backgroundColor: "#f1f5f9",
+            backgroundColor: "#0f172a",
             borderRadius: "16px",
             margin: "0 auto 24px",
           }}>
@@ -414,7 +414,7 @@ export default function Bills() {
                   justifyContent: "center",
                   width: "40px",
                   height: "40px",
-                  backgroundColor: "#f1f5f9",
+                  backgroundColor: "#0f172a",
                   borderRadius: "12px",
                   flexShrink: 0,
                 }}>

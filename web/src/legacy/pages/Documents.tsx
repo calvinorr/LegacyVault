@@ -313,7 +313,7 @@ export default function Documents() {
 
   const cardStyle = {
     backgroundColor: '#ffffff',
-    border: '1px solid #f1f5f9',
+    border: '1px solid #0f172a',
     borderRadius: '16px',
     padding: '32px',
     marginBottom: '24px',
@@ -332,7 +332,7 @@ export default function Documents() {
     alignItems: 'center',
     gap: '8px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     backgroundColor: '#ffffff',
     color: '#1e293b'
   };
@@ -360,7 +360,7 @@ export default function Documents() {
                 justifyContent: 'center',
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
@@ -453,7 +453,7 @@ export default function Documents() {
         {/* File Upload Zone */}
         <div style={{
           ...cardStyle,
-          border: `2px dashed ${dragOver ? '#0f172a' : '#e2e8f0'}`,
+          border: `2px dashed ${dragOver ? '#0f172a' : '#0f172a'}`,
           backgroundColor: dragOver ? '#f8fafc' : '#ffffff',
           cursor: 'pointer',
           transition: 'all 0.3s ease'
@@ -469,7 +469,7 @@ export default function Documents() {
               justifyContent: 'center',
               width: '64px',
               height: '64px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: '#0f172a',
               borderRadius: '16px',
               margin: '0 auto 24px'
             }}>
@@ -534,7 +534,7 @@ export default function Documents() {
                   width: '100%',
                   padding: '12px 16px 12px 48px',
                   borderRadius: '12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                   backgroundColor: '#ffffff',
@@ -558,7 +558,7 @@ export default function Documents() {
                   ...buttonStyle,
                   backgroundColor: selectedCategory === option.value ? '#0f172a' : '#ffffff',
                   color: selectedCategory === option.value ? '#ffffff' : '#1e293b',
-                  borderColor: selectedCategory === option.value ? '#0f172a' : '#e2e8f0'
+                  borderColor: selectedCategory === option.value ? '#0f172a' : '#0f172a'
                 }}
                 onClick={() => setSelectedCategory(option.value)}
               >
@@ -578,7 +578,7 @@ export default function Documents() {
                 ...buttonStyle,
                 backgroundColor: viewMode === 'grid' ? '#0f172a' : '#ffffff',
                 color: viewMode === 'grid' ? '#ffffff' : '#1e293b',
-                borderColor: viewMode === 'grid' ? '#0f172a' : '#e2e8f0'
+                borderColor: viewMode === 'grid' ? '#0f172a' : '#0f172a'
               }}
               onClick={() => setViewMode('grid')}
             >
@@ -590,7 +590,7 @@ export default function Documents() {
                 ...buttonStyle,
                 backgroundColor: viewMode === 'list' ? '#0f172a' : '#ffffff',
                 color: viewMode === 'list' ? '#ffffff' : '#1e293b',
-                borderColor: viewMode === 'list' ? '#0f172a' : '#e2e8f0'
+                borderColor: viewMode === 'list' ? '#0f172a' : '#0f172a'
               }}
               onClick={() => setViewMode('list')}
             >
@@ -614,7 +614,7 @@ export default function Documents() {
                 justifyContent: 'center',
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
@@ -649,7 +649,7 @@ export default function Documents() {
                   style={{
                     padding: '24px',
                     backgroundColor: '#f8fafc',
-                    border: '1px solid #f1f5f9',
+                    border: '1px solid #0f172a',
                     borderRadius: '16px',
                     transition: 'all 0.3s ease',
                     cursor: 'pointer'
@@ -747,7 +747,7 @@ export default function Documents() {
                           style={{
                             padding: '2px 6px',
                             borderRadius: '6px',
-                            backgroundColor: '#f1f5f9',
+                            backgroundColor: '#0f172a',
                             color: '#1e293b',
                             fontSize: '11px',
                             fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
@@ -760,7 +760,7 @@ export default function Documents() {
                         <span style={{
                           padding: '2px 6px',
                           borderRadius: '6px',
-                          backgroundColor: '#f1f5f9',
+                          backgroundColor: '#0f172a',
                           color: '#1e293b',
                           fontSize: '11px',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
@@ -815,7 +815,7 @@ export default function Documents() {
                     justifyContent: 'space-between',
                     padding: '16px 20px',
                     backgroundColor: '#ffffff',
-                    border: '1px solid #f1f5f9',
+                    border: '1px solid #0f172a',
                     borderRadius: '12px',
                     transition: 'all 0.3s ease',
                     cursor: 'pointer'

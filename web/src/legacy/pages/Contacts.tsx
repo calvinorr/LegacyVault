@@ -405,7 +405,7 @@ export default function Contacts() {
       <div className="px-8 py-6">
         {filteredContacts.length === 0 ? (
           <div className="text-center py-12">
-            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <Users className="w-16 h-16 text-slate-800 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-slate-900 mb-2">No contacts found</h3>
             <p className="text-slate-800 mb-6">
               {contacts.length === 0 

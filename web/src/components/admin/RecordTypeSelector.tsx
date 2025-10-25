@@ -99,7 +99,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '24px',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid #0f172a',
             position: 'sticky',
             top: 0,
             backgroundColor: '#ffffff',
@@ -174,7 +174,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
                     gap: '12px',
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     cursor: 'pointer',
                     backgroundColor: isSelected ? '#f0f9ff' : '#ffffff',
                     transition: 'all 0.3s ease',
@@ -203,7 +203,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
                       justifyContent: 'center',
                       width: '20px',
                       height: '20px',
-                      color: isSelected ? '#0369a1' : '#cbd5e1',
+                      color: isSelected ? '#0369a1' : '#1e293b',
                     }}
                   >
                     {isSelected ? (
@@ -272,7 +272,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
             justifyContent: 'flex-end',
             gap: '12px',
             padding: '16px 24px',
-            borderTop: '1px solid #e2e8f0',
+            borderTop: '1px solid #0f172a',
             backgroundColor: '#f8fafc',
             position: 'sticky',
             bottom: 0,
@@ -284,7 +284,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
               padding: '10px 20px',
               backgroundColor: '#ffffff',
               color: '#0f172a',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #0f172a',
               borderRadius: '8px',
               fontSize: '14px',
               fontWeight: '500',
@@ -293,7 +293,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#f1f5f9';
+              e.currentTarget.style.backgroundColor = '#0f172a';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#ffffff';
@@ -308,7 +308,7 @@ const RecordTypeSelector: React.FC<RecordTypeSelectorProps> = ({ config, onClose
               padding: '10px 20px',
               backgroundColor:
                 !hasChanges || isSaving || selectedTypes.length === 0
-                  ? '#cbd5e1'
+                  ? '#1e293b'
                   : '#0f172a',
               color: '#ffffff',
               border: 'none',

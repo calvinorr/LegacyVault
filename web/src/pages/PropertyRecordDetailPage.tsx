@@ -36,7 +36,7 @@ const PropertyRecordDetailPage: React.FC = () => {
       case 'Important':
         return { bg: '#fff7ed', text: '#ea580c', border: '#fed7aa' };
       default:
-        return { bg: '#f8fafc', text: '#475569', border: '#e2e8f0' };
+        return { bg: '#f8fafc', text: '#475569', border: '#0f172a' };
     }
   };
 
@@ -78,7 +78,7 @@ const PropertyRecordDetailPage: React.FC = () => {
         backgroundColor: '#ffffff',
         padding: '32px',
         borderRadius: '16px',
-        border: '1px solid #f1f5f9',
+        border: '1px solid #0f172a',
         marginBottom: '24px',
         boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)'
       }}>
@@ -87,7 +87,7 @@ const PropertyRecordDetailPage: React.FC = () => {
             <div style={{
               padding: '16px',
               borderRadius: '12px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: '#0f172a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -135,7 +135,7 @@ const PropertyRecordDetailPage: React.FC = () => {
               onClick={() => setShowEditModal(true)}
               style={{
                 padding: '10px 20px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 borderRadius: '8px',
                 backgroundColor: '#ffffff',
                 color: '#1e293b',
@@ -180,7 +180,7 @@ const PropertyRecordDetailPage: React.FC = () => {
         backgroundColor: '#ffffff',
         padding: '32px',
         borderRadius: '16px',
-        border: '1px solid #f1f5f9',
+        border: '1px solid #0f172a',
         boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.08)'
       }}>
         <h2 style={{
@@ -437,7 +437,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 onClick={() => setShowDeleteConfirm(false)}
                 style={{
                   padding: '10px 20px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   borderRadius: '8px',
                   backgroundColor: '#ffffff',
                   color: '#1e293b',

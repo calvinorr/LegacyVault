@@ -776,7 +776,7 @@ export default function AddBillModal({
             {/* Enhanced Renewal Tracking Section */}
             <div style={{
               backgroundColor: "#f8fafc",
-              border: "1px solid #e2e8f0",
+              border: "1px solid #0f172a",
               borderRadius: "8px",
               padding: "20px",
               marginBottom: "20px"

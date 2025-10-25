@@ -237,7 +237,7 @@ export default function CreateChildRecordFromTransactionModal({
     width: "100%",
     padding: "12px 14px",
     borderRadius: "10px",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
     fontSize: "14px",
     fontFamily: "Inter, sans-serif",
     backgroundColor: "#fefefe",
@@ -280,12 +280,12 @@ export default function CreateChildRecordFromTransactionModal({
           display: "flex",
           flexDirection: "column",
           boxShadow: "0 25px 50px -12px rgba(15, 23, 42, 0.25)",
-          border: "1px solid #f1f5f9",
+          border: "1px solid #0f172a",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ padding: "28px 28px 20px 28px", borderBottom: "1px solid #f1f5f9" }}>
+        <div style={{ padding: "28px 28px 20px 28px", borderBottom: "1px solid #0f172a" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
             <h2 style={{ fontSize: "22px", fontWeight: "600", color: "#0f172a", margin: 0 }}>
               Create Record from Transaction
@@ -296,7 +296,7 @@ export default function CreateChildRecordFromTransactionModal({
           </div>
 
           {/* Transaction Preview */}
-          <div style={{ backgroundColor: "#f8fafc", padding: "14px", borderRadius: "10px", border: "1px solid #f1f5f9" }}>
+          <div style={{ backgroundColor: "#f8fafc", padding: "14px", borderRadius: "10px", border: "1px solid #0f172a" }}>
             <div style={{ fontSize: "12px", color: "#1e293b", marginBottom: "4px" }}>Transaction:</div>
             <div style={{ fontWeight: "600", color: "#0f172a", marginBottom: "2px" }}>
               {transaction.description} • £{Math.abs(transaction.amount).toFixed(2)}
@@ -412,8 +412,8 @@ export default function CreateChildRecordFromTransactionModal({
           )}
 
           {/* Buttons */}
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", paddingTop: "20px", borderTop: "1px solid #f1f5f9" }}>
-            <button type="button" onClick={handleClose} disabled={loading} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "500", cursor: "pointer", border: "1px solid #e2e8f0", backgroundColor: "#ffffff", color: "#1e293b", fontFamily: "inherit" }}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", paddingTop: "20px", borderTop: "1px solid #0f172a" }}>
+            <button type="button" onClick={handleClose} disabled={loading} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "500", cursor: "pointer", border: "1px solid #0f172a", backgroundColor: "#ffffff", color: "#1e293b", fontFamily: "inherit" }}>
               Cancel
             </button>
             <button type="submit" disabled={loading || !selectedDomain || !selectedParentId || !selectedRecordType || !name} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "600", cursor: loading || !name ? "not-allowed" : "pointer", border: "none", backgroundColor: "#0f172a", color: "#ffffff", fontFamily: "inherit", opacity: loading || !name ? 0.5 : 1 }}>

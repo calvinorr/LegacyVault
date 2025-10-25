@@ -223,7 +223,7 @@ export default function BankImport() {
 
   const cardStyle = {
     backgroundColor: '#ffffff',
-    border: '1px solid #f1f5f9',
+    border: '1px solid #0f172a',
     borderRadius: '16px',
     padding: '32px',
     marginBottom: '24px',
@@ -234,7 +234,7 @@ export default function BankImport() {
   const buttonStyle = {
     padding: '12px 20px',
     borderRadius: '12px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     backgroundColor: '#ffffff',
     color: '#1e293b',
     cursor: 'pointer',
@@ -344,7 +344,7 @@ export default function BankImport() {
                 justifyContent: 'center',
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
@@ -476,7 +476,7 @@ export default function BankImport() {
               style={{
                 padding: '12px 16px',
                 borderRadius: '12px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 fontSize: '14px',
                 flex: 1,
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -658,11 +658,11 @@ export default function BankImport() {
               onClick={loadSessions}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#f8fafc';
-                e.currentTarget.style.borderColor = '#cbd5e1';
+                e.currentTarget.style.borderColor = '#1e293b';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#ffffff';
-                e.currentTarget.style.borderColor = '#e2e8f0';
+                e.currentTarget.style.borderColor = '#0f172a';
               }}
             >
               Refresh
@@ -681,7 +681,7 @@ export default function BankImport() {
                 justifyContent: 'center',
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
@@ -708,7 +708,7 @@ export default function BankImport() {
                 justifyContent: 'center',
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#f1f5f9',
+                backgroundColor: '#0f172a',
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
@@ -730,11 +730,11 @@ export default function BankImport() {
                 onClick={() => setSelectedMonth(null)}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#f8fafc';
-                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.borderColor = '#1e293b';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = '#ffffff';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = '#0f172a';
                 }}
               >
                 Show All Sessions
@@ -746,7 +746,7 @@ export default function BankImport() {
                 <div
                   key={session._id}
                   style={{
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     borderRadius: '16px',
                     padding: '24px',
                     backgroundColor: '#ffffff',
@@ -860,7 +860,7 @@ export default function BankImport() {
                         padding: '16px',
                         backgroundColor: '#f8fafc',
                         borderRadius: '12px',
-                        border: '1px solid #f1f5f9'
+                        border: '1px solid #0f172a'
                       }}>
                         <div style={{
                           fontSize: '20px',

@@ -72,7 +72,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     justifyContent: "space-between",
     padding: "20px 40px",
     backgroundColor: "#ffffff",
-    borderBottom: "1px solid #f1f5f9",
+    borderBottom: "1px solid #0f172a",
     boxShadow: "0 1px 3px 0 rgba(15, 23, 42, 0.08)",
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
     backdropFilter: "blur(8px)",
@@ -109,7 +109,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     padding: "8px 16px",
     borderRadius: "12px",
     backgroundColor: "#f8fafc",
-    border: "1px solid #f1f5f9",
+    border: "1px solid #0f172a",
   };
 
   const userNameStyle = {
@@ -123,7 +123,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     padding: "8px 16px",
     fontSize: "13px",
     fontWeight: "500",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
     borderRadius: "12px",
     backgroundColor: "#ffffff",
     color: "#1e293b",
@@ -264,7 +264,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                     top: "calc(100% + 8px)",
                     right: "0",
                     backgroundColor: "#ffffff",
-                    border: "1px solid #e2e8f0",
+                    border: "1px solid #0f172a",
                     borderRadius: "12px",
                     boxShadow: "0 10px 25px rgba(15, 23, 42, 0.1)",
                     minWidth: "220px",
@@ -317,7 +317,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                   <div
                     style={{
                       height: "1px",
-                      backgroundColor: "#e2e8f0",
+                      backgroundColor: "#0f172a",
                       margin: "8px 0",
                     }}
                   />

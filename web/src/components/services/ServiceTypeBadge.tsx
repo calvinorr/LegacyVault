@@ -75,7 +75,7 @@ export const SERVICE_TYPES: ServiceTypeConfig[] = [
     label: 'Other',
     icon: Wrench,
     color: '#1e293b',
-    bgColor: '#f1f5f9',
+    bgColor: '#0f172a',
   },
 ];
 

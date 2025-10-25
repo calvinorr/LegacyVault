@@ -98,7 +98,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
   const formStyle = {
     backgroundColor: "#ffffff",
-    border: "1px solid #f1f5f9",
+    border: "1px solid #0f172a",
     borderRadius: "16px",
     padding: "32px",
     maxWidth: "600px",
@@ -110,7 +110,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     width: "100%",
     padding: "12px 16px",
     borderRadius: "12px",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
     fontSize: "15px",
     marginBottom: "20px",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -163,7 +163,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     ...buttonStyle,
     backgroundColor: "#ffffff",
     color: "#1e293b",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
   };
 
   const titleStyle = {
@@ -231,7 +231,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
           }}
           onBlur={(e) => {
-            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.borderColor = '#0f172a';
             e.target.style.boxShadow = 'none';
           }}
         />
@@ -254,7 +254,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
           }}
           onBlur={(e) => {
-            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.borderColor = '#0f172a';
             e.target.style.boxShadow = 'none';
           }}
         />
@@ -275,7 +275,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 233, 0.1)';
           }}
           onBlur={(e) => {
-            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.borderColor = '#0f172a';
             e.target.style.boxShadow = 'none';
           }}
         >
@@ -304,11 +304,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           disabled={loading}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = '#f8fafc';
-            e.currentTarget.style.borderColor = '#cbd5e1';
+            e.currentTarget.style.borderColor = '#1e293b';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#ffffff';
-            e.currentTarget.style.borderColor = '#e2e8f0';
+            e.currentTarget.style.borderColor = '#0f172a';
           }}
         >
           Cancel

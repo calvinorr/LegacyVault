@@ -174,7 +174,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '12px 16px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     borderRadius: '8px',
     fontSize: '14px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -233,7 +233,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '20px 24px',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid #0f172a',
             flexShrink: 0
           }}
         >
@@ -310,7 +310,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
               {!imagePreview && !entity?.image && (
                 <div
                   style={{
-                    border: '2px dashed #e2e8f0',
+                    border: '2px dashed #0f172a',
                     borderRadius: '12px',
                     padding: '24px',
                     textAlign: 'center',
@@ -320,11 +320,11 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                   }}
                   onClick={() => document.getElementById('image-upload')?.click()}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#cbd5e1';
-                    e.currentTarget.style.backgroundColor = '#f1f5f9';
+                    e.currentTarget.style.borderColor = '#1e293b';
+                    e.currentTarget.style.backgroundColor = '#0f172a';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.borderColor = '#0f172a';
                     e.currentTarget.style.backgroundColor = '#f8fafc';
                   }}
                 >
@@ -338,7 +338,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                 </div>
               )}
               {(imagePreview || entity?.image) && (
-                <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid #0f172a' }}>
                   <img
                     src={imagePreview || (entity ? getEntityImageUrl(domain, entity._id) : '')}
                     alt="Preview"
@@ -655,7 +655,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
           <div
             style={{
               padding: '20px 24px',
-              borderTop: '1px solid #e2e8f0',
+              borderTop: '1px solid #0f172a',
               display: 'flex',
               gap: '12px',
               justifyContent: 'flex-end',
@@ -667,7 +667,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
               onClick={onClose}
               style={{
                 padding: '10px 20px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '500',

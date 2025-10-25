@@ -265,7 +265,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
           <h2 style={{
             fontSize: '20px',
             fontWeight: '600',
-            color: '#f1f5f9',
+            color: '#0f172a',
             margin: 0
           }}>
             {record
@@ -284,7 +284,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
               color: '#334155',
               padding: '4px'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#f1f5f9'}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
             onMouseLeave={(e) => e.currentTarget.style.color = '#334155'}
           >
             <X size={24} />
@@ -329,7 +329,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: '8px',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     fontSize: '14px',
                     fontWeight: '500'
                   }}
@@ -384,7 +384,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                   display: 'block',
                   fontSize: '13px',
                   fontWeight: '500',
-                  color: '#f1f5f9',
+                  color: '#0f172a',
                   marginBottom: '4px'
                 }}>
                   Record Name *
@@ -414,7 +414,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                         backgroundColor: 'rgba(255, 255, 255, 0.05)',
                         border: errors.name ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '6px',
-                        color: '#f1f5f9',
+                        color: '#0f172a',
                         fontSize: '14px',
                         fontFamily: 'inherit',
                         transition: 'all 0.2s',
@@ -438,7 +438,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     🏦 Bank/Institution
@@ -457,7 +457,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -475,7 +475,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     Account Type
@@ -492,7 +492,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -518,7 +518,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     🔢 Account Number
@@ -538,7 +538,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -556,7 +556,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     🔐 Sort Code
@@ -576,7 +576,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -594,7 +594,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     💷 Current Balance
@@ -614,7 +614,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -632,7 +632,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     🔧 Service Type *
@@ -652,7 +652,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: errors.serviceType ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -678,7 +678,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     👤 Business/Person Name
@@ -697,7 +697,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -718,7 +718,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     📞 Phone
@@ -737,7 +737,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -755,7 +755,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     ✉️ Email
@@ -774,7 +774,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -792,7 +792,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     📍 Address
@@ -811,7 +811,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box',
@@ -830,7 +830,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     display: 'block',
                     fontSize: '13px',
                     fontWeight: '500',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     marginBottom: '4px'
                   }}>
                     📅 Renewal Date
@@ -848,7 +848,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.05)',
                           border: '1px solid rgba(255, 255, 255, 0.1)',
                           borderRadius: '6px',
-                          color: '#f1f5f9',
+                          color: '#0f172a',
                           fontSize: '14px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -865,7 +865,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                   display: 'block',
                   fontSize: '13px',
                   fontWeight: '500',
-                  color: '#f1f5f9',
+                  color: '#0f172a',
                   marginBottom: '4px'
                 }}>
                   Status
@@ -882,7 +882,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                         backgroundColor: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '6px',
-                        color: '#f1f5f9',
+                        color: '#0f172a',
                         fontSize: '14px',
                         fontFamily: 'inherit',
                         boxSizing: 'border-box'
@@ -942,7 +942,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.03)',
                           border: '1px solid rgba(255, 255, 255, 0.05)',
                           borderRadius: '4px',
-                          color: '#cbd5e1',
+                          color: '#1e293b',
                           fontSize: '12px',
                           fontFamily: 'inherit',
                           boxSizing: 'border-box'
@@ -977,7 +977,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                         backgroundColor: 'rgba(255, 255, 255, 0.03)',
                         border: '1px solid rgba(255, 255, 255, 0.05)',
                         borderRadius: '4px',
-                        color: '#cbd5e1',
+                        color: '#1e293b',
                         fontSize: '12px',
                         fontFamily: 'inherit',
                         boxSizing: 'border-box',
@@ -995,7 +995,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 <h3 style={{
                   fontSize: '13px',
                   fontWeight: '600',
-                  color: '#cbd5e1',
+                  color: '#1e293b',
                   textTransform: 'uppercase',
                   letterSpacing: '0.5px',
                   marginBottom: '12px',
@@ -1024,7 +1024,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
                       <FileText size={18} color="#3b82f6" style={{ flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '13px', fontWeight: '500', color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: '13px', fontWeight: '500', color: '#0f172a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {record.attachment.filename}
                         </div>
                         <div style={{ fontSize: '11px', color: '#334155', marginTop: '2px' }}>
@@ -1143,9 +1143,9 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                         marginBottom: '12px'
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                          <FileText size={18} color="#cbd5e1" />
+                          <FileText size={18} color="#1e293b" />
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: '13px', color: '#e2e8f0' }}>{selectedFile.name}</div>
+                            <div style={{ fontSize: '13px', color: '#0f172a' }}>{selectedFile.name}</div>
                             <div style={{ fontSize: '11px', color: '#334155' }}>
                               {(selectedFile.size / 1024).toFixed(1)} KB
                             </div>
@@ -1177,7 +1177,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                             style={{
                               padding: '8px 12px',
                               backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                              color: '#cbd5e1',
+                              color: '#1e293b',
                               border: 'none',
                               borderRadius: '6px',
                               fontSize: '12px',
@@ -1198,7 +1198,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           backgroundColor: 'rgba(255, 255, 255, 0.03)',
                           border: '1px dashed rgba(255, 255, 255, 0.1)',
                           borderRadius: '8px',
-                          color: '#cbd5e1',
+                          color: '#1e293b',
                           fontSize: '13px',
                           cursor: 'pointer',
                           display: 'flex',
@@ -1263,7 +1263,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                     gap: '6px',
                     padding: '10px 16px',
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     border: 'none',
                     borderRadius: '6px',
                     fontSize: '14px',
@@ -1285,7 +1285,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 style={{
                   padding: '10px 16px',
                   backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  color: '#f1f5f9',
+                  color: '#0f172a',
                   border: 'none',
                   borderRadius: '6px',
                   fontSize: '14px',

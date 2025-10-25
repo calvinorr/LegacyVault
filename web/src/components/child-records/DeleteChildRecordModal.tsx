@@ -75,7 +75,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               color: '#334155',
               padding: '4px'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#f1f5f9'}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
             onMouseLeave={(e) => e.currentTarget.style.color = '#334155'}
           >
             <X size={24} />
@@ -104,14 +104,14 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
             <p style={{
               fontSize: '16px',
               fontWeight: '600',
-              color: '#f1f5f9',
+              color: '#0f172a',
               margin: 0
             }}>
               {record.name}
             </p>
             <p style={{
               fontSize: '13px',
-              color: '#cbd5e1',
+              color: '#1e293b',
               margin: '6px 0 0 0'
             }}>
               Type: {record.recordType}
@@ -139,7 +139,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               </p>
               <p style={{
                 fontSize: '12px',
-                color: '#cbd5e1',
+                color: '#1e293b',
                 margin: 0
               }}>
                 Once deleted, this record will be permanently removed from your account.
@@ -172,7 +172,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               htmlFor="confirm-delete"
               style={{
                 fontSize: '13px',
-                color: '#cbd5e1',
+                color: '#1e293b',
                 cursor: 'pointer',
                 margin: 0
               }}
@@ -193,7 +193,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               style={{
                 padding: '10px 16px',
                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                color: '#f1f5f9',
+                color: '#0f172a',
                 border: 'none',
                 borderRadius: '6px',
                 fontSize: '14px',

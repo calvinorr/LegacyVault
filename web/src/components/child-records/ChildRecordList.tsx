@@ -129,7 +129,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
         <h2 style={{
           fontSize: '20px',
           fontWeight: '600',
-          color: '#f1f5f9',
+          color: '#0f172a',
           margin: '0 0 8px 0'
         }}>
           Related Records
@@ -191,7 +191,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                   <p style={{
                     fontSize: '16px',
                     fontWeight: '600',
-                    color: '#f1f5f9',
+                    color: '#0f172a',
                     margin: 0
                   }}>
                     {getRecordTypeLabel(recordType)}
@@ -283,7 +283,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                       critical: { border: '#ef4444', bg: '#fef2f2', text: '#991b1b' },
                       important: { border: '#f97316', bg: '#fff7ed', text: '#92400e' },
                       upcoming: { border: '#3b82f6', bg: '#eff6ff', text: '#1e3a8a' },
-                      none: { border: '#cbd5e1', bg: '#f1f5f9', text: '#1e293b' }
+                      none: { border: '#1e293b', bg: '#0f172a', text: '#1e293b' }
                     };
                     const colors = urgencyColors[urgency.level];
 

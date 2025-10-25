@@ -87,7 +87,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
       style={{
         position: 'relative',
         background: '#ffffff',
-        border: '1px solid #e2e8f0',
+        border: '1px solid #0f172a',
         borderRadius: '16px',
         overflow: 'hidden',
         cursor: 'pointer',
@@ -101,12 +101,12 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.08)';
         e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.borderColor = '#cbd5e1';
+        e.currentTarget.style.borderColor = '#1e293b';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.05)';
         e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.borderColor = '#e2e8f0';
+        e.currentTarget.style.borderColor = '#0f172a';
       }}
     >
       {/* Image */}
@@ -154,7 +154,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
             color: '#1e293b'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f1f5f9';
+            e.currentTarget.style.background = '#0f172a';
             e.currentTarget.style.color = '#0f172a';
           }}
           onMouseLeave={(e) => {
@@ -240,7 +240,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
           alignItems: 'center',
           justifyContent: 'center',
           padding: '12px',
-          background: '#f1f5f9',
+          background: '#0f172a',
           borderRadius: '12px',
           color: '#0f172a',
           marginBottom: '16px'

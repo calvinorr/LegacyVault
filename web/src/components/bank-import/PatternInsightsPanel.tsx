@@ -127,7 +127,7 @@ export default function PatternInsightsPanel({
   const panelStyle = {
     width: '320px',
     backgroundColor: '#ffffff',
-    borderLeft: '1px solid #f1f5f9',
+    borderLeft: '1px solid #0f172a',
     height: '100%',
     display: 'flex',
     flexDirection: 'column' as const,
@@ -136,7 +136,7 @@ export default function PatternInsightsPanel({
 
   const headerStyle = {
     padding: '24px',
-    borderBottom: '1px solid #f1f5f9',
+    borderBottom: '1px solid #0f172a',
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
@@ -163,7 +163,7 @@ export default function PatternInsightsPanel({
   const buttonStyle = {
     padding: '8px 12px',
     borderRadius: '8px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     backgroundColor: '#ffffff',
     color: '#1e293b',
     cursor: 'pointer',
@@ -246,7 +246,7 @@ export default function PatternInsightsPanel({
             <TrendingUp
               size={48}
               strokeWidth={1}
-              color="#cbd5e1"
+              color="#1e293b"
               style={{ marginBottom: '16px' }}
             />
             <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '8px' }}>
@@ -345,11 +345,11 @@ export default function PatternInsightsPanel({
                       onClick={() => handleViewTransactions(pattern._id)}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = '#f8fafc';
-                        e.currentTarget.style.borderColor = '#cbd5e1';
+                        e.currentTarget.style.borderColor = '#1e293b';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = '#ffffff';
-                        e.currentTarget.style.borderColor = '#e2e8f0';
+                        e.currentTarget.style.borderColor = '#0f172a';
                       }}
                     >
                       <Eye size={14} strokeWidth={1.5} />

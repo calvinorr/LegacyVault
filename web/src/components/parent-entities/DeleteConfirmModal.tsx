@@ -233,7 +233,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               padding: '12px',
               backgroundColor: '#f8fafc',
               borderRadius: '8px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #0f172a',
               marginBottom: '16px'
             }}
           >
@@ -267,7 +267,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               style={{
                 flex: 1,
                 padding: '12px 20px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '500',

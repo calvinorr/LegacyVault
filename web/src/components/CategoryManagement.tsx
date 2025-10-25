@@ -119,7 +119,7 @@ const CategoryManagement: React.FC = () => {
 
   const sectionStyle = {
     backgroundColor: '#ffffff',
-    border: '1px solid #f1f5f9',
+    border: '1px solid #0f172a',
     borderRadius: '16px',
     padding: '32px',
     marginBottom: '24px',
@@ -166,7 +166,7 @@ const CategoryManagement: React.FC = () => {
     ...buttonStyle,
     backgroundColor: '#ffffff',
     color: '#1e293b',
-    border: '1px solid #e2e8f0'
+    border: '1px solid #0f172a'
   };
 
   const dangerButtonStyle = {
@@ -185,7 +185,7 @@ const CategoryManagement: React.FC = () => {
 
   const statCardStyle = {
     backgroundColor: '#f8fafc',
-    border: '1px solid #f1f5f9',
+    border: '1px solid #0f172a',
     borderRadius: '16px',
     padding: '24px',
     textAlign: 'center' as const
@@ -224,7 +224,7 @@ const CategoryManagement: React.FC = () => {
             justifyContent: 'center',
             width: '64px',
             height: '64px',
-            backgroundColor: '#f1f5f9',
+            backgroundColor: '#0f172a',
             borderRadius: '16px',
             margin: '0 auto 24px'
           }}>
@@ -505,7 +505,7 @@ const CategoryManagement: React.FC = () => {
             <div style={{
               ...statCardStyle,
               backgroundColor: '#f8fafc',
-              border: '1px solid #f1f5f9'
+              border: '1px solid #0f172a'
             }}>
               <div style={{
                 fontSize: '28px',
@@ -588,7 +588,7 @@ const CategoryManagement: React.FC = () => {
               justifyContent: 'center',
               width: '64px',
               height: '64px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: '#0f172a',
               borderRadius: '16px',
               margin: '0 auto 24px'
             }}>

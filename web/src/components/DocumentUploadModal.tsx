@@ -256,7 +256,7 @@ export default function DocumentUploadModal({
             padding: '12px 16px',
             backgroundColor: '#f8fafc',
             borderRadius: '8px',
-            border: '1px solid #e2e8f0'
+            border: '1px solid #0f172a'
           }}>
             <div style={{ fontSize: '14px', color: '#1e293b', marginBottom: '4px' }}>
               {selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} selected
@@ -404,12 +404,12 @@ export default function DocumentUploadModal({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
-                        backgroundColor: '#f1f5f9',
+                        backgroundColor: '#0f172a',
                         color: '#475569',
                         padding: '4px 8px',
                         borderRadius: '16px',
                         fontSize: '13px',
-                        border: '1px solid #e2e8f0'
+                        border: '1px solid #0f172a'
                       }}
                     >
                       {tag}

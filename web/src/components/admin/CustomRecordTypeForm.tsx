@@ -136,7 +136,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '24px',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid #0f172a',
             position: 'sticky',
             top: 0,
             backgroundColor: '#ffffff',
@@ -234,7 +234,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                 style={{
                   width: '100%',
                   padding: '10px 12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -245,7 +245,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                   e.target.style.borderColor = '#0369a1';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0';
+                  e.target.style.borderColor = '#0f172a';
                 }}
               />
               <p
@@ -284,7 +284,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                 style={{
                   width: '100%',
                   padding: '10px 12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -295,7 +295,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                   e.currentTarget.style.borderColor = '#0369a1';
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.borderColor = '#0f172a';
                 }}
               >
                 <option value="">Select an icon</option>
@@ -342,7 +342,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                     height: '40px',
                     backgroundColor: formData.color,
                     borderRadius: '8px',
-                    border: '2px solid #e2e8f0',
+                    border: '2px solid #0f172a',
                   }}
                 />
                 <input
@@ -354,7 +354,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                   style={{
                     flex: 1,
                     padding: '10px 12px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #0f172a',
                     borderRadius: '8px',
                     fontSize: '14px',
                     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -365,7 +365,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                     e.target.style.borderColor = '#0369a1';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = '#e2e8f0';
+                    e.target.style.borderColor = '#0f172a';
                   }}
                 />
               </div>
@@ -393,7 +393,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                       border:
                         formData.color === color
                           ? '3px solid #0f172a'
-                          : '1px solid #e2e8f0',
+                          : '1px solid #0f172a',
                       borderRadius: '8px',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
@@ -434,7 +434,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                   width: '100%',
                   minHeight: '80px',
                   padding: '10px 12px',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #0f172a',
                   borderRadius: '8px',
                   fontSize: '14px',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
@@ -446,7 +446,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                   e.target.style.borderColor = '#0369a1';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0';
+                  e.target.style.borderColor = '#0f172a';
                 }}
               />
               <p
@@ -469,7 +469,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               justifyContent: 'flex-end',
               gap: '12px',
               padding: '16px 24px',
-              borderTop: '1px solid #e2e8f0',
+              borderTop: '1px solid #0f172a',
               backgroundColor: '#f8fafc',
               position: 'sticky',
               bottom: 0,
@@ -482,7 +482,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                 padding: '10px 20px',
                 backgroundColor: '#ffffff',
                 color: '#0f172a',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '500',
@@ -491,7 +491,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f1f5f9';
+                e.currentTarget.style.backgroundColor = '#0f172a';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#ffffff';
@@ -504,7 +504,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               disabled={isSaving}
               style={{
                 padding: '10px 20px',
-                backgroundColor: isSaving ? '#cbd5e1' : '#0f172a',
+                backgroundColor: isSaving ? '#1e293b' : '#0f172a',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',

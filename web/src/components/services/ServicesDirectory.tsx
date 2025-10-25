@@ -93,7 +93,7 @@ export default function ServicesDirectory() {
               width: '100%',
               padding: '14px 16px 14px 48px',
               borderRadius: '12px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #0f172a',
               fontSize: '15px',
               fontFamily: 'inherit',
               backgroundColor: '#ffffff',
@@ -105,7 +105,7 @@ export default function ServicesDirectory() {
               e.currentTarget.style.outline = 'none';
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = '#e2e8f0';
+              e.currentTarget.style.borderColor = '#0f172a';
             }}
           />
         </div>
@@ -131,7 +131,7 @@ export default function ServicesDirectory() {
               width: '100%',
               padding: '14px 16px 14px 48px',
               borderRadius: '12px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #0f172a',
               fontSize: '15px',
               fontFamily: 'inherit',
               backgroundColor: '#ffffff',
@@ -200,7 +200,7 @@ export default function ServicesDirectory() {
               display: 'inline-block',
               width: '40px',
               height: '40px',
-              border: '3px solid #f1f5f9',
+              border: '3px solid #0f172a',
               borderTopColor: '#0f172a',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite',
@@ -240,7 +240,7 @@ export default function ServicesDirectory() {
             textAlign: 'center',
             padding: '80px 20px',
             backgroundColor: '#f8fafc',
-            border: '1px solid #e2e8f0',
+            border: '1px solid #0f172a',
             borderRadius: '16px',
           }}
         >

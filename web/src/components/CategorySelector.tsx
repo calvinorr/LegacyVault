@@ -65,7 +65,7 @@ export default function CategorySelector({
     padding: '12px 16px',
     paddingRight: '40px',
     borderRadius: '8px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #0f172a',
     fontSize: '15px',
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
     backgroundColor: '#ffffff',
@@ -95,7 +95,7 @@ export default function CategorySelector({
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
-    e.target.style.borderColor = '#e2e8f0';
+    e.target.style.borderColor = '#0f172a';
     e.target.style.boxShadow = 'none';
   };
 

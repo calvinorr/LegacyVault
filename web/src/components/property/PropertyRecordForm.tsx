@@ -141,7 +141,7 @@ const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose
     <div style={overlayStyle} onClick={onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div style={{ padding: '24px', borderBottom: '1px solid #f1f5f9' }}>
+        <div style={{ padding: '24px', borderBottom: '1px solid #0f172a' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#0f172a', margin: 0 }}>
               Add Property Record
@@ -314,7 +314,7 @@ const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose
               onClick={onClose}
               style={{
                 padding: '10px 20px',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #0f172a',
                 borderRadius: '8px',
                 backgroundColor: '#ffffff',
                 color: '#1e293b',

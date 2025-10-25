@@ -27,7 +27,7 @@ export const VehicleDetail: React.FC = () => {
     <div style={{
       backgroundColor: '#0f172a',
       minHeight: '100vh',
-      color: '#f1f5f9',
+      color: '#0f172a',
       fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
     }}>
       <ParentEntityDetail domain="vehicles" parentId={id} />

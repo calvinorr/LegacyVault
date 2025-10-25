@@ -73,7 +73,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
   const actionButtonStyle = {
     padding: "8px",
     fontSize: "14px",
-    border: "1px solid #e2e8f0",
+    border: "1px solid #0f172a",
     backgroundColor: "#ffffff",
     color: "#1e293b",
     borderRadius: "8px",
@@ -97,7 +97,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     marginLeft: "12px",
     fontWeight: '500' as const,
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-    border: '1px solid #f1f5f9'
+    border: '1px solid #0f172a'
   };
 
   if (!categories || categories.length === 0) {
@@ -193,12 +193,12 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                   }}
                   title="Add child category"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f1f5f9';
-                    e.currentTarget.style.borderColor = '#cbd5e1';
+                    e.currentTarget.style.backgroundColor = '#0f172a';
+                    e.currentTarget.style.borderColor = '#1e293b';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = '#ffffff';
-                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.borderColor = '#0f172a';
                   }}
                 >
                   <Plus size={14} strokeWidth={1.5} />
@@ -212,12 +212,12 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                   }}
                   title="Edit category"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f1f5f9';
-                    e.currentTarget.style.borderColor = '#cbd5e1';
+                    e.currentTarget.style.backgroundColor = '#0f172a';
+                    e.currentTarget.style.borderColor = '#1e293b';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = '#ffffff';
-                    e.currentTarget.style.borderColor = '#e2e8f0';
+                    e.currentTarget.style.borderColor = '#0f172a';
                   }}
                 >
                   <Edit size={14} strokeWidth={1.5} />

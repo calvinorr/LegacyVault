@@ -48,7 +48,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
     <div
       style={{
         backgroundColor: '#ffffff',
-        border: '1px solid #f1f5f9',
+        border: '1px solid #0f172a',
         borderRadius: '16px',
         padding: '24px',
         marginBottom: '24px',
@@ -154,7 +154,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
                           style={{
                             fontSize: '13px',
                             fontWeight: '500',
-                            color: month.imported ? '#0f172a' : '#cbd5e1',
+                            color: month.imported ? '#0f172a' : '#1e293b',
                           }}
                         >
                           {formatMonthDisplay(month.month)}
@@ -164,7 +164,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
                         {month.imported ? (
                           <CheckCircle size={16} color="#059669" strokeWidth={2} />
                         ) : (
-                          <Clock size={16} color="#cbd5e1" strokeWidth={1.5} />
+                          <Clock size={16} color="#1e293b" strokeWidth={1.5} />
                         )}
                       </div>
                     );
@@ -183,7 +183,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
             color: '#1e293b',
           }}
         >
-          <Calendar size={48} color="#cbd5e1" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
+          <Calendar size={48} color="#1e293b" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
           <p
             style={{
               fontSize: '14px',
