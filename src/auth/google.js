@@ -17,10 +17,11 @@ function configurePassport() {
 
   const User = require('../models/user');
 
+  // Note: OAuth credentials are validated on startup - no fallbacks for security
   passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'GOOGLE_CLIENT_ID',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'GOOGLE_CLIENT_SECRET',
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = (profile.emails && profile.emails[0] && profile.emails[0].value) || null;

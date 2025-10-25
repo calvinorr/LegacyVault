@@ -1,5 +1,10 @@
 // src/server.js
 require('dotenv').config();
+
+// Validate environment variables before starting server
+const { validateEnvironment } = require('./utils/validateEnv');
+validateEnvironment();
+
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -27,22 +32,67 @@ const domainConfigRouter = require('./routes/admin/domainConfig'); // Epic 6 - S
 const systemStatusRouter = require('./routes/admin/systemStatus'); // Epic 6 - Story 1.9
 const categoriesRouter = require('./legacy/routes/categories'); // Legacy categories for frontend
 
+// Rate limiting middleware
+const { authLimiter, apiLimiter, uploadLimiter, generalLimiter } = require('./middleware/rateLimiter');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Basic security middleware
-app.use(helmet());
+// Apply global rate limiter to all requests (generous limits)
+app.use(generalLimiter);
+
+// Enhanced security middleware with stricter configuration
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"], // Required for inline styles
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "data:"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true
+  },
+}));
+
+// CORS configuration - strict in production
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(',')
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || true,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  Blocked CORS request from unauthorized origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());
 
 // Cookie session (simple session for OAuth)
+// Note: SESSION_SECRET is validated on startup - no fallback for security
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.SESSION_SECRET || 'replace-me'],
+  keys: [process.env.SESSION_SECRET],
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+  httpOnly: true, // Prevent XSS attacks
+  sameSite: 'lax' // CSRF protection
 }));
 
 // Compatibility shim for Passport when using cookie-session:
@@ -98,58 +148,59 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Auth routes (mounted from src/auth/google)
-app.use('/auth', authRouter);
+// Auth routes with strict rate limiting (prevents brute force attacks)
+app.use('/auth', authLimiter, authRouter);
 
+// API routes with rate limiting
 // User management API (admin + self)
-app.use('/api/users', usersRouter);
+app.use('/api/users', apiLimiter, usersRouter);
 
-// Bank Import API (Story 2.3 - PRESERVED for migration)
-app.use('/api/import', importRouter);
+// Bank Import API with upload rate limiting (Story 2.3 - PRESERVED for migration)
+app.use('/api/import', uploadLimiter, importRouter);
 
 // Transactions API (Epic 5 - Transaction Ledger)
-app.use('/api/transactions', transactionsRouter);
+app.use('/api/transactions', apiLimiter, transactionsRouter);
 
 // Patterns API (Epic 5 - Pattern Intelligence)
-app.use('/api/patterns', patternsRouter);
+app.use('/api/patterns', apiLimiter, patternsRouter);
 
 // Detection Rules API
-app.use('/api/detection-rules', detectionRulesRouter);
+app.use('/api/detection-rules', apiLimiter, detectionRulesRouter);
 
 // Product Detection API
-app.use('/api/product-detection', productDetectionRouter);
+app.use('/api/product-detection', apiLimiter, productDetectionRouter);
 
 // Renewal Reminders API
-app.use('/api/renewal-reminders', renewalRemindersRouter);
+app.use('/api/renewal-reminders', apiLimiter, renewalRemindersRouter);
 
 // Renewals API (Story 1.8 - Enhanced Renewal Dashboard)
-app.use('/api/renewals', renewalsRouter);
+app.use('/api/renewals', apiLimiter, renewalsRouter);
 
 // Domain Records API (Story 1.1 - Foundation)
-app.use('/api/domains', domainsRouter);
+app.use('/api/domains', apiLimiter, domainsRouter);
 
-// Domain Documents API (Story 1.2 - GridFS Storage)
-app.use('/api/domains', domainDocumentsRouter); // For upload/list endpoints
-app.use('/api/domain-documents', domainDocumentsRouter); // For download/delete endpoints
+// Domain Documents API with upload rate limiting (Story 1.2 - GridFS Storage)
+app.use('/api/domains', uploadLimiter, domainDocumentsRouter); // For upload/list endpoints
+app.use('/api/domain-documents', uploadLimiter, domainDocumentsRouter); // For download/delete endpoints
 
 // Emergency API (Story 1.9 - Emergency View)
-app.use('/api/emergency', emergencyRouter);
+app.use('/api/emergency', apiLimiter, emergencyRouter);
 
 // Record Types API (Story 3.1 - Record Type Management)
-app.use('/api/record-types', recordTypesRouter);
+app.use('/api/record-types', apiLimiter, recordTypesRouter);
 
 // Parent Entity API v2 (Epic 6 - Story 1.2 - Hierarchical Domain Model)
-app.use('/api/v2', parentEntityRouter);
+app.use('/api/v2', apiLimiter, parentEntityRouter);
 
 // Child Record API v2 (Epic 6 - Story 1.3 - Child Record Management)
-app.use('/api/v2', childRecordRouter);
+app.use('/api/v2', apiLimiter, childRecordRouter);
 
 // Admin API (Epic 6)
-app.use('/api/admin', domainConfigRouter); // Story 1.4 - Admin Domain Configuration
-app.use('/api/admin', systemStatusRouter); // Story 1.9 - System Status & Health
+app.use('/api/admin', apiLimiter, domainConfigRouter); // Story 1.4 - Admin Domain Configuration
+app.use('/api/admin', apiLimiter, systemStatusRouter); // Story 1.9 - System Status & Health
 
 // Legacy Categories API (for frontend CategoriesProvider)
-app.use('/api/categories', categoriesRouter);
+app.use('/api/categories', apiLimiter, categoriesRouter);
 
 app.get('/login', (req, res) => {
   res.send('Login failed.'); // placeholder
