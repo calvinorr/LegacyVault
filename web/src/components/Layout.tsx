@@ -93,7 +93,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
   const navLinksStyle = {
     display: "flex",
     alignItems: "center",
-    gap: "4px",
+    gap: "8px",
   };
 
   const rightSideStyle = {

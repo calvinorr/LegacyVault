@@ -135,11 +135,7 @@ export default function AdminSystemStatus() {
 
   if (error || !status) {
     return (
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '24px 16px'
-      }}>
+      <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
         <div style={{
           backgroundColor: '#fef2f2',
           border: '1px solid #fecaca',
@@ -175,7 +171,7 @@ export default function AdminSystemStatus() {
   const configsHealthy = status.domainConfigs.missing.length === 0;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
+    <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1200px' }}>
       {/* Header */}
       <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>

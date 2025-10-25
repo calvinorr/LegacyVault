@@ -229,7 +229,7 @@ export default function TransactionHistory() {
   const containerStyle = {
     maxWidth: '1400px',
     margin: '0 auto',
-    padding: '40px 24px',
+    padding: '32px 16px',  // Standardized: equivalent to px-4 py-8 (16px horizontal, 32px vertical)
   };
 
   const buttonStyle = {
