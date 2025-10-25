@@ -136,7 +136,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
         </h2>
         <p style={{
           fontSize: '14px',
-          color: '#94a3b8',
+          color: '#334155',
           margin: 0
         }}>
           Manage contacts, finance, insurance, and other information
@@ -198,7 +198,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                   </p>
                   <p style={{
                     fontSize: '12px',
-                    color: '#94a3b8',
+                    color: '#334155',
                     margin: '4px 0 0 0'
                   }}>
                     {records.length} record{records.length !== 1 ? 's' : ''}
@@ -219,7 +219,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
               <ChevronDown
                 size={20}
                 style={{
-                  color: '#94a3b8',
+                  color: '#334155',
                   transition: 'transform 0.3s',
                   transform: isExpanded ? 'rotate(180deg)' : 'rotate(0)'
                 }}
@@ -239,7 +239,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                   <div style={{
                     padding: '32px 16px',
                     textAlign: 'center',
-                    color: '#64748b'
+                    color: '#1e293b'
                   }}>
                     <p style={{
                       fontSize: '14px',
@@ -283,7 +283,7 @@ export const ChildRecordList: React.FC<ChildRecordListProps> = ({
                       critical: { border: '#ef4444', bg: '#fef2f2', text: '#991b1b' },
                       important: { border: '#f97316', bg: '#fff7ed', text: '#92400e' },
                       upcoming: { border: '#3b82f6', bg: '#eff6ff', text: '#1e3a8a' },
-                      none: { border: '#cbd5e1', bg: '#f1f5f9', text: '#64748b' }
+                      none: { border: '#cbd5e1', bg: '#f1f5f9', text: '#1e293b' }
                     };
                     const colors = urgencyColors[urgency.level];
 

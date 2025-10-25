@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
         <h1 className="text-3xl font-semibold text-slate-900">
           Life Domains
         </h1>
-        <p className="text-slate-600 mt-2">
+        <p className="text-slate-800 mt-2">
           Organize your household information by life area
         </p>
       </header>

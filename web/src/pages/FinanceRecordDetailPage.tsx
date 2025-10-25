@@ -27,7 +27,7 @@ const FinanceRecordDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12 text-slate-500">Loading record...</div>
+        <div className="text-center py-12 text-slate-800">Loading record...</div>
       </div>
     );
   }
@@ -36,7 +36,7 @@ const FinanceRecordDetailPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">Finance record not found</p>
+          <p className="text-slate-800 mb-4">Finance record not found</p>
           <button
             onClick={() => navigate('/finance')}
             className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
@@ -53,7 +53,7 @@ const FinanceRecordDetailPage: React.FC = () => {
       {/* Breadcrumb */}
       <button
         onClick={() => navigate('/finance')}
-        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors"
+        className="flex items-center gap-2 text-slate-800 hover:text-slate-900 mb-6 transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Finance

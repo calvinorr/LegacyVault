@@ -126,7 +126,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     border: "1px solid #e2e8f0",
     borderRadius: "12px",
     backgroundColor: "#ffffff",
-    color: "#64748b",
+    color: "#1e293b",
     cursor: "pointer",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
@@ -143,7 +143,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     fontWeight: isActive ? "600" : "500",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     backgroundColor: isActive ? "#0f172a" : "transparent",
-    color: isActive ? "#ffffff" : "#64748b",
+    color: isActive ? "#ffffff" : "#1e293b",
     border: `1px solid ${isActive ? "#0f172a" : "transparent"}`,
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   });
@@ -283,7 +283,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                       textDecoration: "none",
                       fontSize: "14px",
                       fontWeight: "500",
-                      color: isPathActive("/bank-import") ? "#0f172a" : "#64748b",
+                      color: isPathActive("/bank-import") ? "#0f172a" : "#1e293b",
                       backgroundColor: isPathActive("/bank-import") ? "#f8fafc" : "transparent",
                       transition: "all 0.2s ease",
                     }}
@@ -304,7 +304,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                       textDecoration: "none",
                       fontSize: "14px",
                       fontWeight: "500",
-                      color: isPathActive("/transactions") ? "#0f172a" : "#64748b",
+                      color: isPathActive("/transactions") ? "#0f172a" : "#1e293b",
                       backgroundColor: isPathActive("/transactions") ? "#f8fafc" : "transparent",
                       transition: "all 0.2s ease",
                     }}
@@ -333,7 +333,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                       textDecoration: "none",
                       fontSize: "14px",
                       fontWeight: "500",
-                      color: isPathActive("/domains") ? "#0f172a" : "#64748b",
+                      color: isPathActive("/domains") ? "#0f172a" : "#1e293b",
                       backgroundColor: isPathActive("/domains") ? "#f8fafc" : "transparent",
                       transition: "all 0.2s ease",
                     }}
@@ -354,7 +354,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                       textDecoration: "none",
                       fontSize: "14px",
                       fontWeight: "500",
-                      color: isPathActive("/admin/system-status") ? "#0f172a" : "#64748b",
+                      color: isPathActive("/admin/system-status") ? "#0f172a" : "#1e293b",
                       backgroundColor: isPathActive("/admin/system-status") ? "#f8fafc" : "transparent",
                       transition: "all 0.2s ease",
                     }}
@@ -375,7 +375,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
         {user ? (
           <>
             <div style={userInfoStyle}>
-              <User size={16} color="#64748b" strokeWidth={1.5} />
+              <User size={16} color="#1e293b" strokeWidth={1.5} />
               <span style={userNameStyle}>{user.displayName}</span>
             </div>
             <button onClick={onSignOut} style={signOutButtonStyle}>

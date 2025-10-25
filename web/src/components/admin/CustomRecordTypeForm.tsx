@@ -157,7 +157,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
             <p
               style={{
                 fontSize: '13px',
-                color: '#64748b',
+                color: '#1e293b',
                 margin: '4px 0 0 0',
               }}
             >
@@ -170,7 +170,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: '#64748b',
+              color: '#1e293b',
               padding: '4px',
               display: 'flex',
               alignItems: 'center',
@@ -181,7 +181,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               e.currentTarget.style.color = '#0f172a';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#64748b';
+              e.currentTarget.style.color = '#1e293b';
             }}
           >
             <X size={20} />
@@ -251,7 +251,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               <p
                 style={{
                   fontSize: '12px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   margin: '4px 0 0 0',
                 }}
               >
@@ -308,7 +308,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               <p
                 style={{
                   fontSize: '12px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   margin: '4px 0 0 0',
                 }}
               >
@@ -452,7 +452,7 @@ const CustomRecordTypeForm: React.FC<CustomRecordTypeFormProps> = ({ onClose }) 
               <p
                 style={{
                   fontSize: '12px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   margin: '4px 0 0 0',
                 }}
               >

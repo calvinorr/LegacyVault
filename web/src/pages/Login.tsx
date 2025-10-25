@@ -196,7 +196,7 @@ export default function Login(): JSX.Element {
             <p
               style={{
                 fontSize: "16px",
-                color: "#94a3b8",
+                color: "#334155",
                 margin: "0 auto",
                 lineHeight: "1.6",
                 maxWidth: "600px",
@@ -351,7 +351,7 @@ export default function Login(): JSX.Element {
                 <p
                   style={{
                     fontSize: "12px",
-                    color: "#94a3b8",
+                    color: "#334155",
                     margin: 0,
                     lineHeight: "1.5",
                   }}
@@ -438,7 +438,7 @@ export default function Login(): JSX.Element {
                   <p
                     style={{
                       fontSize: "13px",
-                      color: "#94a3b8",
+                      color: "#334155",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
@@ -461,7 +461,7 @@ export default function Login(): JSX.Element {
             <p
               style={{
                 fontSize: "13px",
-                color: "#64748b",
+                color: "#1e293b",
                 margin: 0,
               }}
             >

@@ -27,7 +27,7 @@ export default function Categories() {
 
   const descriptionStyle = {
     fontSize: "16px",
-    color: "#64748b",
+    color: "#1e293b",
     marginBottom: "32px",
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
     lineHeight: "1.6",

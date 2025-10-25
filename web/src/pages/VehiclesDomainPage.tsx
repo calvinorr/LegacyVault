@@ -54,7 +54,7 @@ const VehiclesDomainPage: React.FC = () => {
             </div>
             <p style={{
               fontSize: '15px',
-              color: '#64748b',
+              color: '#1e293b',
               margin: 0,
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             }}>
@@ -71,7 +71,7 @@ const VehiclesDomainPage: React.FC = () => {
 
       {/* Content */}
       {isLoading ? (
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: '#1e293b' }}>
           Loading vehicles...
         </div>
       ) : !records || records.length === 0 ? (
@@ -85,7 +85,7 @@ const VehiclesDomainPage: React.FC = () => {
           <Car size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
           <p style={{
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             marginBottom: '20px',
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
           }}>

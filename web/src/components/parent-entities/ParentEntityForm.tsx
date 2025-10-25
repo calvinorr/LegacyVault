@@ -258,7 +258,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
               borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
-              color: '#64748b'
+              color: '#1e293b'
             }}
           >
             <X size={24} />
@@ -328,11 +328,11 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                     e.currentTarget.style.backgroundColor = '#f8fafc';
                   }}
                 >
-                  <Upload size={40} color="#94a3b8" style={{ margin: '0 auto 12px' }} />
-                  <p style={{ fontSize: '14px', color: '#64748b', margin: '0 0 4px 0', fontWeight: '500' }}>
+                  <Upload size={40} color="#334155" style={{ margin: '0 auto 12px' }} />
+                  <p style={{ fontSize: '14px', color: '#1e293b', margin: '0 0 4px 0', fontWeight: '500' }}>
                     Click to upload image
                   </p>
-                  <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0 }}>
+                  <p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>
                     PNG, JPG, GIF up to 5MB
                   </p>
                 </div>
@@ -597,7 +597,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                   </select>
                   <p style={{
                     fontSize: '13px',
-                    color: '#64748b',
+                    color: '#1e293b',
                     marginTop: '6px',
                     fontStyle: 'italic'
                   }}>
@@ -626,7 +626,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                   </select>
                   <p style={{
                     fontSize: '13px',
-                    color: '#64748b',
+                    color: '#1e293b',
                     marginTop: '6px',
                     fontStyle: 'italic'
                   }}>
@@ -672,7 +672,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                 fontSize: '14px',
                 fontWeight: '500',
                 backgroundColor: '#ffffff',
-                color: '#64748b',
+                color: '#1e293b',
                 cursor: 'pointer',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
               }}
@@ -688,7 +688,7 @@ const ParentEntityForm: React.FC<ParentEntityFormProps> = ({
                 borderRadius: '8px',
                 fontSize: '14px',
                 fontWeight: '500',
-                backgroundColor: isSubmitting || isUploadingImage ? '#94a3b8' : '#0f172a',
+                backgroundColor: isSubmitting || isUploadingImage ? '#334155' : '#0f172a',
                 color: '#ffffff',
                 cursor: isSubmitting || isUploadingImage ? 'not-allowed' : 'pointer',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'

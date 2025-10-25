@@ -72,7 +72,7 @@ const RecordTypeManager: React.FC = () => {
   const collapseAll = () => setExpandedDomains(new Set());
 
   if (loading) {
-    return <div className="text-slate-600">Loading record types...</div>;
+    return <div className="text-slate-800">Loading record types...</div>;
   }
 
   if (error) {
@@ -84,20 +84,20 @@ const RecordTypeManager: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold">Record Type Management</h3>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-800">
             Manage the types of records available for each life domain
           </p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={collapseAll}
-            className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="px-3 py-2 text-sm text-slate-800 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
           >
             Collapse All
           </button>
           <button
             onClick={expandAll}
-            className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="px-3 py-2 text-sm text-slate-800 hover:text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50"
           >
             Expand All
           </button>

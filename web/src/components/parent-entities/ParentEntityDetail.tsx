@@ -89,7 +89,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '400px',
-        color: '#64748b'
+        color: '#1e293b'
       }}>
         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
         <p>Loading {getDomainLabel(domain).toLowerCase()}...</p>
@@ -145,7 +145,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
         gap: '8px',
         marginBottom: '24px',
         fontSize: '14px',
-        color: '#64748b'
+        color: '#1e293b'
       }}>
         <Link
           to={getDomainRoute(domain)}
@@ -208,7 +208,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
             </h1>
             <p style={{
               fontSize: '14px',
-              color: '#94a3b8',
+              color: '#334155',
               margin: 0
             }}>
               {getDomainLabel(parentEntity.domainType)} • {childRecordCount} record{childRecordCount !== 1 ? 's' : ''}
@@ -301,7 +301,7 @@ export const ParentEntityDetail: React.FC<ParentEntityDetailProps> = ({
             >
               <p style={{
                 fontSize: '12px',
-                color: '#94a3b8',
+                color: '#334155',
                 margin: '0 0 8px 0',
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'

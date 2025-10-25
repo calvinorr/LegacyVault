@@ -37,7 +37,7 @@ const RecordTypeList: React.FC<RecordTypeListProps> = ({
         <div className="flex items-center gap-3">
           {/* Chevron Icon */}
           <span
-            className="text-slate-600 transition-transform duration-200"
+            className="text-slate-800 transition-transform duration-200"
             style={{ transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)' }}
           >
             ▼
@@ -45,7 +45,7 @@ const RecordTypeList: React.FC<RecordTypeListProps> = ({
           {/* Domain Name with Count Badge */}
           <h4 className="font-semibold text-base text-slate-900">
             {domain}
-            <span className="ml-2 text-slate-500 font-normal text-sm">
+            <span className="ml-2 text-slate-800 font-normal text-sm">
               ({recordCount})
             </span>
           </h4>
@@ -58,7 +58,7 @@ const RecordTypeList: React.FC<RecordTypeListProps> = ({
           {recordTypes.length === 0 ? (
             // Empty State with Inline Add Button
             <div className="flex items-center justify-between py-3 px-4 bg-slate-50 rounded-lg border border-dashed border-slate-300">
-              <p className="text-sm text-slate-400 italic">
+              <p className="text-sm text-slate-700 italic">
                 No record types defined. Add your first {domain.toLowerCase()} type...
               </p>
               <button

@@ -27,7 +27,7 @@ const EmergencyRecordCard: React.FC<EmergencyRecordCardProps> = ({ record }) => 
           <h3 className="text-xl font-semibold text-slate-900 mb-1">
             {record.name}
           </h3>
-          <p className="text-sm text-slate-600 capitalize">
+          <p className="text-sm text-slate-800 capitalize">
             {record.recordType.replace(/-/g, ' ')}
           </p>
         </div>
@@ -36,7 +36,7 @@ const EmergencyRecordCard: React.FC<EmergencyRecordCardProps> = ({ record }) => 
           className="p-2 rounded-lg hover:bg-red-100 transition no-print"
           aria-label="View full details"
         >
-          <ExternalLink className="w-5 h-5 text-slate-600" />
+          <ExternalLink className="w-5 h-5 text-slate-800" />
         </button>
       </div>
 
@@ -71,7 +71,7 @@ const EmergencyRecordCard: React.FC<EmergencyRecordCardProps> = ({ record }) => 
               aria-label={copied ? 'Copied!' : 'Copy notes'}
               title={copied ? 'Copied!' : 'Copy notes'}
             >
-              <Copy className={`w-4 h-4 ${copied ? 'text-green-600' : 'text-slate-600'}`} />
+              <Copy className={`w-4 h-4 ${copied ? 'text-green-600' : 'text-slate-800'}`} />
             </button>
           </div>
         </div>

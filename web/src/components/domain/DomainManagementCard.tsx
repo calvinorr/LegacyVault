@@ -42,14 +42,14 @@ const DomainManagementCard: React.FC<DomainManagementCardProps> = ({
             <h3 className="text-base font-semibold text-slate-900 mb-0.5">
               {domain.name}
             </h3>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-800">
               {recordTypes.length} {recordTypes.length === 1 ? 'type' : 'types'}
             </p>
           </div>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100
+            className="p-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100
                      rounded-lg transition-all shrink-0"
             title={isExpanded ? "Close" : "Manage record types"}
           >
@@ -81,7 +81,7 @@ const DomainManagementCard: React.FC<DomainManagementCardProps> = ({
             </div>
 
             {recordTypes.length === 0 ? (
-              <div className="text-center py-6 text-slate-500 text-sm">
+              <div className="text-center py-6 text-slate-800 text-sm">
                 No record types yet. Click Add to create one.
               </div>
             ) : (
@@ -98,7 +98,7 @@ const DomainManagementCard: React.FC<DomainManagementCardProps> = ({
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => onEdit(recordType)}
-                        className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100
+                        className="p-1.5 text-slate-800 hover:text-slate-900 hover:bg-slate-100
                                  rounded transition-all"
                         title="Edit"
                       >

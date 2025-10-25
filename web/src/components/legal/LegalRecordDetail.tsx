@@ -39,7 +39,7 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -62,7 +62,7 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-900">{record.name}</h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-slate-800 mt-1">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -70,7 +70,7 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <Pencil className="w-5 h-5" />
           </button>
@@ -79,7 +79,7 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
             className={`p-2 rounded-lg transition-colors ${
               showDeleteConfirm
                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'text-slate-600 hover:text-red-700 hover:bg-red-50'
+                : 'text-slate-800 hover:text-red-700 hover:bg-red-50'
             }`}
           >
             <Trash2 className="w-5 h-5" />
@@ -111,19 +111,19 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.documentType && (
                 <div>
-                  <p className="text-sm text-slate-600">Document Type</p>
+                  <p className="text-sm text-slate-800">Document Type</p>
                   <p className="text-slate-900 font-medium">{record.documentType}</p>
                 </div>
               )}
               {record.solicitorName && (
                 <div>
-                  <p className="text-sm text-slate-600">Solicitor Name</p>
+                  <p className="text-sm text-slate-800">Solicitor Name</p>
                   <p className="text-slate-900 font-medium">{record.solicitorName}</p>
                 </div>
               )}
               {record.referenceNumber && (
                 <div>
-                  <p className="text-sm text-slate-600">Reference Number</p>
+                  <p className="text-sm text-slate-800">Reference Number</p>
                   <p className="text-slate-900 font-medium">{record.referenceNumber}</p>
                 </div>
               )}
@@ -140,13 +140,13 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.dateCreated && (
                 <div>
-                  <p className="text-sm text-slate-600">Date Created</p>
+                  <p className="text-sm text-slate-800">Date Created</p>
                   <p className="text-slate-900 font-medium">{formatDate(record.dateCreated)}</p>
                 </div>
               )}
               {record.reviewDate && (
                 <div>
-                  <p className="text-sm text-slate-600">Review Date</p>
+                  <p className="text-sm text-slate-800">Review Date</p>
                   <p className="text-slate-900 font-medium">{formatDate(record.reviewDate)}</p>
                 </div>
               )}
@@ -162,7 +162,7 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-slate-600">Location</p>
+                <p className="text-sm text-slate-800">Location</p>
                 <p className="text-slate-900 font-medium">{record.location}</p>
               </div>
             </div>
@@ -178,13 +178,13 @@ const LegalRecordDetail: React.FC<LegalRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.contactPhone && (
                 <div>
-                  <p className="text-sm text-slate-600">Phone</p>
+                  <p className="text-sm text-slate-800">Phone</p>
                   <p className="text-slate-900">{record.contactPhone}</p>
                 </div>
               )}
               {record.contactEmail && (
                 <div>
-                  <p className="text-sm text-slate-600">Email</p>
+                  <p className="text-sm text-slate-800">Email</p>
                   <p className="text-slate-900">{record.contactEmail}</p>
                 </div>
               )}

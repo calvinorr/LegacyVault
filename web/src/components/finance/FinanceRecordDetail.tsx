@@ -48,7 +48,7 @@ const FinanceRecordDetail: React.FC<FinanceRecordDetailProps> = ({
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -71,7 +71,7 @@ const FinanceRecordDetail: React.FC<FinanceRecordDetailProps> = ({
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-900">{record.name}</h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-slate-800 mt-1">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -246,12 +246,12 @@ const FinanceRecordDetail: React.FC<FinanceRecordDetailProps> = ({
       {record.notes && (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-slate-900">Notes</h3>
-          <p className="text-slate-600 whitespace-pre-wrap">{record.notes}</p>
+          <p className="text-slate-800 whitespace-pre-wrap">{record.notes}</p>
         </div>
       )}
 
       {/* Metadata */}
-      <div className="mt-6 pt-6 border-t border-slate-200 text-sm text-slate-500">
+      <div className="mt-6 pt-6 border-t border-slate-200 text-sm text-slate-800">
         <p>Created: {formatDate(record.createdAt)}</p>
         {record.updatedAt !== record.createdAt && (
           <p>Updated: {formatDate(record.updatedAt)}</p>

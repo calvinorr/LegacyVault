@@ -29,7 +29,7 @@ const FinanceRecordCard: React.FC<FinanceRecordCardProps> = ({ record }) => {
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -53,7 +53,7 @@ const FinanceRecordCard: React.FC<FinanceRecordCardProps> = ({ record }) => {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -72,14 +72,14 @@ const FinanceRecordCard: React.FC<FinanceRecordCardProps> = ({ record }) => {
       <div className="space-y-2">
         {record.institution && (
           <div className="text-sm">
-            <span className="text-slate-600">Institution: </span>
+            <span className="text-slate-800">Institution: </span>
             <span className="text-slate-900 font-medium">{record.institution}</span>
           </div>
         )}
 
         {record.sortCode && (
           <div className="text-sm">
-            <span className="text-slate-600">Sort Code: </span>
+            <span className="text-slate-800">Sort Code: </span>
             <span className="text-slate-900 font-mono">
               {maskSortCode(record.sortCode)}
             </span>
@@ -88,7 +88,7 @@ const FinanceRecordCard: React.FC<FinanceRecordCardProps> = ({ record }) => {
 
         {record.accountNumber && (
           <div className="text-sm">
-            <span className="text-slate-600">Account: </span>
+            <span className="text-slate-800">Account: </span>
             <span className="text-slate-900 font-mono">
               {maskAccountNumber(record.accountNumber)}
             </span>
@@ -97,7 +97,7 @@ const FinanceRecordCard: React.FC<FinanceRecordCardProps> = ({ record }) => {
 
         {record.currentBalance !== undefined && record.currentBalance !== null && (
           <div className="text-sm">
-            <span className="text-slate-600">Balance: </span>
+            <span className="text-slate-800">Balance: </span>
             <span className="text-slate-900 font-semibold">
               {formatBalance(record.currentBalance)}
             </span>

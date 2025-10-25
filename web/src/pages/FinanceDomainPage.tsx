@@ -40,7 +40,7 @@ const FinanceDomainPage: React.FC = () => {
           </div>
           <div>
             <h1 className="text-3xl font-semibold text-slate-900 mb-2">Finance</h1>
-            <p className="text-slate-600">
+            <p className="text-slate-800">
               Manage bank accounts, savings, ISAs, and investments
             </p>
           </div>
@@ -56,10 +56,10 @@ const FinanceDomainPage: React.FC = () => {
       </header>
 
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">Loading accounts...</div>
+        <div className="text-center py-12 text-slate-800">Loading accounts...</div>
       ) : records?.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">
+          <p className="text-slate-800 mb-4">
             No finance records yet. Add your first account to get started.
           </p>
           <button

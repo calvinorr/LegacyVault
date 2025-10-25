@@ -127,7 +127,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               <p
                 style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   margin: 0
                 }}
               >
@@ -145,7 +145,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
-              color: '#64748b'
+              color: '#1e293b'
             }}
           >
             <X size={20} />
@@ -272,7 +272,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
                 fontSize: '14px',
                 fontWeight: '500',
                 backgroundColor: '#ffffff',
-                color: '#64748b',
+                color: '#1e293b',
                 cursor: deleteMutation.isPending ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s ease'
               }}

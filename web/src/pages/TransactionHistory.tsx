@@ -237,7 +237,7 @@ export default function TransactionHistory() {
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
-    color: '#64748b',
+    color: '#1e293b',
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: '500' as const,
@@ -302,7 +302,7 @@ export default function TransactionHistory() {
           <div
             style={{
               fontSize: '16px',
-              color: '#64748b',
+              color: '#1e293b',
               fontWeight: '400',
               margin: '0',
               lineHeight: '1.5',
@@ -441,7 +441,7 @@ export default function TransactionHistory() {
               <div style={{ position: 'relative' }}>
                 <Search
                   size={16}
-                  color="#64748b"
+                  color="#1e293b"
                   style={{ position: 'absolute', left: '12px', top: '12px' }}
                 />
                 <input
@@ -486,7 +486,7 @@ export default function TransactionHistory() {
               }}
             >
               {transactions.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '80px 20px', color: '#64748b' }}>
+                <div style={{ textAlign: 'center', padding: '80px 20px', color: '#1e293b' }}>
                   <List size={48} color="#cbd5e1" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />
                   <p style={{ fontSize: '16px', fontWeight: '500', margin: '0' }}>
                     {searchQuery || statusFilter !== 'all' || dateRangeStart || dateRangeEnd
@@ -543,9 +543,9 @@ export default function TransactionHistory() {
                             >
                               <td style={{ padding: '12px 16px' }}>
                                 {isExpanded ? (
-                                  <ChevronDown size={16} color="#64748b" />
+                                  <ChevronDown size={16} color="#1e293b" />
                                 ) : (
-                                  <ChevronRight size={16} color="#64748b" />
+                                  <ChevronRight size={16} color="#1e293b" />
                                 )}
                               </td>
                               <td style={{ padding: '12px 16px', color: '#334155' }}>{formatDate(transaction.date)}</td>
@@ -606,7 +606,7 @@ export default function TransactionHistory() {
                                         borderRadius: '8px',
                                         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                                         fontSize: '11px',
-                                        color: '#64748b',
+                                        color: '#1e293b',
                                       }}
                                     >
                                       <strong style={{ display: 'block', marginBottom: '4px' }}>Original PDF Text:</strong>
@@ -630,7 +630,7 @@ export default function TransactionHistory() {
                                             Recurring Pattern Detected
                                           </strong>
                                         </div>
-                                        <div style={{ fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
+                                        <div style={{ fontSize: '13px', color: '#1e293b', lineHeight: '1.5' }}>
                                           This transaction matches a pattern with {Math.round(transaction.patternConfidence * 100)}% confidence.
                                           {transaction.patternConfidence >= 0.85 && ' This is a strong match - likely a recurring payment.'}
                                           {transaction.patternConfidence >= 0.65 && transaction.patternConfidence < 0.85 && ' This appears to be a recurring payment.'}
@@ -757,7 +757,7 @@ export default function TransactionHistory() {
                         alignItems: 'center',
                       }}
                     >
-                      <div style={{ fontSize: '14px', color: '#64748b' }}>
+                      <div style={{ fontSize: '14px', color: '#1e293b' }}>
                         Page {page} of {totalPages}
                       </div>
                       <div style={{ display: 'flex', gap: '8px' }}>

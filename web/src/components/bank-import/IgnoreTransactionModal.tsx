@@ -141,7 +141,7 @@ export default function IgnoreTransactionModal({
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
-    color: '#64748b',
+    color: '#1e293b',
     cursor: submitting ? 'not-allowed' : 'pointer',
     fontSize: '14px',
     fontWeight: '500' as const,
@@ -174,10 +174,10 @@ export default function IgnoreTransactionModal({
             <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#0f172a', margin: '0 0 4px 0' }}>
               Ignore Transaction
             </h2>
-            <div style={{ fontSize: '14px', color: '#64748b' }}>
+            <div style={{ fontSize: '14px', color: '#1e293b' }}>
               {formatCurrency(transaction.amount)} · {formatDate(transaction.date)}
             </div>
-            <div style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>
+            <div style={{ fontSize: '13px', color: '#1e293b', marginTop: '4px' }}>
               {transaction.description}
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function IgnoreTransactionModal({
               border: 'none',
               cursor: 'pointer',
               padding: '4px',
-              color: '#64748b',
+              color: '#1e293b',
             }}
           >
             <X size={20} strokeWidth={1.5} />
@@ -337,7 +337,7 @@ export default function IgnoreTransactionModal({
                     <div style={{ fontSize: '14px', fontWeight: '500', color: '#0f172a', marginBottom: '4px' }}>
                       Always ignore transactions from "{getPayeeName()}"
                     </div>
-                    <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.4' }}>
+                    <div style={{ fontSize: '12px', color: '#1e293b', lineHeight: '1.4' }}>
                       Future imports will automatically ignore transactions matching this payee
                     </div>
                   </div>

@@ -69,7 +69,7 @@ const RenewalItem: React.FC<RenewalItemProps> = ({ renewal, urgency }) => {
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <Icon className={`w-5 h-5 ${textStyle}`} />
-          <span className="text-xs font-medium text-slate-600 uppercase">
+          <span className="text-xs font-medium text-slate-800 uppercase">
             {domainLabel}
           </span>
         </div>
@@ -89,7 +89,7 @@ const RenewalItem: React.FC<RenewalItemProps> = ({ renewal, urgency }) => {
       </h3>
 
       {renewal.recordType && (
-        <p className="text-xs text-slate-500 mb-3 capitalize">
+        <p className="text-xs text-slate-800 mb-3 capitalize">
           {renewal.recordType.replace(/-/g, ' ')}
         </p>
       )}
@@ -98,7 +98,7 @@ const RenewalItem: React.FC<RenewalItemProps> = ({ renewal, urgency }) => {
         <p className={`text-sm font-medium ${textStyle}`}>
           {formatRelativeDate(renewal.renewalDate)}
         </p>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-800">
           {formatUKDate(renewal.renewalDate)}
         </p>
       </div>

@@ -154,7 +154,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: loading ? "#94a3b8" : "#0f172a",
+    backgroundColor: loading ? "#334155" : "#0f172a",
     color: "#ffffff",
     border: "1px solid transparent",
   };
@@ -162,7 +162,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const secondaryButtonStyle = {
     ...buttonStyle,
     backgroundColor: "#ffffff",
-    color: "#64748b",
+    color: "#1e293b",
     border: "1px solid #e2e8f0",
   };
 
@@ -201,7 +201,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             <span
               style={{ 
                 fontSize: "14px", 
-                color: "#64748b", 
+                color: "#1e293b", 
                 fontWeight: "400",
                 marginTop: '2px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'

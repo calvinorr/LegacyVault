@@ -106,7 +106,7 @@ const AdminDomains: React.FC = () => {
             <p
               style={{
                 fontSize: '14px',
-                color: '#64748b',
+                color: '#1e293b',
                 margin: '0',
                 marginTop: '8px',
               }}

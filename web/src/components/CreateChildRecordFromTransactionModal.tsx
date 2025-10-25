@@ -290,18 +290,18 @@ export default function CreateChildRecordFromTransactionModal({
             <h2 style={{ fontSize: "22px", fontWeight: "600", color: "#0f172a", margin: 0 }}>
               Create Record from Transaction
             </h2>
-            <button onClick={handleClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: "6px" }}>
+            <button onClick={handleClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#1e293b", padding: "6px" }}>
               <X size={22} strokeWidth={1.5} />
             </button>
           </div>
 
           {/* Transaction Preview */}
           <div style={{ backgroundColor: "#f8fafc", padding: "14px", borderRadius: "10px", border: "1px solid #f1f5f9" }}>
-            <div style={{ fontSize: "12px", color: "#64748b", marginBottom: "4px" }}>Transaction:</div>
+            <div style={{ fontSize: "12px", color: "#1e293b", marginBottom: "4px" }}>Transaction:</div>
             <div style={{ fontWeight: "600", color: "#0f172a", marginBottom: "2px" }}>
               {transaction.description} • £{Math.abs(transaction.amount).toFixed(2)}
             </div>
-            <div style={{ fontSize: "11px", color: "#94a3b8" }}>
+            <div style={{ fontSize: "11px", color: "#334155" }}>
               {new Date(transaction.date).toLocaleDateString('en-GB')}
             </div>
           </div>
@@ -334,7 +334,7 @@ export default function CreateChildRecordFromTransactionModal({
             <div style={{ marginBottom: "20px" }}>
               <label style={labelStyle}>Which {selectedDomain}? *</label>
               {parentEntitiesLoading ? (
-                <div style={{ ...inputStyle, color: "#94a3b8" }}>Loading...</div>
+                <div style={{ ...inputStyle, color: "#334155" }}>Loading...</div>
               ) : parentEntities.length === 0 ? (
                 <div style={{ ...inputStyle, color: "#dc2626", backgroundColor: "#fef2f2" }}>
                   No {selectedDomain.toLowerCase()}s found. Create one first in the {selectedDomain} page.
@@ -413,7 +413,7 @@ export default function CreateChildRecordFromTransactionModal({
 
           {/* Buttons */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", paddingTop: "20px", borderTop: "1px solid #f1f5f9" }}>
-            <button type="button" onClick={handleClose} disabled={loading} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "500", cursor: "pointer", border: "1px solid #e2e8f0", backgroundColor: "#ffffff", color: "#64748b", fontFamily: "inherit" }}>
+            <button type="button" onClick={handleClose} disabled={loading} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "500", cursor: "pointer", border: "1px solid #e2e8f0", backgroundColor: "#ffffff", color: "#1e293b", fontFamily: "inherit" }}>
               Cancel
             </button>
             <button type="submit" disabled={loading || !selectedDomain || !selectedParentId || !selectedRecordType || !name} style={{ padding: "10px 20px", borderRadius: "10px", fontSize: "14px", fontWeight: "600", cursor: loading || !name ? "not-allowed" : "pointer", border: "none", backgroundColor: "#0f172a", color: "#ffffff", fontFamily: "inherit", opacity: loading || !name ? 0.5 : 1 }}>

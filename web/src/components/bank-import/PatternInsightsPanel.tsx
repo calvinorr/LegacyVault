@@ -83,9 +83,9 @@ export default function PatternInsightsPanel({
       monthly: '#8b5cf6',
       quarterly: '#ec4899',
       annually: '#f59e0b',
-      irregular: '#64748b',
+      irregular: '#1e293b',
     };
-    return colors[frequency] || '#64748b';
+    return colors[frequency] || '#1e293b';
   };
 
   const getConfidenceColor = (confidence: number) => {
@@ -165,7 +165,7 @@ export default function PatternInsightsPanel({
     borderRadius: '8px',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
-    color: '#64748b',
+    color: '#1e293b',
     cursor: 'pointer',
     fontSize: '13px',
     fontWeight: '500' as const,
@@ -200,7 +200,7 @@ export default function PatternInsightsPanel({
               border: 'none',
               cursor: 'pointer',
               padding: '4px',
-              color: '#64748b',
+              color: '#1e293b',
             }}
           >
             ×
@@ -211,7 +211,7 @@ export default function PatternInsightsPanel({
       {/* Content */}
       <div style={contentStyle}>
         {loading && (
-          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#64748b' }}>
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#1e293b' }}>
             <div style={{ fontSize: '14px' }}>Loading patterns...</div>
           </div>
         )}
@@ -240,7 +240,7 @@ export default function PatternInsightsPanel({
             style={{
               textAlign: 'center',
               padding: '40px 20px',
-              color: '#64748b',
+              color: '#1e293b',
             }}
           >
             <TrendingUp
@@ -252,7 +252,7 @@ export default function PatternInsightsPanel({
             <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '8px' }}>
               No Patterns Detected Yet
             </div>
-            <div style={{ fontSize: '13px', lineHeight: '1.5', color: '#94a3b8' }}>
+            <div style={{ fontSize: '13px', lineHeight: '1.5', color: '#334155' }}>
               Import more bank statements to help us detect recurring payments and subscriptions.
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function PatternInsightsPanel({
 
         {!loading && !error && patterns.length > 0 && (
           <>
-            <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px' }}>
+            <div style={{ fontSize: '13px', color: '#1e293b', marginBottom: '16px' }}>
               Top {patterns.length} detected recurring patterns
             </div>
 
@@ -307,7 +307,7 @@ export default function PatternInsightsPanel({
                   </div>
 
                   {/* Transaction Count */}
-                  <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '13px', color: '#1e293b', marginBottom: '8px' }}>
                     Found in {pattern.occurrences} import{pattern.occurrences !== 1 ? 's' : ''}
                   </div>
 
@@ -318,7 +318,7 @@ export default function PatternInsightsPanel({
 
                   {/* Suggested Domain */}
                   {pattern.suggestedDomain && (
-                    <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>
+                    <div style={{ fontSize: '13px', color: '#1e293b', marginBottom: '12px' }}>
                       {getDomainLabel(pattern.suggestedDomain, pattern.suggestedRecordType)}
                     </div>
                   )}

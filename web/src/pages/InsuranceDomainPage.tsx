@@ -20,7 +20,7 @@ const InsuranceDomainPage: React.FC = () => {
             <h1 className="text-3xl font-semibold text-slate-900 mb-2">
               Insurance
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-800">
               Manage life, income protection, critical illness cover
             </p>
           </div>
@@ -36,12 +36,12 @@ const InsuranceDomainPage: React.FC = () => {
       </header>
 
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-slate-800">
           Loading records...
         </div>
       ) : records?.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">
+          <p className="text-slate-800 mb-4">
             No insurance records yet. Add your first record to get started.
           </p>
           <button

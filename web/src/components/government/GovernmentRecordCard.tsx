@@ -27,7 +27,7 @@ const GovernmentRecordCard: React.FC<GovernmentRecordCardProps> = ({ record }) =
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -67,7 +67,7 @@ const GovernmentRecordCard: React.FC<GovernmentRecordCardProps> = ({ record }) =
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -86,14 +86,14 @@ const GovernmentRecordCard: React.FC<GovernmentRecordCardProps> = ({ record }) =
       <div className="space-y-2">
         {record.referenceNumber && (
           <div className="text-sm">
-            <span className="text-slate-600">Reference: </span>
+            <span className="text-slate-800">Reference: </span>
             <span className="text-slate-900 font-medium">{record.referenceNumber}</span>
           </div>
         )}
 
         {record.expiryDate && (
           <div className="text-sm">
-            <span className="text-slate-600">Expiry: </span>
+            <span className="text-slate-800">Expiry: </span>
             <span
               className={`font-medium ${
                 isExpired(record.expiryDate)
@@ -120,7 +120,7 @@ const GovernmentRecordCard: React.FC<GovernmentRecordCardProps> = ({ record }) =
 
         {record.niNumber && (
           <div className="text-sm">
-            <span className="text-slate-600">NI Number: </span>
+            <span className="text-slate-800">NI Number: </span>
             <span className="text-slate-900 font-medium">{record.niNumber}</span>
           </div>
         )}

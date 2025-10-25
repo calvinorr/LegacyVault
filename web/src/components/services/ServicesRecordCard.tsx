@@ -25,7 +25,7 @@ const ServicesRecordCard: React.FC<ServicesRecordCardProps> = ({ record }) => {
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -54,7 +54,7 @@ const ServicesRecordCard: React.FC<ServicesRecordCardProps> = ({ record }) => {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -73,21 +73,21 @@ const ServicesRecordCard: React.FC<ServicesRecordCardProps> = ({ record }) => {
       <div className="space-y-2">
         {record.serviceProvider && (
           <div className="text-sm">
-            <span className="text-slate-600">Provider: </span>
+            <span className="text-slate-800">Provider: </span>
             <span className="text-slate-900 font-medium">{record.serviceProvider}</span>
           </div>
         )}
 
         {record.serviceType && (
           <div className="text-sm">
-            <span className="text-slate-600">Type: </span>
+            <span className="text-slate-800">Type: </span>
             <span className="text-slate-900">{record.serviceType}</span>
           </div>
         )}
 
         {record.hourlyRate !== undefined && record.hourlyRate !== null && (
           <div className="text-sm">
-            <span className="text-slate-600">Rate: </span>
+            <span className="text-slate-800">Rate: </span>
             <span className="text-slate-900 font-semibold">
               {formatRate(record.hourlyRate)}/hour
             </span>
@@ -96,7 +96,7 @@ const ServicesRecordCard: React.FC<ServicesRecordCardProps> = ({ record }) => {
 
         {record.nextServiceDate && (
           <div className="text-sm">
-            <span className="text-slate-600">Next Service: </span>
+            <span className="text-slate-800">Next Service: </span>
             <span className="text-slate-900">{formatDate(record.nextServiceDate)}</span>
           </div>
         )}

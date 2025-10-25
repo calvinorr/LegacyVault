@@ -32,7 +32,7 @@ const RenewalTimeline: React.FC<RenewalTimelineProps> = ({ renewals }) => {
               <div className={`w-1 h-6 rounded bg-${section.color}-500`} />
               <h2 className="text-lg font-semibold text-slate-900">
                 {section.title}
-                <span className="ml-2 text-sm font-normal text-slate-500">
+                <span className="ml-2 text-sm font-normal text-slate-800">
                   ({section.data.length})
                 </span>
               </h2>

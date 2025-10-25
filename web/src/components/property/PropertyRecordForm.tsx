@@ -159,7 +159,7 @@ const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose
                 justifyContent: 'center',
               }}
             >
-              <X size={24} color="#64748b" />
+              <X size={24} color="#1e293b" />
             </button>
           </div>
         </div>
@@ -317,7 +317,7 @@ const PropertyRecordForm: React.FC<PropertyRecordFormProps> = ({ isOpen, onClose
                 border: '1px solid #e2e8f0',
                 borderRadius: '8px',
                 backgroundColor: '#ffffff',
-                color: '#64748b',
+                color: '#1e293b',
                 fontSize: '14px',
                 fontWeight: '500',
                 cursor: 'pointer',

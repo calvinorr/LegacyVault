@@ -56,12 +56,12 @@ const VehicleRecordCard: React.FC<VehicleRecordCardProps> = ({ record }) => {
               {record.name}
             </h3>
             {record.registration && (
-              <p className="text-sm font-mono text-slate-600 mt-0.5">
+              <p className="text-sm font-mono text-slate-800 mt-0.5">
                 {record.registration}
               </p>
             )}
             {record.make && record.model && (
-              <p className="text-sm text-slate-500 mt-0.5">
+              <p className="text-sm text-slate-800 mt-0.5">
                 {record.make} {record.model}
               </p>
             )}
@@ -77,19 +77,19 @@ const VehicleRecordCard: React.FC<VehicleRecordCardProps> = ({ record }) => {
           {motStatus && (
             <div className="flex items-center gap-2">
               <motStatus.icon className={`w-4 h-4 ${motStatus.color}`} />
-              <span className="text-xs text-slate-600">MOT: {motStatus.label}</span>
+              <span className="text-xs text-slate-800">MOT: {motStatus.label}</span>
             </div>
           )}
           {insuranceStatus && (
             <div className="flex items-center gap-2">
               <insuranceStatus.icon className={`w-4 h-4 ${insuranceStatus.color}`} />
-              <span className="text-xs text-slate-600">Insurance: {insuranceStatus.label}</span>
+              <span className="text-xs text-slate-800">Insurance: {insuranceStatus.label}</span>
             </div>
           )}
           {taxStatus && (
             <div className="flex items-center gap-2">
               <taxStatus.icon className={`w-4 h-4 ${taxStatus.color}`} />
-              <span className="text-xs text-slate-600">Tax: {taxStatus.label}</span>
+              <span className="text-xs text-slate-800">Tax: {taxStatus.label}</span>
             </div>
           )}
         </div>
@@ -98,7 +98,7 @@ const VehicleRecordCard: React.FC<VehicleRecordCardProps> = ({ record }) => {
       {record.financeMonthlyPayment && (
         <div className="mt-3 pt-3 border-t border-slate-100">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-500">Monthly Finance:</span>
+            <span className="text-xs text-slate-800">Monthly Finance:</span>
             <span className="text-sm font-medium text-slate-900">£{record.financeMonthlyPayment.toFixed(2)}</span>
           </div>
         </div>

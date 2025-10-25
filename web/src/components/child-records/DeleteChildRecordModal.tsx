@@ -72,11 +72,11 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: '#94a3b8',
+              color: '#334155',
               padding: '4px'
             }}
             onMouseEnter={(e) => e.currentTarget.style.color = '#f1f5f9'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#334155'}
           >
             <X size={24} />
           </button>
@@ -94,7 +94,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
           }}>
             <p style={{
               fontSize: '12px',
-              color: '#94a3b8',
+              color: '#334155',
               margin: '0 0 8px 0',
               textTransform: 'uppercase',
               letterSpacing: '0.5px'
@@ -219,7 +219,7 @@ export const DeleteChildRecordModal: React.FC<DeleteChildRecordModalProps> = ({
               disabled={!confirmed || isLoading}
               style={{
                 padding: '10px 16px',
-                backgroundColor: confirmed && !isLoading ? '#ef4444' : '#94a3b8',
+                backgroundColor: confirmed && !isLoading ? '#ef4444' : '#334155',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',

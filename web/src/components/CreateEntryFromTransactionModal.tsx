@@ -523,7 +523,7 @@ export default function CreateEntryFromTransactionModal({
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: '#64748b',
+                color: '#1e293b',
                 padding: '8px',
                 borderRadius: '8px',
                 display: 'flex',
@@ -574,7 +574,7 @@ export default function CreateEntryFromTransactionModal({
             <div
               style={{
                 fontSize: '13px',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontWeight: '500',
               }}
@@ -590,7 +590,7 @@ export default function CreateEntryFromTransactionModal({
             >
               {transaction.description} • £{Math.abs(transaction.amount).toFixed(2)}
             </div>
-            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+            <div style={{ fontSize: '12px', color: '#334155' }}>
               {new Date(transaction.date).toLocaleDateString('en-GB')} •{' '}
               {transaction.originalText}
             </div>
@@ -631,7 +631,7 @@ export default function CreateEntryFromTransactionModal({
               <p
                 style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   marginBottom: '24px',
                 }}
               >
@@ -680,7 +680,7 @@ export default function CreateEntryFromTransactionModal({
                       >
                         {domain.label}
                       </div>
-                      <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      <div style={{ fontSize: '13px', color: '#1e293b' }}>
                         {domain.description}
                       </div>
                     </button>
@@ -708,7 +708,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                   }}
                 >
@@ -734,7 +734,7 @@ export default function CreateEntryFromTransactionModal({
               <p
                 style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   marginBottom: '24px',
                 }}
               >
@@ -742,7 +742,7 @@ export default function CreateEntryFromTransactionModal({
               </p>
 
               {parentEntitiesLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
+                <div style={{ textAlign: 'center', padding: '40px', color: '#1e293b' }}>
                   Loading...
                 </div>
               ) : parentEntities.length === 0 && !showInlineParentForm ? (
@@ -769,7 +769,7 @@ export default function CreateEntryFromTransactionModal({
                   <div
                     style={{
                       fontSize: '14px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       marginBottom: '20px',
                     }}
                   >
@@ -848,7 +848,7 @@ export default function CreateEntryFromTransactionModal({
                           fontFamily: 'inherit',
                           fontSize: '15px',
                           fontWeight: '500',
-                          color: '#64748b',
+                          color: '#1e293b',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -911,7 +911,7 @@ export default function CreateEntryFromTransactionModal({
                       <div
                         style={{
                           fontSize: '13px',
-                          color: '#64748b',
+                          color: '#1e293b',
                           marginBottom: '16px',
                           fontStyle: 'italic',
                         }}
@@ -936,7 +936,7 @@ export default function CreateEntryFromTransactionModal({
                             cursor: creatingParent ? 'not-allowed' : 'pointer',
                             border: '1px solid #e2e8f0',
                             backgroundColor: '#ffffff',
-                            color: '#64748b',
+                            color: '#1e293b',
                             fontFamily: 'inherit',
                           }}
                         >
@@ -990,7 +990,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
@@ -1010,7 +1010,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                   }}
                 >
@@ -1036,7 +1036,7 @@ export default function CreateEntryFromTransactionModal({
               <p
                 style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   marginBottom: '24px',
                 }}
               >
@@ -1044,7 +1044,7 @@ export default function CreateEntryFromTransactionModal({
               </p>
 
               {domainConfigsLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
+                <div style={{ textAlign: 'center', padding: '40px', color: '#1e293b' }}>
                   Loading...
                 </div>
               ) : (
@@ -1084,7 +1084,7 @@ export default function CreateEntryFromTransactionModal({
                         >
                           {recordType.label}
                         </div>
-                        <div style={{ fontSize: '13px', color: '#64748b' }}>
+                        <div style={{ fontSize: '13px', color: '#1e293b' }}>
                           {recordType.description}
                         </div>
                       </button>
@@ -1113,7 +1113,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
@@ -1133,7 +1133,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                   }}
                 >
@@ -1159,7 +1159,7 @@ export default function CreateEntryFromTransactionModal({
               <p
                 style={{
                   fontSize: '14px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   marginBottom: '24px',
                 }}
               >
@@ -1450,7 +1450,7 @@ export default function CreateEntryFromTransactionModal({
                   style={{
                     fontSize: '14px',
                     fontWeight: '500',
-                    color: '#94a3b8',
+                    color: '#334155',
                     marginBottom: '12px',
                   }}
                 >
@@ -1470,7 +1470,7 @@ export default function CreateEntryFromTransactionModal({
                         display: 'block',
                         fontSize: '13px',
                         fontWeight: '400',
-                        color: '#94a3b8',
+                        color: '#334155',
                         marginBottom: '8px',
                       }}
                     >
@@ -1491,7 +1491,7 @@ export default function CreateEntryFromTransactionModal({
                         fontFamily: 'inherit',
                         backgroundColor: '#fefefe',
                         boxSizing: 'border-box',
-                        color: '#64748b',
+                        color: '#1e293b',
                       }}
                     />
                   </div>
@@ -1501,7 +1501,7 @@ export default function CreateEntryFromTransactionModal({
                         display: 'block',
                         fontSize: '13px',
                         fontWeight: '400',
-                        color: '#94a3b8',
+                        color: '#334155',
                         marginBottom: '8px',
                       }}
                     >
@@ -1526,7 +1526,7 @@ export default function CreateEntryFromTransactionModal({
                         backgroundPosition: 'right 12px center',
                         backgroundSize: '14px',
                         paddingRight: '36px',
-                        color: '#64748b',
+                        color: '#1e293b',
                         boxSizing: 'border-box',
                       }}
                     >
@@ -1593,7 +1593,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: loading ? 'not-allowed' : 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                     display: 'flex',
                     alignItems: 'center',
@@ -1616,7 +1616,7 @@ export default function CreateEntryFromTransactionModal({
                       cursor: loading ? 'not-allowed' : 'pointer',
                       border: '1px solid #e2e8f0',
                       backgroundColor: '#ffffff',
-                      color: '#64748b',
+                      color: '#1e293b',
                       fontFamily: 'inherit',
                     }}
                   >
@@ -1678,7 +1678,7 @@ export default function CreateEntryFromTransactionModal({
                   <span
                     style={{
                       fontSize: '13px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       fontWeight: '500',
                     }}
                   >
@@ -1699,7 +1699,7 @@ export default function CreateEntryFromTransactionModal({
                   <span
                     style={{
                       fontSize: '13px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       fontWeight: '500',
                     }}
                   >
@@ -1720,7 +1720,7 @@ export default function CreateEntryFromTransactionModal({
                   <span
                     style={{
                       fontSize: '13px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       fontWeight: '500',
                     }}
                   >
@@ -1796,7 +1796,7 @@ export default function CreateEntryFromTransactionModal({
                     cursor: 'pointer',
                     border: '1px solid #e2e8f0',
                     backgroundColor: '#ffffff',
-                    color: '#64748b',
+                    color: '#1e293b',
                     fontFamily: 'inherit',
                   }}
                 >

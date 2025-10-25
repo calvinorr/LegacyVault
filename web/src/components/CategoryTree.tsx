@@ -64,7 +64,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
 
   const categoryDescStyle = {
     fontSize: "13px",
-    color: "#64748b",
+    color: "#1e293b",
     margin: 0,
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
     lineHeight: '1.3'
@@ -75,7 +75,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     fontSize: "14px",
     border: "1px solid #e2e8f0",
     backgroundColor: "#ffffff",
-    color: "#64748b",
+    color: "#1e293b",
     borderRadius: "8px",
     cursor: "pointer",
     marginLeft: "6px",
@@ -92,7 +92,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     fontSize: "11px",
     padding: "4px 8px",
     backgroundColor: "#f8fafc",
-    color: "#64748b",
+    color: "#1e293b",
     borderRadius: "12px",
     marginLeft: "12px",
     fontWeight: '500' as const,
@@ -131,7 +131,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               {hasChildren ? (
                 <ChevronRight
                   size={16}
-                  color="#64748b"
+                  color="#1e293b"
                   strokeWidth={1.5}
                   style={{
                     transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -145,7 +145,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               {/* Category Icon */}
               <Folder
                 size={18}
-                color={category.isSystemCategory ? "#64748b" : "#0ea5e9"}
+                color={category.isSystemCategory ? "#1e293b" : "#0ea5e9"}
                 strokeWidth={1.5}
                 style={{ marginLeft: '6px' }}
               />

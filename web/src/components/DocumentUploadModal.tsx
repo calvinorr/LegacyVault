@@ -240,7 +240,7 @@ export default function DocumentUploadModal({
               border: 'none',
               padding: '8px',
               cursor: 'pointer',
-              color: '#64748b',
+              color: '#1e293b',
               borderRadius: '6px',
               transition: 'background-color 0.2s'
             }}
@@ -258,7 +258,7 @@ export default function DocumentUploadModal({
             borderRadius: '8px',
             border: '1px solid #e2e8f0'
           }}>
-            <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '4px' }}>
+            <div style={{ fontSize: '14px', color: '#1e293b', marginBottom: '4px' }}>
               {selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} selected
             </div>
             <div style={{ fontSize: '13px', color: '#9ca3af' }}>
@@ -419,7 +419,7 @@ export default function DocumentUploadModal({
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: '#64748b',
+                          color: '#1e293b',
                           cursor: 'pointer',
                           padding: '0',
                           fontSize: '14px'
@@ -473,7 +473,7 @@ export default function DocumentUploadModal({
                   borderRadius: '8px',
                   border: '1px solid #e5e7eb',
                   backgroundColor: '#ffffff',
-                  color: '#64748b',
+                  color: '#1e293b',
                   fontSize: '15px',
                   fontWeight: '500',
                   cursor: 'pointer',

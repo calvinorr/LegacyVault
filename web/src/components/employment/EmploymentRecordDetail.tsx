@@ -38,7 +38,7 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -61,7 +61,7 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-900">{record.name}</h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-slate-800 mt-1">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -69,7 +69,7 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <Pencil className="w-5 h-5" />
           </button>
@@ -78,7 +78,7 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
             className={`p-2 rounded-lg transition-colors ${
               showDeleteConfirm
                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'text-slate-600 hover:text-red-700 hover:bg-red-50'
+                : 'text-slate-800 hover:text-red-700 hover:bg-red-50'
             }`}
           >
             <Trash2 className="w-5 h-5" />
@@ -110,13 +110,13 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.employerName && (
                 <div>
-                  <p className="text-sm text-slate-600">Employer Name</p>
+                  <p className="text-sm text-slate-800">Employer Name</p>
                   <p className="text-slate-900 font-medium">{record.employerName}</p>
                 </div>
               )}
               {record.jobTitle && (
                 <div>
-                  <p className="text-sm text-slate-600">Job Title</p>
+                  <p className="text-sm text-slate-800">Job Title</p>
                   <p className="text-slate-900 font-medium">{record.jobTitle}</p>
                 </div>
               )}
@@ -132,7 +132,7 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-slate-600">Annual Salary</p>
+                <p className="text-sm text-slate-800">Annual Salary</p>
                 <p className="text-slate-900 font-semibold text-lg">
                   {formatSalary(record.salary)}
                 </p>
@@ -150,13 +150,13 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.pensionScheme && (
                 <div>
-                  <p className="text-sm text-slate-600">Pension Scheme</p>
+                  <p className="text-sm text-slate-800">Pension Scheme</p>
                   <p className="text-slate-900 font-medium">{record.pensionScheme}</p>
                 </div>
               )}
               {record.pensionContribution && (
                 <div>
-                  <p className="text-sm text-slate-600">Contribution Rate</p>
+                  <p className="text-sm text-slate-800">Contribution Rate</p>
                   <p className="text-slate-900 font-medium">{record.pensionContribution}%</p>
                 </div>
               )}
@@ -173,13 +173,13 @@ const EmploymentRecordDetail: React.FC<EmploymentRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.contactPhone && (
                 <div>
-                  <p className="text-sm text-slate-600">Phone</p>
+                  <p className="text-sm text-slate-800">Phone</p>
                   <p className="text-slate-900">{record.contactPhone}</p>
                 </div>
               )}
               {record.contactEmail && (
                 <div>
-                  <p className="text-sm text-slate-600">Email</p>
+                  <p className="text-sm text-slate-800">Email</p>
                   <p className="text-slate-900">{record.contactEmail}</p>
                 </div>
               )}

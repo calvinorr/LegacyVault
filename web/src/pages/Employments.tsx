@@ -99,7 +99,7 @@ const Employments: React.FC = () => {
             <p
               style={{
                 fontSize: '15px',
-                color: '#64748b',
+                color: '#1e293b',
                 margin: 0
               }}
             >

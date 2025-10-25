@@ -42,7 +42,7 @@ const PropertyRecordCard: React.FC<PropertyRecordCardProps> = ({ record }) => {
               {record.name}
             </h3>
             {record.provider && (
-              <p className="text-sm text-slate-600 mt-0.5">
+              <p className="text-sm text-slate-800 mt-0.5">
                 {record.provider}
               </p>
             )}
@@ -53,22 +53,22 @@ const PropertyRecordCard: React.FC<PropertyRecordCardProps> = ({ record }) => {
         </span>
       </div>
 
-      <div className="space-y-2 text-sm text-slate-600">
+      <div className="space-y-2 text-sm text-slate-800">
         {record.recordType && (
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">Type:</span>
+            <span className="text-slate-700">Type:</span>
             <span className="capitalize">{record.recordType.replace('-', ' ')}</span>
           </div>
         )}
         {record.renewalDate && (
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-slate-400" />
+            <Calendar className="w-4 h-4 text-slate-700" />
             <span>Renewal: {formatDate(record.renewalDate)}</span>
           </div>
         )}
         {record.monthlyAmount && (
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">Monthly:</span>
+            <span className="text-slate-700">Monthly:</span>
             <span className="font-medium text-slate-900">£{record.monthlyAmount.toFixed(2)}</span>
           </div>
         )}

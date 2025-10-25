@@ -151,7 +151,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#64748b'
+            color: '#1e293b'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = '#f1f5f9';
@@ -159,7 +159,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#64748b';
+            e.currentTarget.style.color = '#1e293b';
           }}
         >
           <MoreVertical size={20} />
@@ -273,12 +273,12 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
               </p>
             )}
             {entity.fields?.year && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 Year: {entity.fields.year}
               </p>
             )}
             {entity.fields?.registration && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 Reg: {entity.fields.registration}
               </p>
             )}
@@ -292,7 +292,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
               </p>
             )}
             {entity.fields?.type && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 {entity.fields.type}
               </p>
             )}
@@ -306,7 +306,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
               </p>
             )}
             {entity.fields?.jobTitle && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 {entity.fields.jobTitle}
               </p>
             )}
@@ -320,7 +320,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
               </p>
             )}
             {entity.fields?.serviceType && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 {entity.fields.serviceType}
               </p>
             )}
@@ -334,7 +334,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
               </p>
             )}
             {entity.fields?.accountType && (
-              <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
+              <p style={{ fontSize: '13px', color: '#1e293b', margin: 0 }}>
                 {entity.fields.accountType}
               </p>
             )}
@@ -359,14 +359,14 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
             width: '6px',
             height: '6px',
             borderRadius: '50%',
-            background: childRecordCount > 0 ? '#3b82f6' : '#94a3b8'
+            background: childRecordCount > 0 ? '#3b82f6' : '#334155'
           }}
         />
         <span
           style={{
             fontSize: '13px',
             fontWeight: '500',
-            color: childRecordCount > 0 ? '#3b82f6' : '#94a3b8'
+            color: childRecordCount > 0 ? '#3b82f6' : '#334155'
           }}
         >
           {childRecordCount} {childRecordCount === 1 ? 'record' : 'records'}
@@ -377,7 +377,7 @@ const ParentEntityCard: React.FC<ParentEntityCardProps> = ({
       <p
         style={{
           fontSize: '13px',
-          color: '#94a3b8',
+          color: '#334155',
           margin: 0
         }}
       >

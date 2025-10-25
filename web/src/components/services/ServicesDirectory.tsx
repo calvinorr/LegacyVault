@@ -56,7 +56,7 @@ export default function ServicesDirectory() {
         >
           Services Directory
         </h1>
-        <p style={{ fontSize: '16px', color: '#64748b' }}>
+        <p style={{ fontSize: '16px', color: '#1e293b' }}>
           Organize service providers by category (Tradespeople, Home Services, Professional Services, etc.)
         </p>
       </div>
@@ -80,7 +80,7 @@ export default function ServicesDirectory() {
               left: '16px',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#94a3b8',
+              color: '#334155',
               pointerEvents: 'none',
             }}
           />
@@ -120,7 +120,7 @@ export default function ServicesDirectory() {
               left: '16px',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: '#94a3b8',
+              color: '#334155',
               pointerEvents: 'none',
             }}
           />
@@ -192,7 +192,7 @@ export default function ServicesDirectory() {
           style={{
             textAlign: 'center',
             padding: '80px 20px',
-            color: '#64748b',
+            color: '#1e293b',
           }}
         >
           <div
@@ -268,7 +268,7 @@ export default function ServicesDirectory() {
               <p
                 style={{
                   fontSize: '15px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   marginBottom: '24px',
                   maxWidth: '480px',
                   margin: '0 auto 24px',
@@ -310,7 +310,7 @@ export default function ServicesDirectory() {
               >
                 No Results Found
               </h3>
-              <p style={{ fontSize: '14px', color: '#64748b' }}>
+              <p style={{ fontSize: '14px', color: '#1e293b' }}>
                 Try adjusting your search or filter criteria
               </p>
             </>
@@ -320,7 +320,7 @@ export default function ServicesDirectory() {
         <>
           {/* Results Count */}
           <div style={{ marginBottom: '24px' }}>
-            <p style={{ fontSize: '14px', color: '#64748b' }}>
+            <p style={{ fontSize: '14px', color: '#1e293b' }}>
               Showing{' '}
               <span style={{ fontWeight: '600', color: '#0f172a' }}>
                 {filteredServices.length}

@@ -24,7 +24,7 @@ const EmergencyChecklist: React.FC<EmergencyChecklistProps> = ({ className = '' 
   if (isLoading) {
     return (
       <div className={`p-6 rounded-xl bg-slate-50 border border-slate-200 ${className}`}>
-        <p className="text-slate-600">Loading checklist...</p>
+        <p className="text-slate-800">Loading checklist...</p>
       </div>
     );
   }
@@ -39,10 +39,10 @@ const EmergencyChecklist: React.FC<EmergencyChecklistProps> = ({ className = '' 
     <div className={`p-6 rounded-xl bg-slate-50 border border-slate-200 no-print ${className}`}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-slate-600" />
+          <Clock className="w-5 h-5 text-slate-800" />
           <h2 className="text-lg font-semibold text-slate-900">Emergency Preparedness</h2>
         </div>
-        <div className="text-sm text-slate-600">
+        <div className="text-sm text-slate-800">
           {totalCritical} critical {totalCritical === 1 ? 'record' : 'records'}
         </div>
       </div>
@@ -64,10 +64,10 @@ const EmergencyChecklist: React.FC<EmergencyChecklistProps> = ({ className = '' 
               {info.criticalCount > 0 ? (
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
               ) : (
-                <AlertCircle className="w-4 h-4 text-slate-400" />
+                <AlertCircle className="w-4 h-4 text-slate-700" />
               )}
             </div>
-            <div className="text-xs text-slate-600">
+            <div className="text-xs text-slate-800">
               {info.criticalCount} critical
             </div>
           </div>

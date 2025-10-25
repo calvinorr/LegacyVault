@@ -69,7 +69,7 @@ export default function Documents() {
           </h1>
           <p style={{ 
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             lineHeight: '1.5'
           }}>
@@ -245,7 +245,7 @@ export default function Documents() {
       case "Personal":
         return "#16a34a";
       default:
-        return "#64748b";
+        return "#1e293b";
     }
   };
 
@@ -334,7 +334,7 @@ export default function Documents() {
     fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
-    color: '#64748b'
+    color: '#1e293b'
   };
 
   const primaryButtonStyle = {
@@ -352,7 +352,7 @@ export default function Documents() {
             <div style={{
               textAlign: 'center' as const,
               padding: '80px 40px',
-              color: '#64748b'
+              color: '#1e293b'
             }}>
               <div style={{
                 display: 'flex',
@@ -364,7 +364,7 @@ export default function Documents() {
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
-                <FileText size={28} color="#64748b" strokeWidth={1.5} />
+                <FileText size={28} color="#1e293b" strokeWidth={1.5} />
               </div>
               <p style={{
                 fontSize: '16px',
@@ -408,7 +408,7 @@ export default function Documents() {
           </div>
           <p style={{
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             fontWeight: '400',
             margin: '0',
             lineHeight: '1.5'
@@ -473,7 +473,7 @@ export default function Documents() {
               borderRadius: '16px',
               margin: '0 auto 24px'
             }}>
-              <Upload size={28} color={dragOver ? '#0f172a' : '#64748b'} strokeWidth={1.5} />
+              <Upload size={28} color={dragOver ? '#0f172a' : '#1e293b'} strokeWidth={1.5} />
             </div>
             <h3 style={{
               fontSize: '18px',
@@ -486,7 +486,7 @@ export default function Documents() {
             </h3>
             <p style={{
               fontSize: '16px',
-              color: '#64748b',
+              color: '#1e293b',
               marginBottom: '16px',
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
             }}>
@@ -494,7 +494,7 @@ export default function Documents() {
             </p>
             <p style={{
               fontSize: '14px',
-              color: '#94a3b8',
+              color: '#334155',
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
             }}>
               Supports PDF, Word, Excel, images up to 10MB
@@ -523,7 +523,7 @@ export default function Documents() {
                 transform: 'translateY(-50%)',
                 zIndex: 10
               }}>
-                <Search size={20} color="#64748b" strokeWidth={1.5} />
+                <Search size={20} color="#1e293b" strokeWidth={1.5} />
               </div>
               <input
                 type="text"
@@ -557,7 +557,7 @@ export default function Documents() {
                 style={{
                   ...buttonStyle,
                   backgroundColor: selectedCategory === option.value ? '#0f172a' : '#ffffff',
-                  color: selectedCategory === option.value ? '#ffffff' : '#64748b',
+                  color: selectedCategory === option.value ? '#ffffff' : '#1e293b',
                   borderColor: selectedCategory === option.value ? '#0f172a' : '#e2e8f0'
                 }}
                 onClick={() => setSelectedCategory(option.value)}
@@ -577,7 +577,7 @@ export default function Documents() {
               style={{
                 ...buttonStyle,
                 backgroundColor: viewMode === 'grid' ? '#0f172a' : '#ffffff',
-                color: viewMode === 'grid' ? '#ffffff' : '#64748b',
+                color: viewMode === 'grid' ? '#ffffff' : '#1e293b',
                 borderColor: viewMode === 'grid' ? '#0f172a' : '#e2e8f0'
               }}
               onClick={() => setViewMode('grid')}
@@ -589,7 +589,7 @@ export default function Documents() {
               style={{
                 ...buttonStyle,
                 backgroundColor: viewMode === 'list' ? '#0f172a' : '#ffffff',
-                color: viewMode === 'list' ? '#ffffff' : '#64748b',
+                color: viewMode === 'list' ? '#ffffff' : '#1e293b',
                 borderColor: viewMode === 'list' ? '#0f172a' : '#e2e8f0'
               }}
               onClick={() => setViewMode('list')}
@@ -606,7 +606,7 @@ export default function Documents() {
             <div style={{
               textAlign: 'center' as const,
               padding: '80px 40px',
-              color: '#64748b'
+              color: '#1e293b'
             }}>
               <div style={{
                 display: 'flex',
@@ -618,7 +618,7 @@ export default function Documents() {
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
-                <FolderOpen size={28} color="#64748b" strokeWidth={1.5} />
+                <FolderOpen size={28} color="#1e293b" strokeWidth={1.5} />
               </div>
               <h3 style={{
                 fontSize: '18px',
@@ -631,7 +631,7 @@ export default function Documents() {
               </h3>
               <p style={{
                 fontSize: '16px',
-                color: '#64748b',
+                color: '#1e293b',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
               }}>
                 {searchQuery ? 'Try adjusting your search or filters' : 'Upload your first document to get started'}
@@ -704,7 +704,7 @@ export default function Documents() {
                   <div style={{ marginBottom: '16px' }}>
                     <p style={{
                       fontSize: '14px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       margin: '4px 0',
                       fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                     }}>
@@ -712,7 +712,7 @@ export default function Documents() {
                     </p>
                     <p style={{
                       fontSize: '14px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       margin: '4px 0',
                       fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                     }}>
@@ -723,7 +723,7 @@ export default function Documents() {
                   {doc.description && (
                     <p style={{
                       fontSize: '14px',
-                      color: '#64748b',
+                      color: '#1e293b',
                       margin: '0 0 16px 0',
                       lineHeight: '1.4',
                       fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
@@ -748,7 +748,7 @@ export default function Documents() {
                             padding: '2px 6px',
                             borderRadius: '6px',
                             backgroundColor: '#f1f5f9',
-                            color: '#64748b',
+                            color: '#1e293b',
                             fontSize: '11px',
                             fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                           }}
@@ -761,7 +761,7 @@ export default function Documents() {
                           padding: '2px 6px',
                           borderRadius: '6px',
                           backgroundColor: '#f1f5f9',
-                          color: '#64748b',
+                          color: '#1e293b',
                           fontSize: '11px',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                         }}>
@@ -871,7 +871,7 @@ export default function Documents() {
                       </div>
                       <p style={{
                         fontSize: '14px',
-                        color: '#64748b',
+                        color: '#1e293b',
                         margin: 0,
                         fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                       }}>

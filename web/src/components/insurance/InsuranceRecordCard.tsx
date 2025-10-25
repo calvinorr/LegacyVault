@@ -25,7 +25,7 @@ const InsuranceRecordCard: React.FC<InsuranceRecordCardProps> = ({ record }) => 
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -59,7 +59,7 @@ const InsuranceRecordCard: React.FC<InsuranceRecordCardProps> = ({ record }) => 
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -78,21 +78,21 @@ const InsuranceRecordCard: React.FC<InsuranceRecordCardProps> = ({ record }) => 
       <div className="space-y-2">
         {record.provider && (
           <div className="text-sm">
-            <span className="text-slate-600">Provider: </span>
+            <span className="text-slate-800">Provider: </span>
             <span className="text-slate-900 font-medium">{record.provider}</span>
           </div>
         )}
 
         {record.policyNumber && (
           <div className="text-sm">
-            <span className="text-slate-600">Policy: </span>
+            <span className="text-slate-800">Policy: </span>
             <span className="text-slate-900">{record.policyNumber}</span>
           </div>
         )}
 
         {record.coverageAmount !== undefined && record.coverageAmount !== null && (
           <div className="text-sm">
-            <span className="text-slate-600">Coverage: </span>
+            <span className="text-slate-800">Coverage: </span>
             <span className="text-slate-900 font-semibold">
               {formatCurrency(record.coverageAmount)}
             </span>
@@ -101,7 +101,7 @@ const InsuranceRecordCard: React.FC<InsuranceRecordCardProps> = ({ record }) => 
 
         {record.monthlyPremium !== undefined && record.monthlyPremium !== null && (
           <div className="text-sm">
-            <span className="text-slate-600">Premium: </span>
+            <span className="text-slate-800">Premium: </span>
             <span className="text-slate-900 font-semibold">
               {formatCurrency(record.monthlyPremium)}/month
             </span>
@@ -110,7 +110,7 @@ const InsuranceRecordCard: React.FC<InsuranceRecordCardProps> = ({ record }) => 
 
         {record.renewalDate && (
           <div className="text-sm">
-            <span className="text-slate-600">Renewal: </span>
+            <span className="text-slate-800">Renewal: </span>
             <span className="text-slate-900">{formatDate(record.renewalDate)}</span>
           </div>
         )}

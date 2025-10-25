@@ -41,7 +41,7 @@ const DomainConfigList: React.FC = () => {
         style={{
           padding: '24px',
           textAlign: 'center',
-          color: '#64748b',
+          color: '#1e293b',
           fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
         }}
       >
@@ -81,7 +81,7 @@ const DomainConfigList: React.FC = () => {
         style={{
           padding: '24px',
           textAlign: 'center',
-          color: '#64748b',
+          color: '#1e293b',
           fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
         }}
       >
@@ -158,7 +158,7 @@ const DomainConfigList: React.FC = () => {
                 <p
                   style={{
                     fontSize: '12px',
-                    color: '#64748b',
+                    color: '#1e293b',
                     margin: '4px 0 0 0',
                   }}
                 >

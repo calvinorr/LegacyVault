@@ -61,7 +61,7 @@ const EmergencyViewPage: React.FC = () => {
             <h1 className="text-3xl font-semibold text-slate-900 mb-2">
               Emergency Information
             </h1>
-            <p className="text-slate-600">Quick access to critical household information</p>
+            <p className="text-slate-800">Quick access to critical household information</p>
           </div>
         </div>
 
@@ -96,16 +96,16 @@ const EmergencyViewPage: React.FC = () => {
 
       {/* Critical Records */}
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">Loading critical records...</div>
+        <div className="text-center py-12 text-slate-800">Loading critical records...</div>
       ) : filteredRecords.length === 0 ? (
         <div className="text-center py-12">
-          <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <p className="text-slate-600 mb-2">
+          <AlertCircle className="w-12 h-12 text-slate-700 mx-auto mb-4" />
+          <p className="text-slate-800 mb-2">
             {criticalRecords.length === 0
               ? 'No critical records found.'
               : 'No records match your search criteria.'}
           </p>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-800">
             {criticalRecords.length === 0
               ? "Mark important records as 'Critical' priority in each domain to see them here."
               : 'Try adjusting your search or filter.'}

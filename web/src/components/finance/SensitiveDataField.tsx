@@ -27,7 +27,7 @@ const SensitiveDataField: React.FC<SensitiveDataFieldProps> = ({
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
-          className="flex items-center gap-1 text-xs text-slate-600 hover:text-slate-900 transition-colors"
+          className="flex items-center gap-1 text-xs text-slate-800 hover:text-slate-900 transition-colors"
         >
           {isVisible ? (
             <>

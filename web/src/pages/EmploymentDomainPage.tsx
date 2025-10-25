@@ -20,7 +20,7 @@ const EmploymentDomainPage: React.FC = () => {
             <h1 className="text-3xl font-semibold text-slate-900 mb-2">
               Employment
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-800">
               Manage payroll, pension, workplace benefits
             </p>
           </div>
@@ -36,12 +36,12 @@ const EmploymentDomainPage: React.FC = () => {
       </header>
 
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-slate-800">
           Loading records...
         </div>
       ) : records?.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">
+          <p className="text-slate-800 mb-4">
             No employment records yet. Add your first record to get started.
           </p>
           <button

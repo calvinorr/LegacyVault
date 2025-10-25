@@ -4,7 +4,7 @@ const ApplicationSettings: React.FC = () => {
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <h3 className="text-lg font-semibold mb-4">Application Settings</h3>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-slate-800">
         Application preferences and configurations will be available here.
       </p>
     </div>

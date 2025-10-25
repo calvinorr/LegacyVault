@@ -14,15 +14,15 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user }) => {
       <h3 className="text-lg font-semibold mb-4">User Profile</h3>
       <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium text-slate-600">Name</label>
+          <label className="text-sm font-medium text-slate-800">Name</label>
           <p className="text-base">{user.displayName}</p>
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">Email</label>
+          <label className="text-sm font-medium text-slate-800">Email</label>
           <p className="text-base">{user.email}</p>
         </div>
         <div>
-          <label className="text-sm font-medium text-slate-600">Role</label>
+          <label className="text-sm font-medium text-slate-800">Role</label>
           <p className="text-base capitalize">{user.role}</p>
         </div>
       </div>

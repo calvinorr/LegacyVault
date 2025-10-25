@@ -25,7 +25,7 @@ const LegalRecordCard: React.FC<LegalRecordCardProps> = ({ record }) => {
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -50,7 +50,7 @@ const LegalRecordCard: React.FC<LegalRecordCardProps> = ({ record }) => {
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -69,28 +69,28 @@ const LegalRecordCard: React.FC<LegalRecordCardProps> = ({ record }) => {
       <div className="space-y-2">
         {record.solicitorName && (
           <div className="text-sm">
-            <span className="text-slate-600">Solicitor: </span>
+            <span className="text-slate-800">Solicitor: </span>
             <span className="text-slate-900 font-medium">{record.solicitorName}</span>
           </div>
         )}
 
         {record.referenceNumber && (
           <div className="text-sm">
-            <span className="text-slate-600">Reference: </span>
+            <span className="text-slate-800">Reference: </span>
             <span className="text-slate-900">{record.referenceNumber}</span>
           </div>
         )}
 
         {record.reviewDate && (
           <div className="text-sm">
-            <span className="text-slate-600">Review Date: </span>
+            <span className="text-slate-800">Review Date: </span>
             <span className="text-slate-900">{formatDate(record.reviewDate)}</span>
           </div>
         )}
 
         {record.location && (
           <div className="text-sm">
-            <span className="text-slate-600">Location: </span>
+            <span className="text-slate-800">Location: </span>
             <span className="text-slate-900">{record.location}</span>
           </div>
         )}

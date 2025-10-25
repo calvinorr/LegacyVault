@@ -76,7 +76,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
         <div
           style={{
             fontSize: '14px',
-            color: '#64748b',
+            color: '#1e293b',
             marginBottom: '20px',
             lineHeight: '1.5',
           }}
@@ -97,7 +97,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
                 style={{
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#64748b',
+                  color: '#1e293b',
                   minWidth: '50px',
                 }}
               >
@@ -180,7 +180,7 @@ export default function ImportTimeline({ months, onMonthClick, selectedMonth }: 
           style={{
             textAlign: 'center',
             padding: '40px 20px',
-            color: '#64748b',
+            color: '#1e293b',
           }}
         >
           <Calendar size={48} color="#cbd5e1" strokeWidth={1.5} style={{ margin: '0 auto 16px' }} />

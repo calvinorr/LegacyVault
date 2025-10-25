@@ -44,7 +44,7 @@ const DomainCard: React.FC<DomainCardProps> = ({
     >
       {!domain.enabled && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-xl">
-          <span className="text-sm font-medium text-slate-500">
+          <span className="text-sm font-medium text-slate-800">
             Coming Soon
           </span>
         </div>
@@ -59,13 +59,13 @@ const DomainCard: React.FC<DomainCardProps> = ({
           <h3 className="text-lg font-semibold text-slate-900 mb-1">
             {domain.name}
           </h3>
-          <p className="text-sm text-slate-600 mb-3">
+          <p className="text-sm text-slate-800 mb-3">
             {domain.description}
           </p>
 
           {domain.enabled && (
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-500">
+              <span className="text-xs font-medium text-slate-800">
                 {isLoading ? '...' : `${recordCount} records`}
               </span>
             </div>

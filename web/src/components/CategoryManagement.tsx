@@ -165,7 +165,7 @@ const CategoryManagement: React.FC = () => {
   const secondaryButtonStyle = {
     ...buttonStyle,
     backgroundColor: '#ffffff',
-    color: '#64748b',
+    color: '#1e293b',
     border: '1px solid #e2e8f0'
   };
 
@@ -205,13 +205,13 @@ const CategoryManagement: React.FC = () => {
   const loadingStyle = {
     textAlign: 'center' as const,
     padding: '80px 40px',
-    color: '#64748b'
+    color: '#1e293b'
   };
 
   const emptyStateStyle = {
     textAlign: 'center' as const,
     padding: '80px 40px',
-    color: '#64748b'
+    color: '#1e293b'
   };
 
   if (loading || categoriesLoading) {
@@ -228,7 +228,7 @@ const CategoryManagement: React.FC = () => {
             borderRadius: '16px',
             margin: '0 auto 24px'
           }}>
-            <FolderOpen size={28} color="#64748b" strokeWidth={1.5} />
+            <FolderOpen size={28} color="#1e293b" strokeWidth={1.5} />
           </div>
           <p style={{
             fontSize: '16px',
@@ -510,7 +510,7 @@ const CategoryManagement: React.FC = () => {
               <div style={{
                 fontSize: '28px',
                 fontWeight: '600',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '8px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
               }}>
@@ -518,7 +518,7 @@ const CategoryManagement: React.FC = () => {
               </div>
               <div style={{
                 fontSize: '14px',
-                color: '#64748b',
+                color: '#1e293b',
                 fontWeight: '500',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
               }}>
@@ -592,7 +592,7 @@ const CategoryManagement: React.FC = () => {
               borderRadius: '16px',
               margin: '0 auto 24px'
             }}>
-              <Folder size={28} color="#64748b" strokeWidth={1.5} />
+              <Folder size={28} color="#1e293b" strokeWidth={1.5} />
             </div>
             <p style={{
               fontSize: '16px',

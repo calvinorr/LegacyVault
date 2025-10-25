@@ -24,7 +24,7 @@ const EmploymentRecordCard: React.FC<EmploymentRecordCardProps> = ({ record }) =
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -49,7 +49,7 @@ const EmploymentRecordCard: React.FC<EmploymentRecordCardProps> = ({ record }) =
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">{record.name}</h3>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-800">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -68,21 +68,21 @@ const EmploymentRecordCard: React.FC<EmploymentRecordCardProps> = ({ record }) =
       <div className="space-y-2">
         {record.employerName && (
           <div className="text-sm">
-            <span className="text-slate-600">Employer: </span>
+            <span className="text-slate-800">Employer: </span>
             <span className="text-slate-900 font-medium">{record.employerName}</span>
           </div>
         )}
 
         {record.jobTitle && (
           <div className="text-sm">
-            <span className="text-slate-600">Job Title: </span>
+            <span className="text-slate-800">Job Title: </span>
             <span className="text-slate-900">{record.jobTitle}</span>
           </div>
         )}
 
         {record.salary !== undefined && record.salary !== null && (
           <div className="text-sm">
-            <span className="text-slate-600">Salary: </span>
+            <span className="text-slate-800">Salary: </span>
             <span className="text-slate-900 font-semibold">
               {formatSalary(record.salary)}
             </span>
@@ -91,10 +91,10 @@ const EmploymentRecordCard: React.FC<EmploymentRecordCardProps> = ({ record }) =
 
         {record.pensionScheme && (
           <div className="text-sm">
-            <span className="text-slate-600">Pension: </span>
+            <span className="text-slate-800">Pension: </span>
             <span className="text-slate-900">{record.pensionScheme}</span>
             {record.pensionContribution && (
-              <span className="text-slate-600"> ({record.pensionContribution}%)</span>
+              <span className="text-slate-800"> ({record.pensionContribution}%)</span>
             )}
           </div>
         )}

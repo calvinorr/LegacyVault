@@ -281,9 +281,9 @@ export default function Contacts() {
       Services: '#6b7280',
       Educational: '#06b6d4',
       Social: '#ec4899',
-      Other: '#64748b'
+      Other: '#1e293b'
     };
-    return colors[category] || '#64748b';
+    return colors[category] || '#1e293b';
   };
 
   const getDisplayName = (contact: Contact) => {
@@ -306,7 +306,7 @@ export default function Contacts() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading contacts...</p>
+          <p className="text-slate-800">Loading contacts...</p>
         </div>
       </div>
     );
@@ -324,7 +324,7 @@ export default function Contacts() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">Contacts</h1>
-                <p className="text-slate-600">{filteredContacts.length} professional contacts</p>
+                <p className="text-slate-800">{filteredContacts.length} professional contacts</p>
               </div>
             </div>
             <button
@@ -344,7 +344,7 @@ export default function Contacts() {
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="relative">
-              <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+              <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-700" />
               <input
                 type="text"
                 placeholder="Search contacts..."
@@ -373,7 +373,7 @@ export default function Contacts() {
                   onClick={() => setViewMode('grid')}
                   className={`px-3 py-2 flex items-center space-x-1 ${viewMode === 'grid' 
                     ? 'bg-slate-900 text-white' 
-                    : 'bg-white text-slate-600 hover:bg-slate-50'} transition-colors`}
+                    : 'bg-white text-slate-800 hover:bg-slate-50'} transition-colors`}
                 >
                   <Grid3X3 className="w-4 h-4" />
                 </button>
@@ -381,7 +381,7 @@ export default function Contacts() {
                   onClick={() => setViewMode('list')}
                   className={`px-3 py-2 flex items-center space-x-1 ${viewMode === 'list' 
                     ? 'bg-slate-900 text-white' 
-                    : 'bg-white text-slate-600 hover:bg-slate-50'} transition-colors`}
+                    : 'bg-white text-slate-800 hover:bg-slate-50'} transition-colors`}
                 >
                   <List className="w-4 h-4" />
                 </button>
@@ -407,7 +407,7 @@ export default function Contacts() {
           <div className="text-center py-12">
             <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-slate-900 mb-2">No contacts found</h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-slate-800 mb-6">
               {contacts.length === 0 
                 ? "Start by adding your first professional contact." 
                 : "Try adjusting your search or filter criteria."}
@@ -457,7 +457,7 @@ export default function Contacts() {
                         onClick={() => toggleFavorite(contact)}
                         className="p-1 hover:bg-slate-100 rounded"
                       >
-                        <Star className={`w-4 h-4 ${contact.isFavorite ? 'text-amber-500 fill-current' : 'text-slate-400'}`} />
+                        <Star className={`w-4 h-4 ${contact.isFavorite ? 'text-amber-500 fill-current' : 'text-slate-700'}`} />
                       </button>
                       <button
                         onClick={() => deleteContact(contact._id)}
@@ -472,13 +472,13 @@ export default function Contacts() {
                   {(contact.company || contact.jobTitle) && (
                     <div className="mb-4">
                       {contact.company && (
-                        <div className="flex items-center space-x-2 text-sm text-slate-600 mb-1">
+                        <div className="flex items-center space-x-2 text-sm text-slate-800 mb-1">
                           <Building className="w-4 h-4" />
                           <span>{contact.company}</span>
                         </div>
                       )}
                       {contact.jobTitle && (
-                        <div className="text-sm text-slate-500">{contact.jobTitle}</div>
+                        <div className="text-sm text-slate-800">{contact.jobTitle}</div>
                       )}
                     </div>
                   )}
@@ -486,19 +486,19 @@ export default function Contacts() {
                   {/* Contact Info */}
                   <div className="space-y-2 mb-4">
                     {contact.email && (
-                      <div className="flex items-center space-x-2 text-sm text-slate-600">
+                      <div className="flex items-center space-x-2 text-sm text-slate-800">
                         <Mail className="w-4 h-4" />
                         <span className="truncate">{contact.email}</span>
                       </div>
                     )}
                     {getPrimaryPhone(contact) && (
-                      <div className="flex items-center space-x-2 text-sm text-slate-600">
+                      <div className="flex items-center space-x-2 text-sm text-slate-800">
                         <Phone className="w-4 h-4" />
                         <span>{getPrimaryPhone(contact)?.number}</span>
                       </div>
                     )}
                     {contact.address && (contact.address.line1 || contact.address.city) && (
-                      <div className="flex items-center space-x-2 text-sm text-slate-600">
+                      <div className="flex items-center space-x-2 text-sm text-slate-800">
                         <MapPin className="w-4 h-4" />
                         <span className="truncate">
                           {contact.address.city}
@@ -510,7 +510,7 @@ export default function Contacts() {
 
                   {/* Notes */}
                   {contact.notes && (
-                    <div className="text-sm text-slate-500 line-clamp-2">
+                    <div className="text-sm text-slate-800 line-clamp-2">
                       {contact.notes}
                     </div>
                   )}
@@ -521,13 +521,13 @@ export default function Contacts() {
                       {contact.tags.slice(0, 3).map((tag, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 text-xs bg-slate-100 text-slate-600 rounded"
+                          className="px-2 py-1 text-xs bg-slate-100 text-slate-800 rounded"
                         >
                           {tag}
                         </span>
                       ))}
                       {contact.tags.length > 3 && (
-                        <span className="px-2 py-1 text-xs bg-slate-100 text-slate-600 rounded">
+                        <span className="px-2 py-1 text-xs bg-slate-100 text-slate-800 rounded">
                           +{contact.tags.length - 3}
                         </span>
                       )}
@@ -569,7 +569,7 @@ export default function Contacts() {
                         </span>
                       </div>
                       
-                      <div className="flex items-center space-x-4 text-sm text-slate-600">
+                      <div className="flex items-center space-x-4 text-sm text-slate-800">
                         {contact.company && <span>{contact.company}</span>}
                         {contact.email && (
                           <div className="flex items-center space-x-1">
@@ -592,7 +592,7 @@ export default function Contacts() {
                       onClick={() => toggleFavorite(contact)}
                       className="p-2 hover:bg-slate-100 rounded"
                     >
-                      <Star className={`w-4 h-4 ${contact.isFavorite ? 'text-amber-500 fill-current' : 'text-slate-400'}`} />
+                      <Star className={`w-4 h-4 ${contact.isFavorite ? 'text-amber-500 fill-current' : 'text-slate-700'}`} />
                     </button>
                     <button
                       onClick={() => deleteContact(contact._id)}

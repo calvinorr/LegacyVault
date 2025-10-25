@@ -43,7 +43,7 @@ const PropertyRecordDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1000px' }}>
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: '#1e293b' }}>
           Loading record...
         </div>
       </div>
@@ -53,7 +53,7 @@ const PropertyRecordDetailPage: React.FC = () => {
   if (!record) {
     return (
       <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1000px' }}>
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: '#1e293b' }}>
           Record not found
         </div>
       </div>
@@ -65,10 +65,10 @@ const PropertyRecordDetailPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8" style={{ maxWidth: '1000px' }}>
       {/* Breadcrumb */}
-      <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#64748b' }}>
-        <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
+      <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#1e293b' }}>
+        <Link to="/" style={{ color: '#1e293b', textDecoration: 'none' }}>Home</Link>
         <ChevronRight size={16} />
-        <Link to="/property" style={{ color: '#64748b', textDecoration: 'none' }}>Property</Link>
+        <Link to="/property" style={{ color: '#1e293b', textDecoration: 'none' }}>Property</Link>
         <ChevronRight size={16} />
         <span style={{ color: '#0f172a', fontWeight: '500' }}>{record.name}</span>
       </div>
@@ -108,7 +108,7 @@ const PropertyRecordDetailPage: React.FC = () => {
               {record.provider && (
                 <p style={{
                   fontSize: '16px',
-                  color: '#64748b',
+                  color: '#1e293b',
                   margin: '0 0 12px 0',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
                 }}>
@@ -138,7 +138,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 border: '1px solid #e2e8f0',
                 borderRadius: '8px',
                 backgroundColor: '#ffffff',
-                color: '#64748b',
+                color: '#1e293b',
                 fontSize: '14px',
                 fontWeight: '500',
                 cursor: 'pointer',
@@ -199,7 +199,7 @@ const PropertyRecordDetailPage: React.FC = () => {
               display: 'block',
               fontSize: '13px',
               fontWeight: '500',
-              color: '#64748b',
+              color: '#1e293b',
               marginBottom: '6px',
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             }}>
@@ -222,7 +222,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -245,7 +245,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -269,7 +269,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -293,7 +293,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -317,7 +317,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -341,7 +341,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -365,7 +365,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                 display: 'block',
                 fontSize: '13px',
                 fontWeight: '500',
-                color: '#64748b',
+                color: '#1e293b',
                 marginBottom: '6px',
                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
               }}>
@@ -426,7 +426,7 @@ const PropertyRecordDetailPage: React.FC = () => {
             </h3>
             <p style={{
               fontSize: '15px',
-              color: '#64748b',
+              color: '#1e293b',
               marginBottom: '24px',
               fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             }}>
@@ -440,7 +440,7 @@ const PropertyRecordDetailPage: React.FC = () => {
                   border: '1px solid #e2e8f0',
                   borderRadius: '8px',
                   backgroundColor: '#ffffff',
-                  color: '#64748b',
+                  color: '#1e293b',
                   fontSize: '14px',
                   fontWeight: '500',
                   cursor: 'pointer',

@@ -13,7 +13,7 @@ interface ParentEntityListProps {
 
 const getDomainDisplay = (domain: DomainType): { title: string; icon: JSX.Element; emptyMessage: string } => {
   const iconSize = 48;
-  const iconColor = '#94a3b8';
+  const iconColor = '#334155';
 
   switch (domain) {
     case 'vehicles':
@@ -162,7 +162,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
               animation: 'spin 1s linear infinite'
             }}
           />
-          <p style={{ color: '#64748b', marginTop: '12px', fontSize: '14px' }}>Loading {displayInfo.title.toLowerCase()}...</p>
+          <p style={{ color: '#1e293b', marginTop: '12px', fontSize: '14px' }}>Loading {displayInfo.title.toLowerCase()}...</p>
         </div>
       </>
     );
@@ -197,7 +197,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
         <p
           style={{
             fontSize: '14px',
-            color: '#64748b',
+            color: '#1e293b',
             marginBottom: '32px',
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             maxWidth: '400px',
@@ -253,7 +253,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
               <p
                 style={{
                   fontSize: '12px',
-                  color: '#94a3b8',
+                  color: '#334155',
                   margin: '8px 0 0 0',
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                 }}
@@ -285,7 +285,7 @@ const ParentEntityList: React.FC<ParentEntityListProps> = ({
               <p
                 style={{
                   fontSize: '12px',
-                  color: '#94a3b8',
+                  color: '#334155',
                   margin: 0,
                   fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                 }}

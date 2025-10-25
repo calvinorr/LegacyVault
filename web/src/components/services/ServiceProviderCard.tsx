@@ -90,7 +90,7 @@ export default function ServiceProviderCard({
                 marginBottom: '8px',
               }}
             >
-              <Phone size={16} strokeWidth={1.5} style={{ color: '#64748b' }} />
+              <Phone size={16} strokeWidth={1.5} style={{ color: '#1e293b' }} />
               <span
                 style={{
                   fontSize: '15px',
@@ -136,7 +136,7 @@ export default function ServiceProviderCard({
                 gap: '12px',
               }}
             >
-              <Mail size={16} strokeWidth={1.5} style={{ color: '#64748b' }} />
+              <Mail size={16} strokeWidth={1.5} style={{ color: '#1e293b' }} />
               <span
                 style={{
                   fontSize: '15px',
@@ -195,8 +195,8 @@ export default function ServiceProviderCard({
             border: '1px solid #f1f5f9',
           }}
         >
-          <Calendar size={14} strokeWidth={1.5} style={{ color: '#64748b' }} />
-          <span style={{ fontSize: '13px', color: '#64748b' }}>
+          <Calendar size={14} strokeWidth={1.5} style={{ color: '#1e293b' }} />
+          <span style={{ fontSize: '13px', color: '#1e293b' }}>
             Last service:{' '}
             <span style={{ fontWeight: '500', color: '#0f172a' }}>
               {new Date(provider.lastServiceDate).toLocaleDateString('en-GB')}

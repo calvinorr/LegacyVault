@@ -209,7 +209,7 @@ export default function Bills() {
   const secondaryButtonStyle = {
     ...buttonStyle,
     backgroundColor: "#ffffff",
-    color: "#64748b",
+    color: "#1e293b",
     border: "1px solid #e2e8f0",
   };
 
@@ -232,13 +232,13 @@ export default function Bills() {
   const loadingStyle = {
     textAlign: "center" as const,
     padding: "80px 40px",
-    color: "#64748b",
+    color: "#1e293b",
   };
 
   const emptyStateStyle = {
     textAlign: "center" as const,
     padding: "80px 40px",
-    color: "#64748b",
+    color: "#1e293b",
   };
 
   if (loading) {
@@ -255,7 +255,7 @@ export default function Bills() {
             borderRadius: "16px",
             margin: "0 auto 24px",
           }}>
-            <Receipt size={28} color="#64748b" strokeWidth={1.5} />
+            <Receipt size={28} color="#1e293b" strokeWidth={1.5} />
           </div>
           <p style={{
             fontSize: "16px",
@@ -285,7 +285,7 @@ export default function Bills() {
         <div style={searchStyle}>
           <Search
             size={18}
-            color="#64748b"
+            color="#1e293b"
             style={{
               position: "absolute",
               left: "14px",
@@ -371,7 +371,7 @@ export default function Bills() {
             borderRadius: "16px",
             margin: "0 auto 24px",
           }}>
-            <Receipt size={28} color="#64748b" strokeWidth={1.5} />
+            <Receipt size={28} color="#1e293b" strokeWidth={1.5} />
           </div>
           <p style={{
             fontSize: "16px",
@@ -434,7 +434,7 @@ export default function Bills() {
 
               <p style={{
                 fontSize: "14px",
-                color: "#64748b",
+                color: "#1e293b",
                 marginBottom: "12px",
                 fontFamily: "Inter, system-ui, -apple-system, sans-serif",
               }}>
@@ -459,7 +459,7 @@ export default function Bills() {
               {bill.accountDetails?.billingFrequency && (
                 <p style={{
                   fontSize: "12px",
-                  color: "#94a3b8",
+                  color: "#334155",
                   margin: "0",
                   fontFamily: "Inter, system-ui, -apple-system, sans-serif",
                 }}>

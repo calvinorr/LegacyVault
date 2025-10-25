@@ -71,15 +71,15 @@ const RenewalDashboardPage: React.FC = () => {
             <h1 className="text-3xl font-semibold text-slate-900 mb-2">
               Upcoming Renewals
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-800">
               Track renewal dates across all your household domains
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Filter className="w-5 h-5 text-slate-500" />
-          <span className="text-sm text-slate-600">
+          <Filter className="w-5 h-5 text-slate-800" />
+          <span className="text-sm text-slate-800">
             {renewals?.length || 0} renewals
           </span>
         </div>
@@ -88,12 +88,12 @@ const RenewalDashboardPage: React.FC = () => {
       <RenewalFilters filters={filters} onChange={setFilters} />
 
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-slate-800">
           Loading renewals...
         </div>
       ) : renewals?.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-slate-600 mb-4">
+          <p className="text-slate-800 mb-4">
             No upcoming renewals. Add records with renewal dates to see them here.
           </p>
         </div>

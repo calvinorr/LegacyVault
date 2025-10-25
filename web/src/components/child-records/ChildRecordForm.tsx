@@ -281,11 +281,11 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: '#94a3b8',
+              color: '#334155',
               padding: '4px'
             }}
             onMouseEnter={(e) => e.currentTarget.style.color = '#f1f5f9'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#334155'}
           >
             <X size={24} />
           </button>
@@ -302,7 +302,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
             <div style={{ padding: '24px' }}>
             <p style={{
               fontSize: '14px',
-              color: '#94a3b8',
+              color: '#334155',
               marginBottom: '16px',
               margin: '0 0 16px 0'
             }}>
@@ -665,7 +665,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                       {errors.serviceType.message}
                     </p>
                   )}
-                  <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px', fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '12px', color: '#334155', marginTop: '4px', fontStyle: 'italic' }}>
                     What service do they provide?
                   </p>
                 </div>
@@ -705,7 +705,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                       />
                     )}
                   />
-                  <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px', fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '12px', color: '#334155', marginTop: '4px', fontStyle: 'italic' }}>
                     Trading name or person's name
                   </p>
                 </div>
@@ -909,7 +909,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
               <p style={{
                 fontSize: '12px',
                 fontWeight: '500',
-                color: '#94a3b8',
+                color: '#334155',
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
                 margin: '0 0 8px 0'
@@ -923,7 +923,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                   <label style={{
                     display: 'block',
                     fontSize: '12px',
-                    color: '#94a3b8',
+                    color: '#334155',
                     marginBottom: '2px'
                   }}>
                     Amount
@@ -958,7 +958,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                 <label style={{
                   display: 'block',
                   fontSize: '12px',
-                  color: '#94a3b8',
+                  color: '#334155',
                   marginBottom: '2px'
                 }}>
                   Notes
@@ -1027,7 +1027,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                         <div style={{ fontSize: '13px', fontWeight: '500', color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {record.attachment.filename}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                        <div style={{ fontSize: '11px', color: '#334155', marginTop: '2px' }}>
                           Uploaded {new Date(record.attachment.uploadedAt).toLocaleDateString()}
                         </div>
                       </div>
@@ -1146,7 +1146,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                           <FileText size={18} color="#cbd5e1" />
                           <div style={{ flex: 1 }}>
                             <div style={{ fontSize: '13px', color: '#e2e8f0' }}>{selectedFile.name}</div>
-                            <div style={{ fontSize: '11px', color: '#94a3b8' }}>
+                            <div style={{ fontSize: '11px', color: '#334155' }}>
                               {(selectedFile.size / 1024).toFixed(1)} KB
                             </div>
                           </div>
@@ -1159,7 +1159,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                             style={{
                               flex: 1,
                               padding: '8px 12px',
-                              backgroundColor: uploadingFile ? '#64748b' : '#3b82f6',
+                              backgroundColor: uploadingFile ? '#1e293b' : '#3b82f6',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',
@@ -1307,7 +1307,7 @@ export const ChildRecordForm: React.FC<ChildRecordFormProps> = ({
                   alignItems: 'center',
                   gap: '6px',
                   padding: '10px 16px',
-                  backgroundColor: isLoading ? '#94a3b8' : '#3b82f6',
+                  backgroundColor: isLoading ? '#334155' : '#3b82f6',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',

@@ -66,7 +66,7 @@ export default function BankImport() {
           </h1>
           <p style={{ 
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
             lineHeight: '1.5'
           }}>
@@ -236,7 +236,7 @@ export default function BankImport() {
     borderRadius: '12px',
     border: '1px solid #e2e8f0',
     backgroundColor: '#ffffff',
-    color: '#64748b',
+    color: '#1e293b',
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: '500',
@@ -268,7 +268,7 @@ export default function BankImport() {
       case "failed":
         return "#dc2626";
       default:
-        return "#64748b";
+        return "#1e293b";
     }
   };
 
@@ -322,7 +322,7 @@ export default function BankImport() {
             </div>
             <p style={{
               fontSize: '16px',
-              color: '#64748b',
+              color: '#1e293b',
               fontWeight: '400',
               margin: '0',
               lineHeight: '1.5'
@@ -348,7 +348,7 @@ export default function BankImport() {
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
-                <Clock size={28} color="#64748b" strokeWidth={1.5} />
+                <Clock size={28} color="#1e293b" strokeWidth={1.5} />
               </div>
               <div style={{
                 fontSize: '18px',
@@ -360,7 +360,7 @@ export default function BankImport() {
               </div>
               <div style={{
                 fontSize: '14px',
-                color: '#64748b'
+                color: '#1e293b'
               }}>
                 Fetching import sessions
               </div>
@@ -400,7 +400,7 @@ export default function BankImport() {
           </div>
           <p style={{
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             fontWeight: '400',
             margin: '0',
             lineHeight: '1.5'
@@ -456,7 +456,7 @@ export default function BankImport() {
           </div>
           <p style={{
             fontSize: '16px',
-            color: '#64748b',
+            color: '#1e293b',
             marginBottom: '24px',
             lineHeight: '1.5'
           }}>
@@ -530,7 +530,7 @@ export default function BankImport() {
           {selectedFile && (
             <div style={{
               fontSize: '12px',
-              color: '#64748b',
+              color: '#1e293b',
               marginTop: '12px',
               padding: '8px 12px',
               backgroundColor: '#f8fafc',
@@ -673,7 +673,7 @@ export default function BankImport() {
             <div style={{
               textAlign: 'center',
               padding: '80px 40px',
-              color: '#64748b'
+              color: '#1e293b'
             }}>
               <div style={{
                 display: 'flex',
@@ -685,7 +685,7 @@ export default function BankImport() {
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
-                <FileText size={28} color="#64748b" strokeWidth={1.5} />
+                <FileText size={28} color="#1e293b" strokeWidth={1.5} />
               </div>
               <p style={{
                 fontSize: '16px',
@@ -700,7 +700,7 @@ export default function BankImport() {
             <div style={{
               textAlign: 'center',
               padding: '80px 40px',
-              color: '#64748b'
+              color: '#1e293b'
             }}>
               <div style={{
                 display: 'flex',
@@ -712,7 +712,7 @@ export default function BankImport() {
                 borderRadius: '16px',
                 margin: '0 auto 24px'
               }}>
-                <FileText size={28} color="#64748b" strokeWidth={1.5} />
+                <FileText size={28} color="#1e293b" strokeWidth={1.5} />
               </div>
               <p style={{
                 fontSize: '16px',
@@ -778,10 +778,10 @@ export default function BankImport() {
                           gap: '8px',
                           marginBottom: '4px'
                         }}>
-                          <Calendar size={14} color="#64748b" strokeWidth={1.5} />
+                          <Calendar size={14} color="#1e293b" strokeWidth={1.5} />
                           <span style={{
                             fontSize: '14px',
-                            color: '#64748b',
+                            color: '#1e293b',
                             fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                           }}>
                             {new Date(session.createdAt).toLocaleDateString('en-GB')}
@@ -793,10 +793,10 @@ export default function BankImport() {
                             alignItems: 'center',
                             gap: '8px'
                           }}>
-                            <Building2 size={14} color="#64748b" strokeWidth={1.5} />
+                            <Building2 size={14} color="#1e293b" strokeWidth={1.5} />
                             <span style={{
                               fontSize: '14px',
-                              color: '#64748b',
+                              color: '#1e293b',
                               fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                             }}>
                               {session.bank_name}
@@ -873,7 +873,7 @@ export default function BankImport() {
                         </div>
                         <div style={{
                           fontSize: '12px',
-                          color: '#64748b',
+                          color: '#1e293b',
                           fontWeight: '500',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                         }}>
@@ -957,7 +957,7 @@ export default function BankImport() {
                         </div>
                         <div style={{
                           fontSize: '13px',
-                          color: '#64748b',
+                          color: '#1e293b',
                           fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
                         }}>
                           View and process transactions in the Transaction History page

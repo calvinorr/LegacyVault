@@ -48,7 +48,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
       case 'Important':
         return 'bg-amber-100 text-amber-800';
       default:
-        return 'bg-slate-100 text-slate-600';
+        return 'bg-slate-100 text-slate-800';
     }
   };
 
@@ -71,7 +71,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
           </div>
           <div>
             <h2 className="text-2xl font-semibold text-slate-900">{record.name}</h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-slate-800 mt-1">
               {RECORD_TYPE_LABELS[record.recordType] || record.recordType}
             </p>
           </div>
@@ -79,7 +79,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
         <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-slate-800 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <Pencil className="w-5 h-5" />
           </button>
@@ -88,7 +88,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
             className={`p-2 rounded-lg transition-colors ${
               showDeleteConfirm
                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'text-slate-600 hover:text-red-700 hover:bg-red-50'
+                : 'text-slate-800 hover:text-red-700 hover:bg-red-50'
             }`}
           >
             <Trash2 className="w-5 h-5" />
@@ -120,13 +120,13 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.provider && (
                 <div>
-                  <p className="text-sm text-slate-600">Provider</p>
+                  <p className="text-sm text-slate-800">Provider</p>
                   <p className="text-slate-900 font-medium">{record.provider}</p>
                 </div>
               )}
               {record.policyNumber && (
                 <div>
-                  <p className="text-sm text-slate-600">Policy Number</p>
+                  <p className="text-sm text-slate-800">Policy Number</p>
                   <p className="text-slate-900 font-medium">{record.policyNumber}</p>
                 </div>
               )}
@@ -144,7 +144,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.coverageAmount !== undefined && record.coverageAmount !== null && (
                 <div>
-                  <p className="text-sm text-slate-600">Coverage Amount</p>
+                  <p className="text-sm text-slate-800">Coverage Amount</p>
                   <p className="text-slate-900 font-semibold text-lg">
                     {formatCurrency(record.coverageAmount)}
                   </p>
@@ -152,7 +152,7 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
               )}
               {record.monthlyPremium !== undefined && record.monthlyPremium !== null && (
                 <div>
-                  <p className="text-sm text-slate-600">Monthly Premium</p>
+                  <p className="text-sm text-slate-800">Monthly Premium</p>
                   <p className="text-slate-900 font-semibold text-lg">
                     {formatCurrency(record.monthlyPremium)}
                   </p>
@@ -171,13 +171,13 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.startDate && (
                 <div>
-                  <p className="text-sm text-slate-600">Start Date</p>
+                  <p className="text-sm text-slate-800">Start Date</p>
                   <p className="text-slate-900 font-medium">{formatDate(record.startDate)}</p>
                 </div>
               )}
               {record.renewalDate && (
                 <div>
-                  <p className="text-sm text-slate-600">Renewal Date</p>
+                  <p className="text-sm text-slate-800">Renewal Date</p>
                   <p className="text-slate-900 font-medium">{formatDate(record.renewalDate)}</p>
                 </div>
               )}
@@ -194,13 +194,13 @@ const InsuranceRecordDetail: React.FC<InsuranceRecordDetailProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {record.contactPhone && (
                 <div>
-                  <p className="text-sm text-slate-600">Phone</p>
+                  <p className="text-sm text-slate-800">Phone</p>
                   <p className="text-slate-900">{record.contactPhone}</p>
                 </div>
               )}
               {record.contactEmail && (
                 <div>
-                  <p className="text-sm text-slate-600">Email</p>
+                  <p className="text-sm text-slate-800">Email</p>
                   <p className="text-slate-900">{record.contactEmail}</p>
                 </div>
               )}
