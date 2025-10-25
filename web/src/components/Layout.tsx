@@ -63,7 +63,8 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     return location.pathname.startsWith('/bank-import') ||
            location.pathname.startsWith('/transactions') ||
            location.pathname.startsWith('/admin') ||
-           location.pathname.startsWith('/domains');
+           location.pathname.startsWith('/domains') ||
+           location.pathname.startsWith('/settings');
   };
 
   const navStyle = {
@@ -228,11 +229,6 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             Emergency
           </Link>
 
-          <Link to="/settings" style={navLinkStyle(isPathActive("/settings"))}>
-            <Settings size={18} strokeWidth={1.5} />
-            Settings
-          </Link>
-
           {/* Admin Dropdown - Only visible for admin users */}
           {user?.role === 'admin' && (
             <div style={{ position: "relative" }} ref={adminDropdownRef}>
@@ -362,6 +358,35 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                   >
                     <Activity size={18} strokeWidth={1.5} />
                     System Status
+                  </Link>
+
+                  <div
+                    style={{
+                      height: "1px",
+                      backgroundColor: "#0f172a",
+                      margin: "8px 0",
+                    }}
+                  />
+
+                  <Link
+                    to="/settings"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/settings") ? "#0f172a" : "#1e293b",
+                      backgroundColor: isPathActive("/settings") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <Settings size={18} strokeWidth={1.5} />
+                    Settings
                   </Link>
                 </div>
               )}
