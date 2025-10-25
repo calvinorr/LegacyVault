@@ -185,27 +185,27 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             Home
           </Link>
 
-          <Link to="/vehicles-new" style={navLinkStyle(isPathActive("/vehicles-new"))}>
+          <Link to="/vehicles" style={navLinkStyle(isPathActive("/vehicles"))}>
             <Car size={18} strokeWidth={1.5} />
             Vehicles
           </Link>
 
-          <Link to="/properties-new" style={navLinkStyle(isPathActive("/properties-new"))}>
+          <Link to="/properties" style={navLinkStyle(isPathActive("/properties"))}>
             <Home size={18} strokeWidth={1.5} />
             Properties
           </Link>
 
-          <Link to="/employments-new" style={navLinkStyle(isPathActive("/employments-new"))}>
+          <Link to="/employments" style={navLinkStyle(isPathActive("/employments"))}>
             <Briefcase size={18} strokeWidth={1.5} />
             Employments
           </Link>
 
-          <Link to="/services-new" style={navLinkStyle(isPathActive("/services-new"))}>
+          <Link to="/services" style={navLinkStyle(isPathActive("/services"))}>
             <Wrench size={18} strokeWidth={1.5} />
             Services
           </Link>
 
-          <Link to="/finance-new" style={navLinkStyle(isPathActive("/finance-new"))}>
+          <Link to="/finance" style={navLinkStyle(isPathActive("/finance"))}>
             <Landmark size={18} strokeWidth={1.5} />
             Finance
           </Link>

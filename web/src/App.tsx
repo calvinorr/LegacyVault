@@ -74,9 +74,10 @@ export default function App(): JSX.Element {
         />
         {/* /dashboard redirects to home - using HomePage as unified dashboard */}
         <Route path="/dashboard" element={<Navigate to="/" replace />} />
-        {/* New parent entity routes */}
+
+        {/* Parent entity routes - clean URLs */}
         <Route
-          path="/vehicles-new"
+          path="/vehicles"
           element={
             <ProtectedRoute>
               <Vehicles />
@@ -84,7 +85,7 @@ export default function App(): JSX.Element {
           }
         />
         <Route
-          path="/properties-new"
+          path="/properties"
           element={
             <ProtectedRoute>
               <Properties />
@@ -92,7 +93,7 @@ export default function App(): JSX.Element {
           }
         />
         <Route
-          path="/employments-new"
+          path="/employments"
           element={
             <ProtectedRoute>
               <Employments />
@@ -100,7 +101,7 @@ export default function App(): JSX.Element {
           }
         />
         <Route
-          path="/services-new"
+          path="/services"
           element={
             <ProtectedRoute>
               <Services />
@@ -108,7 +109,7 @@ export default function App(): JSX.Element {
           }
         />
         <Route
-          path="/finance-new"
+          path="/finance"
           element={
             <ProtectedRoute>
               <Finance />
@@ -156,14 +157,16 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
-        {/* Redirects from old routes to new hierarchical structure (Epic 6 migration) */}
-        <Route path="/vehicles" element={<Navigate to="/vehicles-new" replace />} />
-        <Route path="/property" element={<Navigate to="/properties-new" replace />} />
-        <Route path="/employment" element={<Navigate to="/employments-new" replace />} />
-        <Route path="/services" element={<Navigate to="/services-new" replace />} />
+        {/* Legacy redirects for old route names */}
+        <Route path="/vehicles-new" element={<Navigate to="/vehicles" replace />} />
+        <Route path="/properties-new" element={<Navigate to="/properties" replace />} />
+        <Route path="/employments-new" element={<Navigate to="/employments" replace />} />
+        <Route path="/services-new" element={<Navigate to="/services" replace />} />
+        <Route path="/finance-new" element={<Navigate to="/finance" replace />} />
+        <Route path="/property" element={<Navigate to="/properties" replace />} />
+        <Route path="/employment" element={<Navigate to="/employments" replace />} />
 
-        {/* Legacy domain routes (deprecated - redirects added above for main views) */}
-        {/* Keeping detail routes temporarily for any existing bookmarks */}
+        {/* Legacy domain routes (deprecated) */}
         <Route
           path="/property/:recordId"
           element={
@@ -180,9 +183,8 @@ export default function App(): JSX.Element {
             </ProtectedRoute>
           }
         />
-        {/* Legacy Finance routes - redirect to new hierarchical system */}
-        <Route path="/finance" element={<Navigate to="/finance-new" replace />} />
-        <Route path="/finance/:recordId" element={<Navigate to="/finance-new" replace />} />
+        {/* Legacy Finance detail routes - redirect to new hierarchical system */}
+        <Route path="/finance/:recordId" element={<Navigate to="/finance" replace />} />
         <Route
           path="/government"
           element={
