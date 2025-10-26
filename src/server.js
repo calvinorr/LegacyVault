@@ -102,50 +102,89 @@ app.use(ensureDbConnection);
 // IMPORTANT: We create a lazy-initialized session middleware to ensure DB connection
 const sessionMiddleware = (() => {
   let middleware = null;
+  let initializationPromise = null;
   
   return async (req, res, next) => {
     if (!middleware) {
-      try {
-        // Ensure MongoDB is connected first
-        await db.connect();
-        
-        // Use the existing mongoose connection for MongoStore
-        // This prevents dual connection issues in serverless environments
-        const mongoose = require('mongoose');
-        
-        console.log('Initializing session store with shared connection...');
-        middleware = session({
-          secret: process.env.SESSION_SECRET,
-          resave: false,
-          saveUninitialized: false,
-          store: MongoStore.create({
-            client: mongoose.connection.getClient(),
-            ttl: 24 * 60 * 60, // 1 day in seconds
-            touchAfter: 24 * 3600, // Lazy session update (in seconds)
-            crypto: {
-              secret: process.env.SESSION_SECRET // Encrypt session data
-            }
-          }),
-          cookie: {
-            secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-            httpOnly: true, // Prevent XSS attacks
-            maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-            sameSite: 'lax' // CSRF protection
+      // If initialization is already in progress, wait for it
+      if (initializationPromise) {
+        try {
+          await initializationPromise;
+        } catch (error) {
+          return res.status(503).json({ 
+            error: 'Session initialization failed. Please try again.' 
+          });
+        }
+      } else {
+        // Start initialization
+        initializationPromise = (async () => {
+          try {
+            // Ensure MongoDB is connected first
+            await db.connect();
+            
+            console.log('Initializing session store...');
+            
+            // Create session with MongoStore using mongoUrl
+            // This approach is more reliable in serverless environments
+            middleware = session({
+              secret: process.env.SESSION_SECRET,
+              resave: false,
+              saveUninitialized: false,
+              store: MongoStore.create({
+                mongoUrl: process.env.MONGO_URI,
+                ttl: 24 * 60 * 60, // 1 day in seconds
+                touchAfter: 24 * 3600, // Lazy session update (in seconds)
+                mongoOptions: {
+                  // Use same options as main connection for consistency
+                  serverSelectionTimeoutMS: 10000,
+                  socketTimeoutMS: 45000,
+                  maxPoolSize: 1, // Minimal pool for session store
+                  minPoolSize: 1
+                },
+                crypto: {
+                  secret: process.env.SESSION_SECRET // Encrypt session data
+                }
+              }),
+              cookie: {
+                secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+                httpOnly: true, // Prevent XSS attacks
+                maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production
+                domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined // Set domain for production
+              },
+              name: 'sessionId', // Custom session name
+              proxy: process.env.NODE_ENV === 'production' // Trust proxy in production
+            });
+            
+            console.log('Session store initialized successfully');
+            return middleware;
+          } catch (error) {
+            logger.error('Failed to initialize session store', {
+              error: error.message,
+              stack: error.stack
+            });
+            throw error;
           }
-        });
-        console.log('Session store initialized successfully');
-      } catch (error) {
-        logger.error('Failed to initialize session store', {
-          error: error.message,
-          stack: error.stack
-        });
-        return res.status(503).json({ 
-          error: 'Session initialization failed. Please try again.' 
-        });
+        })();
+        
+        try {
+          await initializationPromise;
+        } catch (error) {
+          initializationPromise = null; // Reset on error
+          return res.status(503).json({ 
+            error: 'Session initialization failed. Please try again.' 
+          });
+        }
       }
     }
     
-    middleware(req, res, next);
+    if (middleware) {
+      middleware(req, res, next);
+    } else {
+      return res.status(503).json({ 
+        error: 'Session middleware not available.' 
+      });
+    }
   };
 })();
 
