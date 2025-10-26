@@ -692,3 +692,218 @@ Ready to begin Services Directory & Transaction-to-Entry Workflow once Story 1.6
 - Story 1.9: Data Migration from legacy system
 - Story 1.10: Legacy endpoint cleanup
 - Story 1.11: Performance optimization and monitoring
+
+---
+
+## Git Branching Safety Guide
+
+**CRITICAL**: Always verify your current branch and its relationship to main before starting work to avoid deploying old code.
+
+### Pre-Work Checklist (Run EVERY Session)
+
+**Before starting ANY development work, run these commands:**
+
+```bash
+# 1. Check current branch
+git branch --show-current
+
+# 2. Check git status (clean working tree?)
+git status
+
+# 3. View branch relationship to main
+git log --oneline --graph --all -10
+
+# 4. Compare current branch with main
+git diff main...HEAD --name-only | head -20
+
+# 5. Check when this branch diverged from main
+git merge-base main HEAD | xargs git log --oneline -1
+```
+
+**Document the results:**
+- Current branch: `_______`
+- Last commit on current branch: `_______`
+- Diverged from main at: `_______`
+- Files different from main: `_______`
+
+### Common Branching Pitfalls
+
+**❌ DANGER: Creating a feature branch from an old state**
+```bash
+# BAD: Creating JWT branch from main when latest work is on epic-5
+git checkout main
+git checkout -b feature/jwt-auth  # ← Creates branch from OLD codebase!
+```
+
+**✅ SAFE: Check what you're branching from first**
+```bash
+# GOOD: Verify you're on the right base branch first
+git branch -a                      # List all branches
+git log --oneline -5               # Check recent commits
+git diff epic-5 main --name-only   # Compare branches
+git checkout epic-5                # Switch to latest work
+git checkout -b feature/jwt-auth   # ← Creates branch from LATEST codebase
+```
+
+### Branch Merge Strategy
+
+**When you have parallel work on different branches:**
+
+1. **Identify the "newest" branch** (has the latest features)
+2. **Merge changes INTO the newest branch**, not the other way around
+
+**Example: JWT work on `feature/jwt-auth`, latest UI on `epic-5`**
+
+```bash
+# ✅ CORRECT: Merge JWT into epic-5
+git checkout epic-5
+git merge feature/jwt-auth
+
+# ❌ WRONG: Merging epic-5 into JWT would create a branch with old UI!
+git checkout feature/jwt-auth  # DON'T DO THIS
+git merge epic-5               # This puts old code on top
+```
+
+### Deployment Safety Checklist
+
+**Before deploying to production, ALWAYS verify:**
+
+```bash
+# 1. What branch am I deploying?
+git branch --show-current
+
+# 2. What's the last commit on this branch?
+git log -1 --oneline
+
+# 3. Does this branch have the features I expect?
+git log --oneline -10
+
+# 4. What files are different from main?
+git diff main...HEAD --name-only | head -20
+
+# 5. Check key feature files exist
+ls -la src/utils/jwt.js           # JWT feature
+ls -la web/src/pages/Vehicles.tsx  # Domain UI feature
+```
+
+**If ANY of these don't look right, STOP and investigate before deploying!**
+
+### Recovery from Wrong Branch Deployment
+
+**If you accidentally deployed old code:**
+
+1. **Don't panic** - The correct code still exists on another branch
+2. **Find the branch with the latest code:**
+   ```bash
+   git branch -a
+   git log --all --oneline --graph -20
+   ```
+3. **Merge or cherry-pick the missing work:**
+   ```bash
+   git checkout <correct-branch>
+   git merge <branch-with-old-code>  # Resolve conflicts
+   ```
+4. **Redeploy from the corrected branch**
+
+### Branch Naming Convention
+
+To avoid confusion, use descriptive branch names that indicate what's IN the branch:
+
+**✅ GOOD:**
+- `epic-5-transaction-ledger` (clearly shows this has epic-5 work)
+- `feature/jwt-auth-on-epic-5` (shows it's based on epic-5)
+- `feature/jwt-authentication` (describes the feature)
+
+**❌ BAD:**
+- `fix-auth` (unclear what's in this branch)
+- `updates` (too vague)
+- `test` (doesn't describe the work)
+
+### Session Documentation Template
+
+**At the start of EVERY session, document:**
+
+```markdown
+## Session Start: [DATE]
+
+**Current Branch:** [branch name]
+**Last Commit:** [commit message]
+**Diverged from main at:** [commit hash + message]
+**Key Features on this branch:**
+- Feature 1
+- Feature 2
+
+**Verified before starting:**
+- [ ] Checked current branch
+- [ ] Compared with main
+- [ ] Confirmed expected features present
+- [ ] Clean working directory
+```
+
+### Critical Files to Check
+
+**Before deploying, verify these key files match your expectations:**
+
+**Backend:**
+- `src/server.js` - Should have JWT middleware if JWT is implemented
+- `src/auth/google.js` - Should have correct auth strategy
+- `src/routes/domains.js` - Should exist if domain UI is implemented
+
+**Frontend:**
+- `web/src/pages/Vehicles.tsx` - Should exist if domain UI is implemented
+- `web/src/pages/Properties.tsx` - Should exist if domain UI is implemented
+- `web/dist/index.html` - Check build timestamp is recent
+
+### Incident: October 26, 2025 - JWT Reverting to Old UI
+
+**What Happened:**
+- JWT authentication was implemented on a branch created from `main`
+- Latest UI work (domain-based: Vehicles, Properties, Services) was on `epic-5-transaction-ledger`
+- The branches had diverged - JWT branch had old UI (Accounts, Contacts, Documents)
+- Deploying JWT branch to production showed the OLD UI instead of the new domain UI
+
+**Root Cause:**
+- JWT work started from `main` which didn't have epic-5 changes
+- Didn't verify what was on the JWT branch before deploying
+- Assumed all recent work would be included
+
+**Resolution:**
+1. Checked out `epic-5-transaction-ledger` branch
+2. Manually copied JWT files from `feature/jwt-authentication` branch
+3. Applied JWT changes to epic-5 branch
+4. Deployed epic-5 with JWT to production
+5. Verified domain UI (Vehicles, Properties, Finance, Services) was present
+
+**Lesson Learned:**
+- ALWAYS check what branch you're working from
+- ALWAYS verify the branch has the expected features before deploying
+- When adding features, start from the branch with the LATEST work
+- Document branch relationships in CLAUDE.md
+
+### Workaround: Pre-Built Frontend
+
+**Current Deployment Strategy (due to Vercel vite installation issue):**
+
+After hours of troubleshooting, we discovered that Vercel's build environment cannot install the `vite` package specifically, despite successfully installing 139 other packages including react, tailwindcss, etc.
+
+**Current Approach:**
+1. Build frontend locally: `cd web && npm run build`
+2. Commit the `web/dist` folder to git (normally ignored, but we added `!web/dist/` exception)
+3. Vercel deployment skips build and uses the committed `web/dist` folder
+4. **IMPORTANT**: Rebuild and commit `web/dist` after ANY frontend changes!
+
+**When to rebuild:**
+```bash
+# After modifying ANY file in web/src:
+cd web
+npm run build
+cd ..
+git add -f web/dist
+git commit -m "Rebuild frontend after [describe changes]"
+git push
+```
+
+**Future Investigation:**
+- The vite package installation issue appears to be a Vercel platform bug
+- File `build-frontend.js` contains debugging code for future investigation
+- Once Vercel fixes the issue, we can return to normal build process
