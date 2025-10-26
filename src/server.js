@@ -94,6 +94,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Ensure database connection FIRST (critical for serverless and session store)
+app.use(ensureDbConnection);
+
 // Express session with MongoDB store (production-ready)
 // Note: SESSION_SECRET is validated on startup - no fallback for security
 app.use(session({
@@ -116,9 +119,6 @@ app.use(session({
 configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Ensure database connection before handling requests (critical for serverless)
-app.use(ensureDbConnection);
 
 // Connect to MongoDB at startup (for local development)
 // In serverless, the middleware above ensures connection per request
