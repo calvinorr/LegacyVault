@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon --watch src --exec node src/server.js",
-    "build": "cd web && npm ci && npm run build",
+    "build": "npm ci --prefix web && npm run build --prefix web",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
