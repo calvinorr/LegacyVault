@@ -33,6 +33,7 @@ tmp/
 
 # Build output
 dist/
+!web/dist/
 build/
 coverage/
 

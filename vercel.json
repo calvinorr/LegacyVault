@@ -1,4 +1,4 @@
 {
-  "buildCommand": "cd web && rm -rf node_modules .npmrc package-lock.json && npm config set registry https://registry.npmjs.org/ && npm install vite@5.4.19 --force && npm install && cd .. && node build-frontend.js",
+  "buildCommand": "echo 'Using pre-built frontend from web/dist'",
   "outputDirectory": "web/dist"
 }
