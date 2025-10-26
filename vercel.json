@@ -1,4 +1,4 @@
 {
-  "buildCommand": "cd web && rm -rf node_modules && npm install && cd .. && node build-frontend.js",
+  "buildCommand": "echo '===WEB PACKAGE.JSON===' && cat web/package.json && echo '===END PACKAGE.JSON===' && cd web && rm -rf node_modules && npm install && cd .. && node build-frontend.js",
   "outputDirectory": "web/dist"
 }
