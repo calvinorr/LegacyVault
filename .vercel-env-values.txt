@@ -1,0 +1,22 @@
+# Vercel Environment Variables
+# Copy/paste these values when prompted
+
+# Production SESSION_SECRET (generated fresh)
+SESSION_SECRET=e7cc3f35916f89298d595f4e592e1f828669589516abb169925cae6f12dad2ba
+
+# MongoDB Atlas (from your .env)
+MONGO_URI=mongodb+srv://calvinorr_db_user:gabrA0XxpJ6T1O33@cluster0.yihimzs.mongodb.net/household_vault?retryWrites=true&w=majority&appName=Cluster0
+
+# Google OAuth (from your .env)
+GOOGLE_CLIENT_ID=86155620173-2741kj7fqjasrf1qhr49cvt894429lmn.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+# Node environment
+NODE_ENV=production
+
+# ⚠️ Set these AFTER first deployment with your actual Vercel URL:
+# GOOGLE_CALLBACK_URL=https://YOUR-URL.vercel.app/auth/google/callback
+# FRONTEND_URL=https://YOUR-URL.vercel.app
+# ALLOWED_ORIGIN=https://YOUR-URL.vercel.app
+
+# NOTE: This file contains secrets - it's in .gitignore

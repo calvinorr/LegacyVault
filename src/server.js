@@ -4,10 +4,11 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const db = require('./db');
 const { configurePassport, router: authRouter } = require('./auth/google');
+const { authenticateToken, optionalAuth } = require('./middleware/jwtAuth');
 const usersRouter = require('./routes/users');
 const entriesRouter = require('./routes/entries');
 const importRouter = require('./routes/import');
@@ -18,110 +19,121 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Basic security middleware
-app.use(helmet());
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || true,
-  credentials: true,
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+    },
+  },
 }));
+
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+// In production, also allow any *.vercel.app subdomain
+if (process.env.NODE_ENV === 'production') {
+  console.log('Production CORS - Allowed origins:', allowedOrigins);
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl requests, or same-origin)
+    if (!origin) return callback(null, true);
+
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // In production, also allow any Vercel deployment URL
+    if (process.env.NODE_ENV === 'production' && origin.includes('.vercel.app')) {
+      console.log(`✅ Allowing Vercel deployment origin: ${origin}`);
+      return callback(null, true);
+    }
+
+    console.warn(`⚠️  Blocked CORS request from unauthorized origin: ${origin}`);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['set-cookie']
+}));
+
 app.use(express.json());
 
-// Cookie session (simple session for OAuth)
-app.use(cookieSession({
-  name: 'session',
-  keys: [process.env.SESSION_SECRET || 'replace-me'],
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
-}));
+// Cookie parser for JWT tokens
+app.use(cookieParser());
 
-// Compatibility shim for Passport when using cookie-session:
-// passport expects req.session.regenerate to exist (provided by express-session).
-// cookie-session doesn't implement regenerate; provide a no-op regenerate to
-// keep Passport happy in this simple dev scaffold. For production consider
-// switching to `express-session` with a proper store.
-app.use((req, res, next) => {
-  try {
-    if (req && req.session) {
-      if (typeof req.session.regenerate !== 'function') {
-        req.session.regenerate = function(cb) {
-          // cookie-session stores session in cookie; regenerating is a no-op here.
-          if (typeof cb === 'function') cb();
-        };
-      }
-      if (typeof req.session.save !== 'function') {
-        // passport may call req.session.save; provide a no-op for compatibility.
-        req.session.save = function(cb) {
-          if (typeof cb === 'function') cb();
-        };
-      }
-    }
-  } catch (err) {
-    // Do not block the request if session is unavailable
-  }
-  next();
-});
-
-// Configure Passport (from src/auth/google)
+// Configure Passport for Google OAuth (JWT version)
 configurePassport();
 app.use(passport.initialize());
-app.use(passport.session());
+// No passport.session() needed for JWT
 
 // Connect to MongoDB using helper
-db.connect().catch((err) => {
+db.connect().then(() => {
+  console.log('MongoDB connected');
+}).catch((err) => {
   console.error('MongoDB connection error:', err.message);
 });
-
-// Simple auth check middleware
-function requireAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json({ error: 'Unauthorized' });
-}
 
 // Routes
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Auth routes (mounted from src/auth/google)
+// Auth routes (Google OAuth + JWT endpoints)
 app.use('/auth', authRouter);
 
-// User management API (admin + self)
-app.use('/api/users', usersRouter);
+// Protected API routes with JWT authentication
+app.use('/api/users', authenticateToken, usersRouter);
+app.use('/api/entries', authenticateToken, entriesRouter);
+app.use('/api/import', authenticateToken, importRouter);
+app.use('/api/detection-rules', authenticateToken, detectionRulesRouter);
 
-// Entry CRUD API
-app.use('/api/entries', entriesRouter);
+// Categories API - use optional auth for backward compatibility
+app.use('/api/categories', optionalAuth, categoriesRouter);
 
-// Bank Import API
-app.use('/api/import', importRouter);
-
-// Detection Rules API  
-app.use('/api/detection-rules', detectionRulesRouter);
-
-// Categories API
-app.use('/api/categories', categoriesRouter);
-
+// Login page (for failed auth)
 app.get('/login', (req, res) => {
-  res.send('Login failed.'); // placeholder
+  res.send('Login failed. <a href="/auth/google">Try again</a>');
 });
 
-app.get('/logout', (req, res) => {
-  req.logout(() => {});
-  req.session = null;
-  res.redirect('/');
+// Dashboard endpoint (protected)
+app.get('/dashboard', authenticateToken, (req, res) => {
+  res.json({ 
+    message: 'Welcome to Household Finance Vault', 
+    user: {
+      id: req.userId,
+      email: req.userEmail
+    }
+  });
 });
 
-app.get('/dashboard', requireAuth, (req, res) => {
-  // Placeholder dashboard response
-  res.json({ message: 'Welcome to Household Finance Vault', user: req.user });
-});
+// Serve static files from React build (production) or public (development)
+const staticPath = process.env.NODE_ENV === 'production'
+  ? path.join(__dirname, '..', 'web', 'dist')
+  : path.join(__dirname, '..', 'public');
 
-// Static files / simple frontend placeholder
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(staticPath));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  const indexPath = process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, '..', 'web', 'dist', 'index.html')
+    : path.join(__dirname, '..', 'public', 'index.html');
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('JWT authentication enabled');
 });

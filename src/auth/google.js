@@ -1,14 +1,14 @@
 // src/auth/google.js
-// Google OAuth helper: configures Passport strategy and exports an Express router.
-// Replace the in-memory user handling with DB persistence (see src/models/user.js).
+// Google OAuth helper with JWT authentication instead of sessions
 
 const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const { generateAccessToken, generateRefreshToken, setTokenCookie, clearAuthCookies } = require('../utils/jwt');
 
 const router = express.Router();
 
-// Configure Passport strategy. Call this once during app startup.
+// Configure Passport strategy for JWT (no sessions)
 function configurePassport() {
   if (passport._strategy && passport._strategy('google')) {
     // strategy already configured
@@ -54,50 +54,128 @@ function configurePassport() {
     }
   }));
 
-  // Serialize only the DB id into the session to keep session small
+  // For JWT, we don't use sessions, so these are no-ops
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
 
-  // Deserialize by fetching user from DB
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const User = require('../models/user');
-      const user = await User.findById(id);
-      done(null, user);
-    } catch (err) {
-      done(err);
-    }
+  passport.deserializeUser((id, done) => {
+    done(null, { _id: id });
   });
-
 }
 
 // Auth routes
 router.get('/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
+  passport.authenticate('google', { 
+    scope: ['profile', 'email'],
+    session: false // Disable session for JWT
+  }));
 
+// Modified callback to issue JWT tokens instead of creating session
 router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+  passport.authenticate('google', { 
+    failureRedirect: '/login',
+    session: false // Disable session for JWT
+  }),
   (req, res) => {
-    // Successful authentication
+    // Check if user is approved
     if (!req.user.approved) {
       // User exists but not approved - redirect with message
       const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
       return res.redirect(`${frontend}?message=pending-approval`);
     }
     
+    // Generate JWT tokens
+    const accessToken = generateAccessToken(req.user);
+    const refreshToken = generateRefreshToken(req.user);
+    
+    // Set tokens in httpOnly cookies
+    setTokenCookie(res, 'accessToken', accessToken, false);
+    setTokenCookie(res, 'refreshToken', refreshToken, true);
+    
     // Redirect to the frontend dashboard
     const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
     res.redirect(frontend);
   });
 
-router.get('/logout', (req, res, next) => {
-  // Passport 0.6 requires a callback for logout
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    req.session = null;
-    res.redirect('/');
-  });
+// Logout route - clear JWT cookies
+router.get('/logout', (req, res) => {
+  // Clear JWT cookies
+  clearAuthCookies(res);
+  
+  // Redirect to home
+  const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
+  res.redirect(frontend);
+});
+
+// Refresh token endpoint
+router.post('/refresh', async (req, res) => {
+  try {
+    const { authenticateRefreshToken } = require('../middleware/jwtAuth');
+    
+    // Manually call the middleware
+    authenticateRefreshToken(req, res, async () => {
+      try {
+        // Load user from database
+        const User = require('../models/user');
+        const user = await User.findById(req.userId);
+        
+        if (!user || !user.approved) {
+          clearAuthCookies(res);
+          return res.status(401).json({ error: 'User not found or not approved' });
+        }
+        
+        // Generate new tokens
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+        
+        // Set new tokens in cookies
+        setTokenCookie(res, 'accessToken', accessToken, false);
+        setTokenCookie(res, 'refreshToken', refreshToken, true);
+        
+        res.json({ 
+          success: true,
+          user: {
+            id: user._id,
+            email: user.email,
+            displayName: user.displayName,
+            role: user.role
+          }
+        });
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+        res.status(500).json({ error: 'Failed to refresh token' });
+      }
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid refresh token' });
+  }
+});
+
+// Check auth status endpoint
+router.get('/status', async (req, res) => {
+  try {
+    const { authenticateToken } = require('../middleware/jwtAuth');
+    
+    // Manually call the middleware
+    authenticateToken(req, res, () => {
+      if (req.user) {
+        res.json({
+          authenticated: true,
+          user: {
+            id: req.user._id,
+            email: req.user.email,
+            displayName: req.user.displayName,
+            role: req.user.role
+          }
+        });
+      } else {
+        res.json({ authenticated: false });
+      }
+    });
+  } catch (error) {
+    res.json({ authenticated: false });
+  }
 });
 
 module.exports = {

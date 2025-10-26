@@ -3,13 +3,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 
-// Middleware to require authentication
-function requireAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    return next();
-  }
-  return res.status(401).json({ error: 'Unauthorized' });
-}
+// Note: authenticateToken middleware is already applied at the router level in server.js
+// So req.user and req.userId are already available here
 
 // Middleware to require approved user
 function requireApproved(req, res, next) {
@@ -28,24 +23,75 @@ function requireAdmin(req, res, next) {
 }
 
 // Get current user
-router.get('/me', requireAuth, (req, res) => {
-  res.json({ user: req.user });
+router.get('/me', async (req, res) => {
+  try {
+    // req.user is already populated by authenticateToken middleware
+    if (!req.user) {
+      // If user object not loaded, try to fetch it
+      const user = await User.findById(req.userId).select('-password');
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      return res.json({ 
+        user: {
+          id: user._id,
+          email: user.email,
+          displayName: user.displayName,
+          role: user.role,
+          approved: user.approved
+        }
+      });
+    }
+    
+    res.json({ 
+      user: {
+        id: req.user._id,
+        email: req.user.email,
+        displayName: req.user.displayName,
+        role: req.user.role,
+        approved: req.user.approved
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
 });
 
 // List users (admin)
-router.get('/', requireAuth, requireApproved, requireAdmin, async (req, res) => {
-  const users = await User.find().sort({ createdAt: -1 }).lean();
-  res.json({ users });
+router.get('/', requireApproved, requireAdmin, async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 }).lean();
+    res.json({ users });
+  } catch (error) {
+    console.error('Error listing users:', error);
+    res.status(500).json({ error: 'Failed to list users' });
+  }
 });
 
 // Approve user (admin)
-router.post('/:id/approve', requireAuth, requireApproved, requireAdmin, async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-  if (!user) return res.status(404).json({ error: 'Not found' });
-  user.approved = true;
-  await user.save();
-  res.json({ user });
+router.post('/:id/approve', requireApproved, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    user.approved = true;
+    await user.save();
+    
+    res.json({ 
+      user: {
+        id: user._id,
+        email: user.email,
+        displayName: user.displayName,
+        role: user.role,
+        approved: user.approved
+      }
+    });
+  } catch (error) {
+    console.error('Error approving user:', error);
+    res.status(500).json({ error: 'Failed to approve user' });
+  }
 });
 
 module.exports = router;
