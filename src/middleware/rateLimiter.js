@@ -7,13 +7,17 @@ const { authLogger } = require('../utils/logger');
 
 /**
  * Custom key generator that works with Vercel's proxy headers
+ * Uses the built-in keyGenerator to handle IPv6 properly
  */
-const vercelKeyGenerator = (req) => {
+const vercelKeyGenerator = (req, res) => {
   // Vercel uses x-forwarded-for or x-real-ip headers
-  return req.headers['x-forwarded-for']?.split(',')[0] ||
-         req.headers['x-real-ip'] ||
-         req.ip ||
-         'unknown';
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] ||
+             req.headers['x-real-ip'] ||
+             req.ip ||
+             'unknown';
+  
+  // Handle IPv6 addresses properly
+  return ip.replace(/:\d+[^:]*$/, '');
 };
 
 /**

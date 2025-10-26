@@ -99,29 +99,57 @@ app.use(ensureDbConnection);
 
 // Express session with MongoDB store (production-ready)
 // Note: SESSION_SECRET is validated on startup - no fallback for security
-// IMPORTANT: MongoStore uses mongoUrl with serverless-friendly options
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI,
-    ttl: 24 * 60 * 60, // 1 day in seconds
-    // Serverless-friendly connection options
-    mongoOptions: {
-      serverSelectionTimeoutMS: 10000, // 10 seconds (same as our main connection)
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10,
-      minPoolSize: 1
+// IMPORTANT: We create a lazy-initialized session middleware to ensure DB connection
+const sessionMiddleware = (() => {
+  let middleware = null;
+  
+  return async (req, res, next) => {
+    if (!middleware) {
+      try {
+        // Ensure MongoDB is connected first
+        await db.connect();
+        
+        // Use the existing mongoose connection for MongoStore
+        // This prevents dual connection issues in serverless environments
+        const mongoose = require('mongoose');
+        
+        console.log('Initializing session store with shared connection...');
+        middleware = session({
+          secret: process.env.SESSION_SECRET,
+          resave: false,
+          saveUninitialized: false,
+          store: MongoStore.create({
+            client: mongoose.connection.getClient(),
+            ttl: 24 * 60 * 60, // 1 day in seconds
+            touchAfter: 24 * 3600, // Lazy session update (in seconds)
+            crypto: {
+              secret: process.env.SESSION_SECRET // Encrypt session data
+            }
+          }),
+          cookie: {
+            secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+            httpOnly: true, // Prevent XSS attacks
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+            sameSite: 'lax' // CSRF protection
+          }
+        });
+        console.log('Session store initialized successfully');
+      } catch (error) {
+        logger.error('Failed to initialize session store', {
+          error: error.message,
+          stack: error.stack
+        });
+        return res.status(503).json({ 
+          error: 'Session initialization failed. Please try again.' 
+        });
+      }
     }
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-    httpOnly: true, // Prevent XSS attacks
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-    sameSite: 'lax' // CSRF protection
-  }
-}));
+    
+    middleware(req, res, next);
+  };
+})();
+
+app.use(sessionMiddleware);
 
 // Configure Passport (from src/auth/google)
 configurePassport();
