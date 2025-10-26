@@ -15,15 +15,16 @@ console.log('vite directory exists:', fs.existsSync(viteDir));
 
 if (!fs.existsSync(viteDir)) {
   console.error('ERROR: vite not found in web/node_modules');
-  console.error('Checking for vite-related packages:');
+  console.error('Checking for installed packages:');
   if (fs.existsSync(nodeModulesDir)) {
     const allDirs = fs.readdirSync(nodeModulesDir);
     console.error('Total packages:', allDirs.length);
-    console.error('All vite* packages:', allDirs.filter(d => d.toLowerCase().includes('vite')).join(', '));
-    console.error('All packages starting with v:', allDirs.filter(d => d.startsWith('v') || d.startsWith('V')).join(', '));
-    console.error('Checking package.json devDependencies...');
-    const pkgJson = require(path.join(webDir, 'package.json'));
-    console.error('vite in devDeps:', pkgJson.devDependencies.vite);
+    const nonScoped = allDirs.filter(d => !d.startsWith('@') && !d.startsWith('.'));
+    console.error('Non-scoped packages (first 30):', nonScoped.slice(0, 30).join(', '));
+    console.error('Packages with r:', allDirs.filter(d => d.startsWith('r')).join(', '));
+    console.error('Looking for: react, react-dom, vite, clsx, postcss');
+    console.error('react exists:', fs.existsSync(path.join(nodeModulesDir, 'react')));
+    console.error('vite exists:', fs.existsSync(path.join(nodeModulesDir, 'vite')));
   }
   process.exit(1);
 }
