@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm ci --prefix web && web/node_modules/.bin/vite build web",
+  "buildCommand": "npm ci --prefix web && node build-frontend.js",
   "outputDirectory": "web/dist"
 }
