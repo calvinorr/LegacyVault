@@ -99,16 +99,21 @@ app.use(ensureDbConnection);
 
 // Express session with MongoDB store (production-ready)
 // Note: SESSION_SECRET is validated on startup - no fallback for security
-// IMPORTANT: MongoStore uses existing Mongoose connection (not mongoUrl) to avoid
-// creating a second connection that would timeout in serverless environments
-const mongoose = require('mongoose');
+// IMPORTANT: MongoStore uses mongoUrl with serverless-friendly options
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    client: mongoose.connection.getClient(), // Use shared Mongoose connection
-    ttl: 24 * 60 * 60 // 1 day in seconds
+    mongoUrl: process.env.MONGO_URI,
+    ttl: 24 * 60 * 60, // 1 day in seconds
+    // Serverless-friendly connection options
+    mongoOptions: {
+      serverSelectionTimeoutMS: 10000, // 10 seconds (same as our main connection)
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 1
+    }
   }),
   cookie: {
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
