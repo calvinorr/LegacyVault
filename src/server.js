@@ -206,11 +206,19 @@ app.get('/dashboard', requireAuth, (req, res) => {
   res.json({ message: 'Welcome to Household Finance Vault', user: req.user });
 });
 
-// Static files / simple frontend placeholder
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Serve static files from React build (production) or public (development)
+const staticPath = process.env.NODE_ENV === 'production'
+  ? path.join(__dirname, '..', 'web', 'dist')
+  : path.join(__dirname, '..', 'public');
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+app.use(express.static(staticPath));
+
+// Serve React app for all non-API routes
+app.get('*', (req, res) => {
+  const indexPath = process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, '..', 'web', 'dist', 'index.html')
+    : path.join(__dirname, '..', 'public', 'index.html');
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
