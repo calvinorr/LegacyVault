@@ -4,15 +4,18 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const db = require('./db');
 const { initGridFS } = require('./db/gridfs');
 const { configurePassport, router: authRouter } = require('./auth/google');
+const { authenticateToken, optionalAuth } = require('./middleware/jwtAuth');
+
+// Epic-5 route imports
 const usersRouter = require('./routes/users');
 const importRouter = require('./routes/import');
-const transactionsRouter = require('./routes/transactions'); // Epic 5
-const patternsRouter = require('./routes/patterns'); // Epic 5 - Story 5.4
+const transactionsRouter = require('./routes/transactions');
+const patternsRouter = require('./routes/patterns');
 const detectionRulesRouter = require('./routes/detectionRules');
 const productDetectionRouter = require('./routes/productDetection');
 const renewalRemindersRouter = require('./routes/renewalReminders');
@@ -21,158 +24,181 @@ const domainsRouter = require('./routes/domains');
 const domainDocumentsRouter = require('./routes/domain-documents');
 const emergencyRouter = require('./routes/emergency');
 const recordTypesRouter = require('./routes/recordTypes');
-const parentEntityRouter = require('./routes/parentEntity'); // Epic 6 - Story 1.2
-const childRecordRouter = require('./routes/childRecord'); // Epic 6 - Story 1.3
-const domainConfigRouter = require('./routes/admin/domainConfig'); // Epic 6 - Story 1.4
-const systemStatusRouter = require('./routes/admin/systemStatus'); // Epic 6 - Story 1.9
-const categoriesRouter = require('./legacy/routes/categories'); // Legacy categories for frontend
+const parentEntityRouter = require('./routes/parentEntity');
+const childRecordRouter = require('./routes/childRecord');
+const domainConfigRouter = require('./routes/admin/domainConfig');
+const systemStatusRouter = require('./routes/admin/systemStatus');
+const categoriesRouter = require('./legacy/routes/categories');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Basic security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      styleSrcElem: ["'self'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+    },
+  },
+}));
+
+// CORS configuration
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+  ? process.env.ALLOWED_ORIGIN.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+if (process.env.NODE_ENV === 'production') {
+  console.log('Production CORS - Allowed origins:', allowedOrigins);
+}
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || true,
-  credentials: true,
-}));
-app.use(express.json());
-
-// Cookie session (simple session for OAuth)
-app.use(cookieSession({
-  name: 'session',
-  keys: [process.env.SESSION_SECRET || 'replace-me'],
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
-}));
-
-// Compatibility shim for Passport when using cookie-session:
-// passport expects req.session.regenerate to exist (provided by express-session).
-// cookie-session doesn't implement regenerate; provide a no-op regenerate to
-// keep Passport happy in this simple dev scaffold. For production consider
-// switching to `express-session` with a proper store.
-app.use((req, res, next) => {
-  try {
-    if (req && req.session) {
-      if (typeof req.session.regenerate !== 'function') {
-        req.session.regenerate = function(cb) {
-          // cookie-session stores session in cookie; regenerating is a no-op here.
-          if (typeof cb === 'function') cb();
-        };
-      }
-      if (typeof req.session.save !== 'function') {
-        // passport may call req.session.save; provide a no-op for compatibility.
-        req.session.save = function(cb) {
-          if (typeof cb === 'function') cb();
-        };
-      }
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
-  } catch (err) {
-    // Do not block the request if session is unavailable
-  }
-  next();
-});
+    if (process.env.NODE_ENV === 'production' && origin.includes('.vercel.app')) {
+      console.log(`✅ Allowing Vercel deployment origin: ${origin}`);
+      return callback(null, true);
+    }
+    console.warn(`⚠️  Blocked CORS request from unauthorized origin: ${origin}`);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['set-cookie']
+}));
 
-// Configure Passport (from src/auth/google)
+app.use(express.json());
+app.use(cookieParser());
+
+// Configure Passport for Google OAuth (JWT version)
 configurePassport();
 app.use(passport.initialize());
-app.use(passport.session());
 
-// Connect to MongoDB using helper
-db.connect().then(() => {
-  console.log('MongoDB connected');
-  initGridFS();
-}).catch((err) => {
-  console.error('MongoDB connection error:', err.message);
-});
-
-// Simple auth check middleware
-function requireAuth(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    return next();
+// Middleware to ensure MongoDB connection is ready (critical for serverless)
+app.use(async (req, res, next) => {
+  try {
+    await db.connect();
+    // Initialize GridFS after connection
+    if (!global.gridfsInitialized) {
+      initGridFS();
+      global.gridfsInitialized = true;
+    }
+    next();
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+    if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+      return res.status(503).json({
+        error: 'Database connection unavailable',
+        message: 'Please try again in a moment'
+      });
+    }
+    next(err);
   }
-  res.status(401).json({ error: 'Unauthorized' });
-}
+});
 
 // Routes
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Auth routes (mounted from src/auth/google)
+// Auth routes (Google OAuth + JWT endpoints)
 app.use('/auth', authRouter);
 
-// User management API (admin + self)
-app.use('/api/users', usersRouter);
+// Protected API routes with JWT authentication
+app.use('/api/users', authenticateToken, usersRouter);
+app.use('/api/import', authenticateToken, importRouter);
+app.use('/api/transactions', authenticateToken, transactionsRouter);
+app.use('/api/patterns', authenticateToken, patternsRouter);
+app.use('/api/detection-rules', authenticateToken, detectionRulesRouter);
+app.use('/api/product-detection', authenticateToken, productDetectionRouter);
+app.use('/api/renewal-reminders', authenticateToken, renewalRemindersRouter);
+app.use('/api/renewals', authenticateToken, renewalsRouter);
+app.use('/api/domains', authenticateToken, domainsRouter);
+app.use('/api/domains', authenticateToken, domainDocumentsRouter);
+app.use('/api/domain-documents', authenticateToken, domainDocumentsRouter);
+app.use('/api/emergency', authenticateToken, emergencyRouter);
+app.use('/api/record-types', authenticateToken, recordTypesRouter);
+app.use('/api/v2', authenticateToken, parentEntityRouter);
+app.use('/api/v2', authenticateToken, childRecordRouter);
+app.use('/api/admin', authenticateToken, domainConfigRouter);
+app.use('/api/admin', authenticateToken, systemStatusRouter);
+app.use('/api/categories', optionalAuth, categoriesRouter);
 
-// Bank Import API (Story 2.3 - PRESERVED for migration)
-app.use('/api/import', importRouter);
-
-// Transactions API (Epic 5 - Transaction Ledger)
-app.use('/api/transactions', transactionsRouter);
-
-// Patterns API (Epic 5 - Pattern Intelligence)
-app.use('/api/patterns', patternsRouter);
-
-// Detection Rules API
-app.use('/api/detection-rules', detectionRulesRouter);
-
-// Product Detection API
-app.use('/api/product-detection', productDetectionRouter);
-
-// Renewal Reminders API
-app.use('/api/renewal-reminders', renewalRemindersRouter);
-
-// Renewals API (Story 1.8 - Enhanced Renewal Dashboard)
-app.use('/api/renewals', renewalsRouter);
-
-// Domain Records API (Story 1.1 - Foundation)
-app.use('/api/domains', domainsRouter);
-
-// Domain Documents API (Story 1.2 - GridFS Storage)
-app.use('/api/domains', domainDocumentsRouter); // For upload/list endpoints
-app.use('/api/domain-documents', domainDocumentsRouter); // For download/delete endpoints
-
-// Emergency API (Story 1.9 - Emergency View)
-app.use('/api/emergency', emergencyRouter);
-
-// Record Types API (Story 3.1 - Record Type Management)
-app.use('/api/record-types', recordTypesRouter);
-
-// Parent Entity API v2 (Epic 6 - Story 1.2 - Hierarchical Domain Model)
-app.use('/api/v2', parentEntityRouter);
-
-// Child Record API v2 (Epic 6 - Story 1.3 - Child Record Management)
-app.use('/api/v2', childRecordRouter);
-
-// Admin API (Epic 6)
-app.use('/api/admin', domainConfigRouter); // Story 1.4 - Admin Domain Configuration
-app.use('/api/admin', systemStatusRouter); // Story 1.9 - System Status & Health
-
-// Legacy Categories API (for frontend CategoriesProvider)
-app.use('/api/categories', categoriesRouter);
-
+// Login page (for failed auth)
 app.get('/login', (req, res) => {
-  res.send('Login failed.'); // placeholder
+  res.send('Login failed. <a href="/auth/google">Try again</a>');
 });
 
-app.get('/logout', (req, res) => {
-  req.logout(() => {});
-  req.session = null;
-  res.redirect('/');
+// Dashboard endpoint (protected)
+app.get('/dashboard', authenticateToken, (req, res) => {
+  res.json({
+    message: 'Welcome to Household Finance Vault',
+    user: {
+      id: req.userId,
+      email: req.userEmail
+    }
+  });
 });
 
-app.get('/dashboard', requireAuth, (req, res) => {
-  // Placeholder dashboard response
-  res.json({ message: 'Welcome to Household Finance Vault', user: req.user });
+// Serve static files from React build (production) or public (development)
+const staticPath = process.env.NODE_ENV === 'production'
+  ? path.join(__dirname, '..', 'web', 'dist')
+  : path.join(__dirname, '..', 'public');
+
+app.use(express.static(staticPath));
+
+// Global error handling middleware (MUST be before catch-all route)
+app.use((err, req, res, next) => {
+  console.error('Express error handler:', err);
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  // Always return JSON for API routes to prevent HTML error pages
+  if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+    return res.status(err.status || 500).json({
+      error: err.message || 'Internal server error',
+      status: err.status || 500
+    });
+  }
+
+  res.status(500).send('Server error');
 });
 
-// Static files / simple frontend placeholder
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// Serve React app ONLY for non-API routes (prevents HTML for failed API calls)
+app.get('*', (req, res, next) => {
+  // Don't serve HTML for API routes that weren't matched
+  if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+    return res.status(404).json({
+      error: 'Not found',
+      path: req.path
+    });
+  }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  const indexPath = process.env.NODE_ENV === 'production'
+    ? path.join(__dirname, '..', 'web', 'dist', 'index.html')
+    : path.join(__dirname, '..', 'public', 'index.html');
+  res.sendFile(indexPath);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+// Export app for Vercel serverless
+module.exports = app;
+
+// Only start server if running directly (not imported by Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('JWT authentication enabled');
+  });
+}

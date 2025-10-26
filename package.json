@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon --watch src --exec node src/server.js",
+    "build": "cd web && npm install && npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -23,13 +24,14 @@
     "node": ">=18"
   },
   "dependencies": {
-    "cookie-session": "^2.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fuzzball": "^2.2.3",
     "helmet": "^6.0.0",
     "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
