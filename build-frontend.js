@@ -19,9 +19,11 @@ if (!fs.existsSync(viteDir)) {
   if (fs.existsSync(nodeModulesDir)) {
     const allDirs = fs.readdirSync(nodeModulesDir);
     console.error('Total packages:', allDirs.length);
-    console.error('Vite packages:', allDirs.filter(d => d.includes('vite')).join(', '));
-    console.error('First 10:', allDirs.slice(0, 10).join(', '));
-    console.error('Last 10:', allDirs.slice(-10).join(', '));
+    console.error('All vite* packages:', allDirs.filter(d => d.toLowerCase().includes('vite')).join(', '));
+    console.error('All packages starting with v:', allDirs.filter(d => d.startsWith('v') || d.startsWith('V')).join(', '));
+    console.error('Checking package.json devDependencies...');
+    const pkgJson = require(path.join(webDir, 'package.json'));
+    console.error('vite in devDeps:', pkgJson.devDependencies.vite);
   }
   process.exit(1);
 }
