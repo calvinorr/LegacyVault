@@ -1,4 +1,4 @@
 {
-  "buildCommand": "echo '===WEB PACKAGE.JSON===' && cat web/package.json && echo '===END PACKAGE.JSON===' && cd web && rm -rf node_modules && npm install && cd .. && node build-frontend.js",
+  "buildCommand": "cd web && rm -rf node_modules .npmrc && npm config set registry https://registry.npmjs.org/ && npm install --verbose 2>&1 | tail -50 && cd .. && node build-frontend.js",
   "outputDirectory": "web/dist"
 }
