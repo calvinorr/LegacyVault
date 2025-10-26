@@ -7,6 +7,7 @@ import {
   AlertCircle,
   Settings,
   User,
+  Users,
   Car,
   Home,
   Briefcase,
@@ -65,6 +66,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
            location.pathname.startsWith('/admin') ||
            location.pathname.startsWith('/domains') ||
            location.pathname.startsWith('/settings');
+    // Note: /admin prefix covers /admin/users, /admin/system-status, etc.
   };
 
   const navStyle = {
@@ -358,6 +360,27 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
                   >
                     <Activity size={18} strokeWidth={1.5} />
                     System Status
+                  </Link>
+
+                  <Link
+                    to="/admin/users"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: isPathActive("/admin/users") ? "#0f172a" : "#1e293b",
+                      backgroundColor: isPathActive("/admin/users") ? "#f8fafc" : "transparent",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => setIsAdminDropdownOpen(false)}
+                  >
+                    <Users size={18} strokeWidth={1.5} />
+                    User Management
                   </Link>
 
                   <div

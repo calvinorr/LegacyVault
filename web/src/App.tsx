@@ -42,6 +42,7 @@ import { FinanceDetail } from "./pages/FinanceDetail";
 // Admin pages
 import AdminDomains from "./pages/AdminDomains";
 import AdminSystemStatus from "./pages/AdminSystemStatus";
+import AdminUserManagement from "./pages/AdminUserManagement";
 import Layout from "./components/Layout";
 import { useAuth, ProtectedRoute } from "./hooks/useAuth";
 
@@ -286,6 +287,14 @@ export default function App(): JSX.Element {
           element={
             <ProtectedRoute>
               <AdminSystemStatus />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUserManagement />
             </ProtectedRoute>
           }
         />
