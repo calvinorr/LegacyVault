@@ -64,3 +64,4 @@ My Details.txt
 # BMAD (local only)
 .bmad-core/
 .bmad-*/
+.vercel

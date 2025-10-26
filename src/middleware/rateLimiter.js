@@ -6,6 +6,17 @@ const rateLimit = require('express-rate-limit');
 const { authLogger } = require('../utils/logger');
 
 /**
+ * Custom key generator that works with Vercel's proxy headers
+ */
+const vercelKeyGenerator = (req) => {
+  // Vercel uses x-forwarded-for or x-real-ip headers
+  return req.headers['x-forwarded-for']?.split(',')[0] ||
+         req.headers['x-real-ip'] ||
+         req.ip ||
+         'unknown';
+};
+
+/**
  * Strict rate limiter for authentication endpoints
  * Prevents brute force attacks on login
  *
@@ -14,6 +25,7 @@ const { authLogger } = require('../utils/logger');
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs
+  keyGenerator: vercelKeyGenerator, // Use custom key generator for Vercel
   message: {
     error: 'Too many authentication attempts from this IP, please try again after 15 minutes.'
   },
@@ -41,6 +53,7 @@ const authLimiter = rateLimit({
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
+  keyGenerator: vercelKeyGenerator, // Use custom key generator for Vercel
   message: {
     error: 'Too many requests from this IP, please try again after 15 minutes.'
   },
@@ -66,6 +79,7 @@ const apiLimiter = rateLimit({
 const uploadLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // Limit each IP to 10 uploads per hour
+  keyGenerator: vercelKeyGenerator, // Use custom key generator for Vercel
   message: {
     error: 'Too many uploads from this IP, please try again after an hour.'
   },
@@ -91,6 +105,7 @@ const uploadLimiter = rateLimit({
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000, // Very generous limit
+  keyGenerator: vercelKeyGenerator, // Use custom key generator for Vercel
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => process.env.NODE_ENV === 'test',
