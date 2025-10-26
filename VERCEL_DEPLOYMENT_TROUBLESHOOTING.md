@@ -1,12 +1,12 @@
 # Vercel Deployment Troubleshooting Summary
 
 **Date:** October 26, 2025
-**Status:** Deployment issues persist after multiple fix attempts
+**Status:** Deployment issues persist - Session persistence not working
 
 ## Current Deployment URL
 - **Main URL:** https://legacylock-one.vercel.app
 - **Vercel Project:** legacylock
-- **Latest Deployment:** https://legacylock-8qykxix5b-calvin-orrs-projects.vercel.app
+- **Latest Deployment:** https://legacylock-4phmje9po-calvin-orrs-projects.vercel.app
 
 ## Environment Variables Set
 All environment variables have been set in Vercel production environment using `printf` (to avoid newline issues):
@@ -25,15 +25,16 @@ All environment variables have been set in Vercel production environment using `
 **Problem:** Rate limiter throwing ValidationError about Forwarded header
 **Fix Applied:** Added custom keyGenerator to all rate limiters (src/middleware/rateLimiter.js:11-17)
 ```javascript
-const vercelKeyGenerator = (req) => {
-  return req.headers['x-forwarded-for']?.split(',')[0] ||
-         req.headers['x-real-ip'] ||
-         req.ip ||
-         'unknown';
+const vercelKeyGenerator = (req, res) => {
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] ||
+             req.headers['x-real-ip'] ||
+             req.ip ||
+             'unknown';
+  return ip.replace(/:\d+[^:]*$/, '');
 };
 ```
 **Status:** ✅ Fixed - No more rate limiter errors
-**Commit:** d097e7c
+**Commit:** d097e7c, b9f2f34
 
 ### 2. CORS Configuration
 **Problem:** CORS blocking requests because of deployment URL mismatch
@@ -47,9 +48,11 @@ const vercelKeyGenerator = (req) => {
 - Added connection caching with global variable
 - Reduced serverSelectionTimeoutMS from 30s to 10s
 - Added serverless-friendly connection pooling
+- Added connection promise handling
 
 ```javascript
 let cachedConnection = null;
+let connectionPromise = null;
 
 const connect = async () => {
   if (cachedConnection && mongoose.connection.readyState === 1) {
@@ -58,8 +61,8 @@ const connect = async () => {
   // ... connect with serverless options
 };
 ```
-**Status:** ⚠️ Partial - Main connection works, session store connection still times out
-**Commit:** 278d5bf
+**Status:** ✅ Fixed - Main connection works
+**Commit:** 278d5bf, b9f2f34
 
 ### 4. Database Connection Middleware
 **Problem:** Requests processed before MongoDB connection established
@@ -118,27 +121,73 @@ store: MongoStore.create({
   }
 })
 ```
-**Status:** ⚠️ Unknown - Latest deployment, untested
+**Status:** ⚠️ Partial - Connection works but sessions not persisting
 **Commit:** 628cc33
 
-## Current Issues (Last Observed)
+### 8. Lazy-Initialized Session Middleware (Oct 26, 2025)
+**Problem:** Race condition between MongoDB connections in serverless
+**Fix Applied:** Created lazy-initialized session middleware with connection sharing
+```javascript
+const sessionMiddleware = (() => {
+  let middleware = null;
+  let initializationPromise = null;
+  
+  return async (req, res, next) => {
+    if (!middleware) {
+      // Initialize session store after DB connection
+      await db.connect();
+      middleware = session({
+        // ... session config
+        store: MongoStore.create({
+          mongoUrl: process.env.MONGO_URI,
+          // ... mongo options
+        })
+      });
+    }
+    middleware(req, res, next);
+  };
+})();
+```
+**Status:** ⚠️ Partial - MongoDB connects but sessions still not persisting
+**Commit:** b9f2f34, 1e0e760
 
-### Issue 1: MongoDB Timeout (Intermittent)
-**Error:** `MongoServerSelectionError: Server selection timed out after 30000 ms`
-**Frequency:** Intermittent
-**Location:** MongoStore connection (not main connection)
-**Latest Logs:** Shows both "MongoDB connected" (10s timeout) AND timeout errors (30s)
+### 9. Cookie Configuration Fix (Oct 26, 2025)
+**Problem:** Cookie domain `.vercel.app` too broad, sameSite issues
+**Fix Applied:** Updated cookie configuration
+```javascript
+cookie: {
+  secure: process.env.NODE_ENV === 'production',
+  httpOnly: true,
+  maxAge: 24 * 60 * 60 * 1000,
+  sameSite: 'lax',
+  // Removed domain setting - let it default
+},
+name: 'connect.sid', // Use default session name
+proxy: process.env.NODE_ENV === 'production',
+rolling: true // Reset expiry on activity
+```
+**Status:** ❌ FAILED - Sessions still not persisting, 401 errors continue
+**Commit:** 7350a6f
 
-### Issue 2: 401 Unauthorized
+## Current Issues (Last Observed - Oct 26, 2025)
+
+### Issue 1: Session Not Persisting
 **Error:** 401 responses on `/api/users/me` and `/api/categories`
-**Possible Causes:**
-1. Session not persisting (MongoStore issue)
-2. Passport not deserializing users
-3. OAuth callback not completing properly
+**Symptoms:**
+- MongoDB connects successfully
+- Session store initializes successfully
+- But sessions are not maintained between requests
+- Each request seems to create a new session
 
-### Issue 3: Function Crashes (Resolved?)
-**Error:** `500: INTERNAL_SERVER_ERROR - FUNCTION_INVOCATION_FAILED`
-**Status:** Should be fixed by reverting getClient() approach
+### Issue 2: Serverless Function Isolation
+**Problem:** Each serverless function invocation is isolated
+**Impact:** 
+- Sessions created in one function may not be accessible in another
+- Cookie/session state not properly shared between function invocations
+
+### Issue 3: MongoStore Connection Issues
+**Problem:** Even with connection sharing attempts, MongoStore may be creating issues
+**Observation:** Session store initializes but doesn't persist data properly
 
 ## MongoDB Atlas Configuration
 **Network Access:**
@@ -154,71 +203,68 @@ store: MongoStore.create({
 
 **This is NOT the issue** - OAuth URLs are correct.
 
+## Root Cause Analysis
+
+The core issue appears to be **session persistence in Vercel's serverless environment**:
+
+1. **Serverless Function Isolation**: Each request may be handled by a different serverless function instance
+2. **Session Store Issues**: MongoStore is connecting but not properly persisting/retrieving sessions
+3. **Cookie Issues**: Sessions cookies may not be properly set or read in the serverless environment
+
 ## Next Steps to Investigate
 
-### 1. Check if MongoStore is creating duplicate connections
-**Action:** Review Vercel logs for two separate MongoDB connection attempts
-**Command:** `vercel logs https://legacylock-one.vercel.app`
-**Look for:**
-- "MongoDB connected" messages
-- "MongoServerSelectionError" messages
-- Count how many connections are being attempted
+### 1. Alternative Session Storage Solutions
+**Consider switching from MongoStore to:**
+- **Vercel KV** (Redis) - Serverless-native, designed for Vercel
+- **Upstash Redis** - Free tier, serverless-optimized
+- **JWT Tokens** - Stateless authentication (no session store needed)
 
-### 2. Test session persistence
-**Action:** Add detailed logging to session middleware
-**Code to add to server.js:**
+### 2. Debug Session Cookie Behavior
+**Add detailed logging:**
 ```javascript
 app.use((req, res, next) => {
+  console.log('Request headers:', req.headers);
   console.log('Session ID:', req.sessionID);
-  console.log('Session data:', req.session);
-  console.log('Is authenticated:', req.isAuthenticated?.());
+  console.log('Session:', req.session);
+  console.log('Cookies:', req.cookies);
   next();
 });
 ```
 
-### 3. Test locally with production environment variables
-**Action:** Pull production env vars and test locally
-```bash
-vercel env pull .env.production.local
-NODE_ENV=production node src/server.js
-```
-
-### 4. Simplify session store (temporary debugging)
-**Action:** Try using Vercel's recommended approach with cookie-session
+### 3. Test with Simpler Session Configuration
+**Try memory store temporarily (for debugging only):**
 ```javascript
-// Temporarily replace MongoStore with cookie-session for testing
-const cookieSession = require('cookie-session');
-app.use(cookieSession({
+app.use(session({
   secret: process.env.SESSION_SECRET,
-  maxAge: 24 * 60 * 60 * 1000
+  resave: false,
+  saveUninitialized: false,
+  // No store specified - uses memory store
 }));
 ```
-**Note:** This is ONLY for debugging - not for production (session data in cookie)
 
-### 5. Check Vercel function timeout settings
-**Action:** Verify serverless function timeout in Vercel dashboard
-**Location:** Vercel Dashboard → Project Settings → Functions
-**Default:** 10 seconds (Hobby plan)
-**Issue:** If MongoDB takes >10s, function times out
+### 4. Consider Stateless Authentication
+**Switch to JWT-based authentication:**
+- No session store needed
+- Works perfectly in serverless
+- Each request is self-contained
 
-### 6. Consider alternative session stores
-**Options:**
-- **Vercel KV** (Redis) - Serverless-native, fast
-- **Upstash Redis** - Free tier, designed for serverless
-- **Cookie-session** - No external store needed (limited by cookie size)
-
-### 7. Review Mongoose connection pooling
-**Issue:** Multiple serverless instances may exhaust connection pool
-**Action:** Check MongoDB Atlas metrics for connection count
-**Fix:** Reduce maxPoolSize or increase Atlas connection limit
+### 5. Use Vercel KV for Sessions
+**Install and configure Vercel KV:**
+```bash
+npm install @vercel/kv
+```
+```javascript
+import { kv } from '@vercel/kv';
+// Use KV for session storage
+```
 
 ## Files Modified
 
 ### Core Changes
 - `src/middleware/rateLimiter.js` - Added Vercel proxy header support
-- `src/db/index.js` - Serverless connection caching
-- `src/middleware/ensureDbConnection.js` - NEW FILE - Connection middleware
-- `src/server.js` - Middleware order, MongoStore options
+- `src/db/index.js` - Serverless connection caching with promises
+- `src/middleware/ensureDbConnection.js` - Connection middleware
+- `src/server.js` - Lazy session initialization, cookie configuration
 
 ### Configuration
 - `vercel.json` - Vercel deployment config
@@ -246,14 +292,24 @@ app.use(cookieSession({
 | Cold starts | No | Yes (first request slower) |
 | MongoDB pools | Works normally | Need careful tuning |
 | Timeout | Unlimited | 10 seconds (Hobby) |
+| Session State | In-memory/MongoDB | Needs external store |
+| Function Isolation | Single process | Multiple isolated functions |
 
-## Recommended Next Session
+## Recommended Solution
 
-1. **Start fresh** - Clear browser cache, use incognito mode
-2. **Check Vercel logs** immediately after testing to see exact error sequence
-3. **Try cookie-session** temporarily to isolate if MongoStore is the issue
-4. **Consider Vercel KV** for session storage (serverless-native solution)
-5. **Contact Vercel support** - This seems like a common serverless session issue
+Based on the persistent issues with MongoDB session storage in Vercel's serverless environment, the recommended approach is to:
+
+1. **Switch to Vercel KV (Redis)** for session storage
+   - Designed specifically for Vercel's serverless environment
+   - Low latency, high performance
+   - Built-in support for session management
+
+2. **Or implement JWT-based authentication**
+   - Completely stateless
+   - No session store needed
+   - Perfect for serverless environments
+
+3. **As a last resort**: Consider moving to a different hosting platform that supports traditional Node.js applications (not serverless)
 
 ## Useful Commands
 
@@ -284,4 +340,4 @@ node -e "require('./src/db').connect().then(() => console.log('OK'))"
 
 ---
 
-**Summary:** The app is very close to working. MongoDB connection is established, but session persistence is failing. The most likely culprit is MongoStore creating duplicate connections in the serverless environment. Consider switching to a serverless-native session store like Vercel KV or temporarily using cookie-session for debugging.
+**Summary:** The application successfully connects to MongoDB and initializes the session store, but sessions are not persisting between requests in Vercel's serverless environment. This is a fundamental limitation of using traditional session-based authentication with MongoDB in a serverless architecture. The solution is to either switch to a serverless-native session store (Vercel KV/Redis) or implement stateless authentication (JWT).

@@ -75,22 +75,37 @@ app.use(helmet({
 
 // CORS configuration - strict in production
 const allowedOrigins = process.env.ALLOWED_ORIGIN
-  ? process.env.ALLOWED_ORIGIN.split(',')
+  ? process.env.ALLOWED_ORIGIN.split(',').map(origin => origin.trim())
   : ['http://localhost:5173', 'http://localhost:3000'];
+
+// In production, also allow any *.vercel.app subdomain
+if (process.env.NODE_ENV === 'production') {
+  console.log('Production CORS - Allowed origins:', allowedOrigins);
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl requests, or same-origin)
     if (!origin) return callback(null, true);
 
+    // Check if origin is in allowed list
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`⚠️  Blocked CORS request from unauthorized origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
+
+    // In production, also allow any Vercel deployment URL
+    if (process.env.NODE_ENV === 'production' && origin.includes('.vercel.app')) {
+      console.log(`✅ Allowing Vercel deployment origin: ${origin}`);
+      return callback(null, true);
+    }
+
+    console.warn(`⚠️  Blocked CORS request from unauthorized origin: ${origin}`);
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['set-cookie']
 }));
 app.use(express.json());
 
