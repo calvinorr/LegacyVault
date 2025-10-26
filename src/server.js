@@ -149,11 +149,12 @@ const sessionMiddleware = (() => {
                 secure: process.env.NODE_ENV === 'production', // HTTPS only in production
                 httpOnly: true, // Prevent XSS attacks
                 maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin in production
-                domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined // Set domain for production
+                sameSite: 'lax', // CSRF protection
+                // Don't set domain - let it default to the current domain
               },
-              name: 'sessionId', // Custom session name
-              proxy: process.env.NODE_ENV === 'production' // Trust proxy in production
+              name: 'connect.sid', // Use default session name
+              proxy: process.env.NODE_ENV === 'production', // Trust proxy in production
+              rolling: true // Reset expiry on activity
             });
             
             console.log('Session store initialized successfully');
