@@ -65,3 +65,8 @@ My Details.txt
 .bmad-core/
 .bmad-*/
 .vercel
+
+# Vercel deployment scripts with sensitive data
+set-vercel-env.sh
+fix-vercel-env.sh
+.vercel-env-values.txt
