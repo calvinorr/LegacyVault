@@ -36,6 +36,9 @@ const categoriesRouter = require('./legacy/routes/categories'); // Legacy catego
 // Rate limiting middleware
 const { authLimiter, apiLimiter, uploadLimiter, generalLimiter } = require('./middleware/rateLimiter');
 
+// Database connection middleware (for serverless)
+const ensureDbConnection = require('./middleware/ensureDbConnection');
+
 // Logging
 const { logger, httpLoggerMiddleware } = require('./utils/logger');
 
@@ -114,14 +117,21 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect to MongoDB using helper
+// Ensure database connection before handling requests (critical for serverless)
+app.use(ensureDbConnection);
+
+// Connect to MongoDB at startup (for local development)
+// In serverless, the middleware above ensures connection per request
 db.connect().then(() => {
   logger.info('MongoDB connected successfully');
   console.log('MongoDB connected');
   initGridFS();
 }).catch((err) => {
-  logger.error('MongoDB connection error', { error: err.message, stack: err.stack });
-  console.error('MongoDB connection error:', err.message);
+  logger.error('MongoDB startup connection attempt failed (will retry per-request)', {
+    error: err.message,
+    stack: err.stack
+  });
+  console.warn('MongoDB startup connection failed - will retry on requests');
 });
 
 // Simple auth check middleware
