@@ -77,11 +77,25 @@ configurePassport();
 app.use(passport.initialize());
 // No passport.session() needed for JWT
 
-// Connect to MongoDB using helper
-db.connect().then(() => {
-  console.log('MongoDB connected');
-}).catch((err) => {
-  console.error('MongoDB connection error:', err.message);
+// Middleware to ensure MongoDB connection is ready (critical for serverless)
+app.use(async (req, res, next) => {
+  try {
+    await db.connect();
+    next();
+  } catch (err) {
+    console.error('MongoDB connection failed:', err.message);
+
+    // Return JSON error for API routes
+    if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+      return res.status(503).json({
+        error: 'Database connection unavailable',
+        message: 'Please try again in a moment'
+      });
+    }
+
+    // For other routes, pass to error handler
+    next(err);
+  }
 });
 
 // Routes
@@ -124,16 +138,51 @@ const staticPath = process.env.NODE_ENV === 'production'
 
 app.use(express.static(staticPath));
 
-// Serve React app for all non-API routes
-app.get('*', (req, res) => {
+// Global error handling middleware (MUST be before catch-all route)
+app.use((err, req, res, next) => {
+  console.error('Express error handler:', err);
+
+  // If headers already sent, delegate to default Express error handler
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  // Always return JSON for API routes to prevent HTML error pages
+  if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+    return res.status(err.status || 500).json({
+      error: err.message || 'Internal server error',
+      status: err.status || 500
+    });
+  }
+
+  // For non-API routes, send a generic error response
+  res.status(500).send('Server error');
+});
+
+// Serve React app ONLY for non-API routes (prevents HTML for failed API calls)
+app.get('*', (req, res, next) => {
+  // Don't serve HTML for API routes that weren't matched
+  if (req.path.startsWith('/api') || req.path.startsWith('/auth')) {
+    return res.status(404).json({
+      error: 'Not found',
+      path: req.path
+    });
+  }
+
   const indexPath = process.env.NODE_ENV === 'production'
     ? path.join(__dirname, '..', 'web', 'dist', 'index.html')
     : path.join(__dirname, '..', 'public', 'index.html');
   res.sendFile(indexPath);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log('JWT authentication enabled');
-});
+// Export app for Vercel serverless
+module.exports = app;
+
+// Only start server if running directly (not imported by Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('JWT authentication enabled');
+  });
+}
