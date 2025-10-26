@@ -15,9 +15,13 @@ console.log('vite directory exists:', fs.existsSync(viteDir));
 
 if (!fs.existsSync(viteDir)) {
   console.error('ERROR: vite not found in web/node_modules');
-  console.error('Contents of web/node_modules:');
+  console.error('Checking for vite-related packages:');
   if (fs.existsSync(nodeModulesDir)) {
-    console.error(fs.readdirSync(nodeModulesDir).slice(0, 20).join(', '));
+    const allDirs = fs.readdirSync(nodeModulesDir);
+    console.error('Total packages:', allDirs.length);
+    console.error('Vite packages:', allDirs.filter(d => d.includes('vite')).join(', '));
+    console.error('First 10:', allDirs.slice(0, 10).join(', '));
+    console.error('Last 10:', allDirs.slice(-10).join(', '));
   }
   process.exit(1);
 }
