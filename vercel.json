@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "web/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/web/dist/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot))",
+      "dest": "/web/dist/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/logout",
+      "dest": "/src/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/web/dist/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "regions": ["iad1"]
+}

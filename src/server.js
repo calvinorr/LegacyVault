@@ -9,7 +9,8 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const passport = require('passport');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const path = require('path');
 const db = require('./db');
 const { initGridFS } = require('./db/gridfs');
@@ -90,43 +91,23 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Cookie session (simple session for OAuth)
+// Express session with MongoDB store (production-ready)
 // Note: SESSION_SECRET is validated on startup - no fallback for security
-app.use(cookieSession({
-  name: 'session',
-  keys: [process.env.SESSION_SECRET],
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-  httpOnly: true, // Prevent XSS attacks
-  sameSite: 'lax' // CSRF protection
-}));
-
-// Compatibility shim for Passport when using cookie-session:
-// passport expects req.session.regenerate to exist (provided by express-session).
-// cookie-session doesn't implement regenerate; provide a no-op regenerate to
-// keep Passport happy in this simple dev scaffold. For production consider
-// switching to `express-session` with a proper store.
-app.use((req, res, next) => {
-  try {
-    if (req && req.session) {
-      if (typeof req.session.regenerate !== 'function') {
-        req.session.regenerate = function(cb) {
-          // cookie-session stores session in cookie; regenerating is a no-op here.
-          if (typeof cb === 'function') cb();
-        };
-      }
-      if (typeof req.session.save !== 'function') {
-        // passport may call req.session.save; provide a no-op for compatibility.
-        req.session.save = function(cb) {
-          if (typeof cb === 'function') cb();
-        };
-      }
-    }
-  } catch (err) {
-    // Do not block the request if session is unavailable
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    ttl: 24 * 60 * 60 // 1 day in seconds
+  }),
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    httpOnly: true, // Prevent XSS attacks
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+    sameSite: 'lax' // CSRF protection
   }
-  next();
-});
+}));
 
 // Configure Passport (from src/auth/google)
 configurePassport();
