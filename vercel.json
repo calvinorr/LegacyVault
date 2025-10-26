@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npm ci --prefix web && cd web && node_modules/.bin/vite build",
+  "buildCommand": "npm ci --prefix web && web/node_modules/.bin/vite build web",
   "outputDirectory": "web/dist"
 }
