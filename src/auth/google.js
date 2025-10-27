@@ -73,45 +73,60 @@ router.get('/google',
 
 // Modified callback to issue JWT tokens instead of creating session
 router.get('/google/callback',
-  passport.authenticate('google', { 
+  passport.authenticate('google', {
     failureRedirect: '/login',
     session: false // Disable session for JWT
   }),
   (req, res) => {
-    // DEBUG: Log OAuth callback
-    console.log('=== OAuth Callback Triggered ===');
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
-    console.log('COOKIE_DOMAIN:', process.env.COOKIE_DOMAIN);
-    console.log('Host header:', req.headers.host);
-    console.log('User:', req.user ? req.user.email : 'No user');
+    try {
+      // DEBUG: Log OAuth callback
+      console.log('=== OAuth Callback Triggered ===');
+      console.log('Environment:', process.env.NODE_ENV);
+      console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
+      console.log('COOKIE_DOMAIN:', process.env.COOKIE_DOMAIN);
+      console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+      console.log('JWT_REFRESH_SECRET exists:', !!process.env.JWT_REFRESH_SECRET);
+      console.log('Host header:', req.headers.host);
+      console.log('User:', req.user ? req.user.email : 'No user');
 
-    // Check if user is approved
-    if (!req.user.approved) {
-      // User exists but not approved - redirect with message
+      if (!req.user) {
+        console.error('No user in request!');
+        return res.status(500).json({ error: 'Authentication failed - no user' });
+      }
+
+      // Check if user is approved
+      if (!req.user.approved) {
+        // User exists but not approved - redirect with message
+        const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
+        console.log('User not approved, redirecting to:', frontend);
+        return res.redirect(`${frontend}?message=pending-approval`);
+      }
+
+      // Generate JWT tokens
+      console.log('Generating tokens...');
+      const accessToken = generateAccessToken(req.user);
+      const refreshToken = generateRefreshToken(req.user);
+
+      console.log('Tokens generated successfully');
+      console.log('Access token length:', accessToken.length);
+      console.log('Refresh token length:', refreshToken.length);
+
+      // Set tokens in httpOnly cookies
+      setTokenCookie(res, 'accessToken', accessToken, false);
+      setTokenCookie(res, 'refreshToken', refreshToken, true);
+
+      console.log('Cookies set, redirecting to frontend');
+
+      // Redirect to the frontend dashboard
       const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
-      console.log('User not approved, redirecting to:', frontend);
-      return res.redirect(`${frontend}?message=pending-approval`);
+      console.log('Redirecting to:', frontend);
+      res.redirect(frontend);
+    } catch (error) {
+      console.error('=== OAuth Callback Error ===');
+      console.error('Error:', error.message);
+      console.error('Stack:', error.stack);
+      res.status(500).json({ error: 'Authentication failed', message: error.message });
     }
-
-    // Generate JWT tokens
-    const accessToken = generateAccessToken(req.user);
-    const refreshToken = generateRefreshToken(req.user);
-
-    console.log('Tokens generated successfully');
-    console.log('Access token length:', accessToken.length);
-    console.log('Refresh token length:', refreshToken.length);
-
-    // Set tokens in httpOnly cookies
-    setTokenCookie(res, 'accessToken', accessToken, false);
-    setTokenCookie(res, 'refreshToken', refreshToken, true);
-
-    console.log('Cookies set, redirecting to frontend');
-
-    // Redirect to the frontend dashboard
-    const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
-    console.log('Redirecting to:', frontend);
-    res.redirect(frontend);
   });
 
 // Debug route to check cookie status
