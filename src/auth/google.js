@@ -97,7 +97,7 @@ router.get('/google/callback',
       // Check if user is approved
       if (!req.user.approved) {
         // User exists but not approved - redirect with message
-        const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const frontend = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
         console.log('User not approved, redirecting to:', frontend);
         return res.redirect(`${frontend}?message=pending-approval`);
       }
@@ -118,7 +118,7 @@ router.get('/google/callback',
       console.log('Cookies set, redirecting to frontend');
 
       // Redirect to the frontend dashboard
-      const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const frontend = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
       console.log('Redirecting to:', frontend);
       res.redirect(frontend);
     } catch (error) {
@@ -153,7 +153,7 @@ router.get('/logout', (req, res) => {
   clearAuthCookies(res);
 
   // Redirect to home
-  const frontend = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const frontend = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
   res.redirect(frontend);
 });
 
