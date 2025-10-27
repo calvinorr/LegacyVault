@@ -115,13 +115,20 @@ const setTokenCookie = (res, name, token, isRefreshToken = false) => {
     ? 7 * 24 * 60 * 60 * 1000 // 7 days for refresh token
     : 15 * 60 * 1000; // 15 minutes for access token
 
-  res.cookie(name, token, {
+  const cookieOptions = {
     httpOnly: true, // Prevent XSS attacks
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
     sameSite: 'lax', // CSRF protection
     maxAge,
     path: '/' // Available for all routes
-  });
+  };
+
+  // In production, explicitly set domain to ensure cookies work with Vercel
+  if (process.env.NODE_ENV === 'production' && process.env.COOKIE_DOMAIN) {
+    cookieOptions.domain = process.env.COOKIE_DOMAIN;
+  }
+
+  res.cookie(name, token, cookieOptions);
 };
 
 /**
