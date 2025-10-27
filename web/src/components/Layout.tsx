@@ -14,7 +14,8 @@ import {
   Home,
   Briefcase,
   Wrench,
-  Landmark
+  Landmark,
+  LogOut
 } from "lucide-react";
 
 interface LayoutProps {
@@ -96,8 +97,11 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
   };
 
   const signOutButtonStyle = {
-    padding: "8px 16px",
-    fontSize: "13px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "10px 18px",
+    fontSize: "14px",
     fontWeight: "500",
     border: "1px solid #e2e8f0",
     borderRadius: "12px",
@@ -106,6 +110,7 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     cursor: "pointer",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+    textDecoration: "none",
   };
 
   const navLinkStyle = (isActive: boolean) => ({
@@ -263,9 +268,23 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
               <User size={16} color="#64748b" strokeWidth={1.5} />
               <span style={userNameStyle}>{user.displayName}</span>
             </div>
-            <button onClick={onSignOut} style={signOutButtonStyle}>
-              Sign out
-            </button>
+            <a
+              href="/auth/logout"
+              style={signOutButtonStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f8fafc";
+                e.currentTarget.style.borderColor = "#cbd5e1";
+                e.currentTarget.style.color = "#475569";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#ffffff";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.color = "#64748b";
+              }}
+            >
+              <LogOut size={16} strokeWidth={1.5} />
+              Logout
+            </a>
           </>
         ) : (
           <Link to="/login" style={signOutButtonStyle}>
