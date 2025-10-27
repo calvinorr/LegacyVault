@@ -18,9 +18,9 @@ function configurePassport() {
   const User = require('../models/user');
 
   passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'GOOGLE_CLIENT_ID',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'GOOGLE_CLIENT_SECRET',
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+    clientID: process.env.GOOGLE_CLIENT_ID?.trim() || 'GOOGLE_CLIENT_ID',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET?.trim() || 'GOOGLE_CLIENT_SECRET',
+    callbackURL: process.env.GOOGLE_CALLBACK_URL?.trim() || '/auth/google/callback',
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = (profile.emails && profile.emails[0] && profile.emails[0].value) || null;
