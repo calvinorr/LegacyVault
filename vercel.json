@@ -1,32 +1,31 @@
 {
   "version": 2,
   "buildCommand": "echo 'Using pre-built frontend from web/dist'",
-  "outputDirectory": "web/dist",
   "functions": {
     "api/index.js": {
       "maxDuration": 60
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/auth/(.*)",
-      "destination": "/api"
+      "src": "/auth/(.*)",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/health",
-      "destination": "/api"
+      "src": "/health",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/logout",
-      "destination": "/api"
+      "src": "/(.*\\..+)",
+      "dest": "/web/dist/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/web/dist/index.html"
     }
   ]
 }
