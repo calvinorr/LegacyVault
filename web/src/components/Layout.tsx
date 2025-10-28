@@ -129,6 +129,22 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
     fontFamily: "Inter, system-ui, -apple-system, sans-serif",
   });
 
+  const utilityLinkStyle = (isActive: boolean) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    textDecoration: "none",
+    fontSize: "13px",
+    fontWeight: isActive ? "600" : "500",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    backgroundColor: isActive ? "#f1f5f9" : "transparent",
+    color: isActive ? "#0f172a" : "#64748b",
+    border: `1px solid ${isActive ? "#e2e8f0" : "transparent"}`,
+    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+  });
+
   return (
     <nav style={navStyle}>
       <div style={leftSideStyle}>
@@ -159,13 +175,12 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
           </h1>
         </div>
 
-        {/* Navigation Links */}
+        {/* Main Navigation Links */}
         <div style={navLinksStyle}>
           <Link to="/" style={navLinkStyle(isPathActive("/"))}>
             <LayoutDashboard size={18} strokeWidth={1.5} />
             Home
           </Link>
-          {/* Parent Entity Links */}
           <Link
             to="/vehicles-new"
             style={navLinkStyle(isPathActive("/vehicles-new"))}
@@ -201,69 +216,70 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
             <Landmark size={18} strokeWidth={1.5} />
             Finance
           </Link>
-          <Link
-            to="/domains"
-            style={navLinkStyle(isPathActive("/domains"))}
-          >
-            <Layers size={18} strokeWidth={1.5} />
-            Admin
-          </Link>
+        </div>
+      </div>
+
+      {/* Utility Navigation & User Info */}
+      <div style={rightSideStyle}>
+        {/* Utility Links */}
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <Link
             to="/bank-import"
-            style={navLinkStyle(isPathActive("/bank-import"))}
+            style={utilityLinkStyle(isPathActive("/bank-import"))}
           >
-            <Upload size={18} strokeWidth={1.5} />
+            <Upload size={16} strokeWidth={1.5} />
             Bank Import
           </Link>
           <Link
             to="/transactions"
-            style={navLinkStyle(isPathActive("/transactions"))}
+            style={utilityLinkStyle(isPathActive("/transactions"))}
           >
-            <List size={18} strokeWidth={1.5} />
+            <List size={16} strokeWidth={1.5} />
             Transactions
           </Link>
           <Link
             to="/renewals"
-            style={navLinkStyle(isPathActive("/renewals"))}
+            style={utilityLinkStyle(isPathActive("/renewals"))}
           >
-            <Calendar size={18} strokeWidth={1.5} />
+            <Calendar size={16} strokeWidth={1.5} />
             Renewals
           </Link>
           <Link
             to="/emergency"
             style={{
-              ...navLinkStyle(isPathActive("/emergency")),
+              ...utilityLinkStyle(isPathActive("/emergency")),
               backgroundColor: isPathActive("/emergency") ? "#dc2626" : "#fef2f2",
               color: isPathActive("/emergency") ? "#ffffff" : "#dc2626",
               border: "1px solid #fecaca",
             }}
           >
-            <AlertCircle size={18} strokeWidth={1.5} />
+            <AlertCircle size={16} strokeWidth={1.5} />
             Emergency
-          </Link>
-          <Link
-            to="/settings"
-            style={navLinkStyle(isPathActive("/settings"))}
-          >
-            <Settings size={18} strokeWidth={1.5} />
-            Settings
           </Link>
           {user?.role === 'admin' && (
             <Link
               to="/admin/domains"
-              style={navLinkStyle(isPathActive("/admin/domains"))}
+              style={utilityLinkStyle(isPathActive("/admin/domains"))}
             >
-              <Shield size={18} strokeWidth={1.5} />
+              <Shield size={16} strokeWidth={1.5} />
               Admin
             </Link>
           )}
         </div>
-      </div>
 
-      {/* User Info */}
-      <div style={rightSideStyle}>
+        {/* User Menu */}
         {user ? (
           <>
+            <Link
+              to="/settings"
+              style={{
+                ...utilityLinkStyle(isPathActive("/settings")),
+                padding: "8px 14px",
+              }}
+            >
+              <Settings size={16} strokeWidth={1.5} />
+              Settings
+            </Link>
             <div style={userInfoStyle}>
               <User size={16} color="#64748b" strokeWidth={1.5} />
               <span style={userNameStyle}>{user.displayName}</span>
