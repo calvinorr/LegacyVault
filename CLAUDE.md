@@ -16,6 +16,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - UK utilities: Council Tax, TV Licence, rates
 - UK-specific categories and terminology
 
+## Branch Strategy
+
+**Current Branch Structure:**
+- `production` - **Active production branch** deployed to Vercel (https://legacylock-one.vercel.app)
+  - This is the default branch on GitHub
+  - All production deployments come from this branch
+  - Contains complete working code with JWT authentication
+- `main` - Development/staging branch (mirrors production currently)
+  - Use for feature development and testing
+  - Can diverge from production for experimental work
+- `archive/main-pre-jwt` - Historical reference
+  - Preserved old main branch from before JWT authentication implementation
+  - Keep for reference, do not modify or merge
+
+**Version Tags:**
+- `v1.0-stable-jwt-auth` - Stable checkpoint with JWT auth and navigation improvements
+  - Use this tag as rollback point if issues arise
+  - Marks the transition from epic-5 development to production-ready code
+
+**Deployment:**
+- Vercel deploys from `production` branch automatically
+- For emergency rollback: `git checkout v1.0-stable-jwt-auth`
+- Always use `vercel --prod --force --yes` to ensure API functions deploy correctly
+
 ## Architecture
 
 **Dual-Stack Application:**
