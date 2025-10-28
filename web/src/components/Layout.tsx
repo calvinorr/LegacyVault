@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Shield,
@@ -15,7 +15,9 @@ import {
   Briefcase,
   Wrench,
   Landmark,
-  LogOut
+  LogOut,
+  ChevronDown,
+  MoreHorizontal
 } from "lucide-react";
 
 interface LayoutProps {
@@ -31,6 +33,7 @@ interface TopNavigationProps {
 
 function TopNavigation({ user, onSignOut }: TopNavigationProps) {
   const location = useLocation();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Helper function to check if a nav item is active
   const isPathActive = (path: string): boolean => {
@@ -223,27 +226,141 @@ function TopNavigation({ user, onSignOut }: TopNavigationProps) {
       <div style={rightSideStyle}>
         {/* Utility Links */}
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <Link
-            to="/bank-import"
-            style={utilityLinkStyle(isPathActive("/bank-import"))}
-          >
-            <Upload size={16} strokeWidth={1.5} />
-            Bank Import
-          </Link>
-          <Link
-            to="/transactions"
-            style={utilityLinkStyle(isPathActive("/transactions"))}
-          >
-            <List size={16} strokeWidth={1.5} />
-            Transactions
-          </Link>
-          <Link
-            to="/renewals"
-            style={utilityLinkStyle(isPathActive("/renewals"))}
-          >
-            <Calendar size={16} strokeWidth={1.5} />
-            Renewals
-          </Link>
+          {/* Dropdown Menu for Tools */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+              style={{
+                ...utilityLinkStyle(
+                  isPathActive("/bank-import") ||
+                  isPathActive("/transactions") ||
+                  isPathActive("/renewals")
+                ),
+                cursor: "pointer",
+                border: "1px solid #e2e8f0",
+              }}
+            >
+              <MoreHorizontal size={16} strokeWidth={1.5} />
+              Tools
+              <ChevronDown size={14} strokeWidth={1.5} />
+            </button>
+
+            {isDropdownOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  right: 0,
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                  minWidth: "180px",
+                  zIndex: 50,
+                  overflow: "hidden",
+                }}
+              >
+                <Link
+                  to="/bank-import"
+                  onClick={() => setIsDropdownOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 16px",
+                    textDecoration: "none",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    color: isPathActive("/bank-import") ? "#0f172a" : "#64748b",
+                    backgroundColor: isPathActive("/bank-import") ? "#f8fafc" : "transparent",
+                    transition: "all 0.2s",
+                    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isPathActive("/bank-import")) {
+                      e.currentTarget.style.backgroundColor = "#f8fafc";
+                      e.currentTarget.style.color = "#0f172a";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isPathActive("/bank-import")) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#64748b";
+                    }
+                  }}
+                >
+                  <Upload size={16} strokeWidth={1.5} />
+                  Bank Import
+                </Link>
+                <Link
+                  to="/transactions"
+                  onClick={() => setIsDropdownOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 16px",
+                    textDecoration: "none",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    color: isPathActive("/transactions") ? "#0f172a" : "#64748b",
+                    backgroundColor: isPathActive("/transactions") ? "#f8fafc" : "transparent",
+                    transition: "all 0.2s",
+                    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isPathActive("/transactions")) {
+                      e.currentTarget.style.backgroundColor = "#f8fafc";
+                      e.currentTarget.style.color = "#0f172a";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isPathActive("/transactions")) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#64748b";
+                    }
+                  }}
+                >
+                  <List size={16} strokeWidth={1.5} />
+                  Transactions
+                </Link>
+                <Link
+                  to="/renewals"
+                  onClick={() => setIsDropdownOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 16px",
+                    textDecoration: "none",
+                    fontSize: "13px",
+                    fontWeight: "500",
+                    color: isPathActive("/renewals") ? "#0f172a" : "#64748b",
+                    backgroundColor: isPathActive("/renewals") ? "#f8fafc" : "transparent",
+                    transition: "all 0.2s",
+                    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isPathActive("/renewals")) {
+                      e.currentTarget.style.backgroundColor = "#f8fafc";
+                      e.currentTarget.style.color = "#0f172a";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isPathActive("/renewals")) {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                      e.currentTarget.style.color = "#64748b";
+                    }
+                  }}
+                >
+                  <Calendar size={16} strokeWidth={1.5} />
+                  Renewals
+                </Link>
+              </div>
+            )}
+          </div>
+
           <Link
             to="/emergency"
             style={{
